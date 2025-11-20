@@ -1,4 +1,4 @@
-# Patient Point Impact Engine
+# Patient Point IXR Analytics Engine
 
 ## Executive Summary
 
@@ -188,7 +188,7 @@ Execute the following files **in order**:
    **Via Snowsight UI:**
    1. Navigate to: Projects → Streamlit
    2. Click "+ Streamlit App"
-   3. Name: `Patient Point Impact Engine`
+   3. Name: `Patient Point IXR Analytics Engine`
    4. Warehouse: `COMPUTE_WH`
    5. Paste contents of `06_streamlit_app.py`
    6. Click "Run"

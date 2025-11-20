@@ -27,7 +27,7 @@ from snowflake.snowpark.functions import col
 # ============================================================================
 
 st.set_page_config(
-    page_title="Patient Point Impact Engine",
+    page_title="Patient Point IXR Analytics Engine",
     page_icon="🏥",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -403,7 +403,7 @@ def get_summary_metrics() -> dict:
 # Header
 col1, col2 = st.columns([3, 1])
 with col1:
-    st.markdown('<p class="main-title">🏥 Patient Point Impact Engine</p>', unsafe_allow_html=True)
+    st.markdown('<p class="main-title">🏥 Patient Point IXR Analytics Engine</p>', unsafe_allow_html=True)
     st.markdown('<p class="subtitle">Proving Digital Engagement Drives Clinical Value</p>', unsafe_allow_html=True)
 
 with col2:

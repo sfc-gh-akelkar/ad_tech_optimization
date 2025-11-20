@@ -1,4 +1,4 @@
-# Patient Point Impact Engine - Deployment Checklist
+# Patient Point IXR Analytics Engine - Deployment Checklist
 
 ## Pre-Deployment Requirements
 
@@ -157,7 +157,7 @@ SELECT PATIENTPOINT_DB.IXR_ANALYTICS.PATIENT_IMPACT_AGENT(
 **Actions:**
 1. In Snowsight, navigate to: Projects → Streamlit → + Streamlit App
 2. Configure:
-   - **Name:** `Patient Point Impact Engine`
+   - **Name:** `Patient Point IXR Analytics Engine`
    - **Location:** PATIENTPOINT_DB.IXR_ANALYTICS
    - **Warehouse:** COMPUTE_WH
    - **App role:** ACCOUNTADMIN (or appropriate role)
@@ -168,7 +168,7 @@ SELECT PATIENTPOINT_DB.IXR_ANALYTICS.PATIENT_IMPACT_AGENT(
 7. Wait for app to initialize (~30 seconds)
 
 **Verify:**
-- App loads with header "🏥 Patient Point Impact Engine"
+- App loads with header "🏥 Patient Point IXR Analytics Engine"
 - Sidebar shows Key Metrics
 - Sample questions are visible
 - Chat input is functional
