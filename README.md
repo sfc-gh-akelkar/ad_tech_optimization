@@ -172,15 +172,22 @@ Execute the following files **in order**:
    - Click "Upload Files" and select `04_semantic_model.yaml`
 
 #### 5. **05_agent_setup.sql**
+   - Grants CORTEX_AGENT_USER role (prerequisite)
    - Creates Cortex Analyst Service: `PATIENT_IMPACT_ANALYST`
-   - Creates Cortex Agent: `PATIENT_IMPACT_AGENT`
-   - Orchestrates Analyst + Search tools
+   - Creates Cortex Agent: `PATIENT_IMPACT_AGENT` with native tools
+   - Configures dual-tool orchestration (Analyst + Search)
+   - **Follows Snowflake best practices** for enterprise deployment
    - **Runtime:** ~2-3 minutes
    
    ```sql
    -- Run in Snowflake Worksheet
    -- Copy and execute entire 05_agent_setup.sql
    ```
+   
+   **Note:** The agent can be accessed via:
+   - **Snowflake Intelligence** (AI & ML → Agents)
+   - **Streamlit App** (custom UI, see step 6)
+   - **REST API** (for custom applications)
 
 #### 6. **06_streamlit_app.py**
    - Deploy Streamlit app in Snowflake
@@ -205,9 +212,29 @@ Execute the following files **in order**:
 
 ## Using the Application
 
+### Access Methods
+
+You can interact with the IXR Analytics Engine through:
+
+1. **Snowflake Intelligence (Recommended for PoC)**
+   - Navigate to: Snowsight → AI & ML → Agents
+   - Select `PATIENT_IMPACT_AGENT`
+   - Click "Open in Intelligence"
+   - Start asking questions in natural language
+   - ✅ Zero-code UI, native integration, auto-visualizations
+
+2. **Custom Streamlit App (Advanced)**
+   - Access via Snowsight → Streamlit Apps
+   - Custom branding and advanced visualizations
+   - Full control over UI/UX
+
+3. **REST API (For Integrations)**
+   - Programmatic access for custom applications
+   - See 05_agent_setup.sql for examples
+
 ### Sample Questions to Ask
 
-The application understands natural language queries. Try these examples:
+The agent understands natural language queries. Try these examples:
 
 **Impact & Correlation:**
 - "Did an increase in scrolling lead to more vaccines administered?"
@@ -331,8 +358,10 @@ This PoC provides:
 - **Zero-ETL Architecture:** All processing in Snowflake
 - **AI-Native:** Leverages Cortex AI for natural language understanding
 - **Semantic Layer:** Business-friendly terminology (e.g., "scrolling" → `SCROLL_DEPTH_PCT`)
-- **Dual-Tool Orchestration:** Automatically routes queries to structured or unstructured data sources
-- **Enterprise-Ready:** Security, governance, and scalability built-in
+- **Dual-Tool Orchestration:** Native Cortex Agent with Analyst + Search tools
+- **Best Practices Compliant:** Follows official Snowflake Cortex Agent documentation
+- **Snowflake Intelligence Ready:** Works seamlessly with native AI interface
+- **Enterprise-Ready:** RBAC, monitoring, governance, and scalability built-in
 
 ---
 
