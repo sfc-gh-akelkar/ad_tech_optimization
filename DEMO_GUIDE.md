@@ -31,7 +31,7 @@ Snowflake turns PatientPoint’s screen telemetry + maintenance history into **e
 - **Governed AI**: semantic views + role-based access + auditable SQL = controlled, explainable answers.
 - **Business-facing AI**: Cortex Analyst translates natural language → SQL on curated semantic views (not raw tables).
 - **Real operational workflow**: alerts → work orders → remediation steps → outcomes → KPIs, all as first-class data products.
-- **Time-to-value**: you can start with “credible simulation” (Acts 2/3/5) and swap in production ML later without redesigning the system.
+- **Time-to-value**: you can start with credible simulation and swap in production models later without redesigning the system.
 
 ---
 
@@ -49,6 +49,12 @@ Use the ordered script list in `START_HERE.md` (setup → data → curated views
 
 ## Prescriptive 20‑minute demo script (verbatim, designed to WOW)
 
+### Before you start (30 seconds)
+Do this in **Snowflake Intelligence**:
+1) Open **Snowflake Intelligence** → **Agents**
+2) Open `MAINTENANCE_OPS_AGENT`
+3) Make sure you can see answers + citations/tool outputs in the chat UI
+
 ### 0:00–1:00 — Opening (frame the business)
 Say:
 “PatientPoint’s screens are not just ‘IT devices’—they’re **revenue delivery endpoints**. When a screen is down, you lose impressions, partners notice, and clinic staff gets pulled into troubleshooting. Today I’m going to show how Snowflake helps you **make money, save money, and reduce risk** by moving from reactive break/fix to proactive operations.”
@@ -57,9 +63,6 @@ Then say (Snowflake differentiator):
 “What’s special here is Snowflake isn’t just storing data—Snowflake is the **governed system of intelligence**: curated data + semantic layer + retrieval + orchestration—so answers are explainable and auditable.”
 
 ### 1:00–3:30 — Challenge → Result preview (exec-friendly)
-Do (Snowsight worksheet OR Agent):
-- Show `ANALYTICS.V_EXEC_KPIS` OR ask the Agent:
-
 Copy/paste to Agent:
 - “Show executive KPIs: fleet size, critical/warning now, watchlist count, predicted failures in the next 48 hours, downtime hours and revenue impact in the last 30 days.”
 
@@ -138,88 +141,6 @@ Next step after the demo is simple: connect to your real telemetry stream and in
 
 ---
 
-## The live demo (10–15 minutes, structured to WOW)
-
-### Segment 1 — Exec hook (2 minutes): “Stop revenue leakage”
-**Goal**: anchor on PatientPoint’s business.
-
-In Snowsight (or via Agent), show:
-- `ANALYTICS.V_EXEC_KPIS` (or semantic view `SV_EXEC_KPIS`)
-
-Talk track:
-- “Here’s the fleet health snapshot and the operational load.”
-- “Here’s **observed downtime and observed revenue impact** from historical incidents.”
-- “Here are **explicit, editable assumptions** used for any ‘avoided cost’ estimates—no black box ROI.”
-
-Ask the Agent (copy/paste):
-- “Show executive KPIs: fleet size, critical/warning now, predicted failures in 48h, downtime hours and revenue impact in the last 30 days.”
-- “Which KPIs are observed vs estimated? Show the assumptions driving the estimates.”
-
-**WOW moment**: “We can show revenue-at-risk and operational burden with full lineage—then connect it to the actions being taken.”
-
----
-
-### Segment 2 — Ops Center (4–5 minutes): “From signals to a ranked queue”
-**Goal**: show early warning + prediction + prioritization.
-
-Ask the Agent:
-- “What devices should the ops team look at first today and why?”
-  - Should pull from `SV_ANOMALY_WATCHLIST` with domain scores + why-flagged.
-- “Which devices are likely to fail in the next 48 hours?”
-  - Should pull from `SV_FAILURE_PREDICTIONS` with probability + predicted failure type.
-
-Talk track:
-- “This is the shift from reactive to proactive. Instead of 1,000 charts, the team gets a ranked watchlist and predicted failures.”
-- “Each item is explainable: thermal/power/network/display/stability signals and their deltas vs baseline.”
-
-If asked about accuracy:
-- “Show the demo prediction accuracy and explain what it represents.”
-  - Make it explicit: demo-only evaluation vs deterministic scenario incidents.
-
-**WOW moment**: “We aren’t just flagging devices—we’re predicting the likely failure type and generating the next operational action.”
-
----
-
-### Segment 3 — Work orders (3 minutes): “Turn alerts into execution”
-**Goal**: prove the system closes the loop.
-
-Ask the Agent:
-- “What work orders are open right now? Which are P1 and due in the next 24 hours?”
-- “Which work orders require field dispatch vs remote remediation?”
-
-Talk track:
-- “This is where the money is saved: fewer field dispatches and faster time-to-fix.”
-- “The system recommends remote vs field based on predicted failure type and historical remote success rates.”
-
-**WOW moment**: “Now it’s not just an insight—it’s an operational queue with deadlines and recommended channels.”
-
----
-
-### Segment 4 — Remote remediation (3 minutes): “Automate what’s automatable”
-**Goal**: show remote fix and escalation with governance.
-
-Ask the Agent:
-- “For the top remote work order, give step-by-step runbook instructions and expected success likelihood.”
-- “Show recent remote remediation outcomes and escalations.”
-
-Talk track:
-- “Remote workflows are simulated here, but in production this is where you’d integrate MDM/RMM tooling.”
-- “Escalation isn’t failure—it’s risk management: avoid wasting time when remote success is low (e.g., display panel).”
-
-**WOW moment**: “We can demonstrate an ‘automated fix’ experience without touching real endpoints—perfect for a demo and for phased adoption.”
-
----
-
-### Segment 5 — KB grounding (2 minutes): “Don’t guess—retrieve evidence”
-**Goal**: show retrieval + consistency.
-
-Ask the Agent:
-- “For ‘Network Connectivity’ failures, what fixes have worked historically and what’s the remote success rate?”
-- “Find similar incidents to device 4512 and summarize the top troubleshooting steps.”
-
-Talk track:
-- “This is why Snowflake Intelligence matters: structured data + unstructured knowledge + governance in one place.”
-
 ---
 
 ## PatientPoint-specific value mapping (use these lines)
@@ -241,7 +162,7 @@ Talk track:
 ## Questions you should expect (and how to answer)
 
 ### “Is this real ML?”
-- “Acts 2/3 are simulated for demo speed and explainability; production would swap in Cortex ML / Snowpark ML models using the same governed data layer.”
+- “The watchlist scoring and 24–48h predictions are simulated for demo speed and explainability; production would swap in Cortex ML / Snowpark ML models using the same governed data layer.”
 
 ### “Are the savings real?”
 - “Observed metrics come directly from incident data. Any ‘avoided’ estimate is driven by the assumptions table—you can change it live.”
