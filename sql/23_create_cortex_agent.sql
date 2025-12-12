@@ -21,6 +21,8 @@
   - Orchestration model is set to "auto".
 ============================================================================*/
 
+USE ROLE SF_INTELLIGENCE_DEMO;
+
 USE DATABASE PREDICTIVE_MAINTENANCE;
 USE SCHEMA OPERATIONS;
 

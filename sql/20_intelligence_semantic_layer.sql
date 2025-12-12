@@ -11,6 +11,8 @@
   - sql/02_generate_sample_data.sql
 ============================================================================*/
 
+USE ROLE SF_INTELLIGENCE_DEMO;
+
 USE DATABASE PREDICTIVE_MAINTENANCE;
 
 /*----------------------------------------------------------------------------

@@ -14,6 +14,8 @@
   Run this after 01_setup_database.sql
 ============================================================================*/
 
+USE ROLE SF_INTELLIGENCE_DEMO;
+
 USE DATABASE PREDICTIVE_MAINTENANCE;
 USE SCHEMA RAW_DATA;
 

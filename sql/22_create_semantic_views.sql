@@ -13,6 +13,8 @@
   - CREATE SEMANTIC VIEW syntax: https://docs.snowflake.com/en/sql-reference/sql/create-semantic-view
 ============================================================================*/
 
+USE ROLE SF_INTELLIGENCE_DEMO;
+
 USE DATABASE PREDICTIVE_MAINTENANCE;
 USE SCHEMA ANALYTICS;
 

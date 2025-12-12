@@ -8,6 +8,8 @@
   - sql/20_intelligence_semantic_layer.sql (creates ANALYTICS.V_FLEET_DEVICE_STATUS)
 ============================================================================*/
 
+USE ROLE SF_INTELLIGENCE_DEMO;
+
 USE DATABASE PREDICTIVE_MAINTENANCE;
 
 USE SCHEMA ANALYTICS;

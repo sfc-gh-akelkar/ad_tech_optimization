@@ -13,6 +13,8 @@
   Run this first in Snowsight
 ============================================================================*/
 
+USE ROLE SF_INTELLIGENCE_DEMO;
+
 -- Create database and schemas
 CREATE DATABASE IF NOT EXISTS PREDICTIVE_MAINTENANCE;
 

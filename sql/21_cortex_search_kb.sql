@@ -16,6 +16,8 @@
     inventing content; it stays grounded in the data.
 ============================================================================*/
 
+USE ROLE SF_INTELLIGENCE_DEMO;
+
 USE DATABASE PREDICTIVE_MAINTENANCE;
 USE SCHEMA OPERATIONS;
 

@@ -23,6 +23,8 @@
   - OPERATIONS.REFRESH_WATCHLIST(mode, as_of_ts) procedure
 ============================================================================*/
 
+USE ROLE SF_INTELLIGENCE_DEMO;
+
 USE DATABASE PREDICTIVE_MAINTENANCE;
 USE SCHEMA OPERATIONS;
 
