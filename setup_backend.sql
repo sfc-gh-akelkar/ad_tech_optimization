@@ -506,7 +506,7 @@ COMMON CORRUPTION CAUSES:
 - Malware or unauthorized software
 - Physical shock or drop
 
-DATA RECOVERY (If device won't boot):
+DATA RECOVERY (If device will not boot):
 1. Remove hard drive/SSD
 2. Connect to diagnostic workstation via SATA/USB adapter
 3. Use PatientPoint Data Recovery Tool (requires license)
@@ -561,7 +561,8 @@ AS (
     FROM RUNBOOK_DOCS
 );
 
--- Test the search service
+-- Test the search service (optional - uncomment to test after setup)
+/*
 SELECT
   SNOWFLAKE.CORTEX.SEARCH_PREVIEW(
     'PATIENTPOINT_OPS.DEVICE_ANALYTICS.RUNBOOK_SEARCH_SERVICE',
@@ -571,6 +572,7 @@ SELECT
       "limit": 3
     }'
   );
+*/
 
 -- ============================================================================
 -- HELPER VIEWS FOR DASHBOARD
