@@ -16,7 +16,6 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
-import pydeck as pdk
 from datetime import datetime, timedelta
 import time
 import json
@@ -301,80 +300,69 @@ def composite_agent_query(session, question):
 # ============================================================================
 def create_geospatial_map(df):
     """
-    Create an interactive geospatial map using PyDeck.
+    Create an interactive geospatial map using Plotly.
     Color-coded by risk level: Green (<50%), Yellow (50-80%), Red (>80%)
     """
-    # Add color based on failure probability
-    def get_color(prob):
+    # Add risk category for coloring
+    def get_risk_category(prob):
         if prob > 0.80:
-            return [255, 0, 0, 200]  # Red - Critical
+            return 'Critical (>80%)'
         elif prob > 0.50:
-            return [255, 165, 0, 200]  # Orange - Medium
+            return 'Medium (50-80%)'
         else:
-            return [0, 255, 0, 200]  # Green - Healthy
+            return 'Healthy (<50%)'
     
-    # Note: Column names from Snowflake are UPPERCASE
-    df['color'] = df['FAILURE_PROBABILITY'].apply(get_color)
-    df['radius'] = df['FAILURE_PROBABILITY'].apply(lambda x: 15000 if x > 0.8 else 10000)
+    # Add risk category and size
+    df['risk_category'] = df['FAILURE_PROBABILITY'].apply(get_risk_category)
+    df['size'] = df['FAILURE_PROBABILITY'].apply(lambda x: 15 if x > 0.8 else 10)
     
-    # Create PyDeck layer
-    layer = pdk.Layer(
-        "ScatterplotLayer",
-        data=df,
-        get_position=['LONGITUDE', 'LATITUDE'],
-        get_color='color',
-        get_radius='radius',
-        pickable=True,
-        opacity=0.8,
-        stroked=True,
-        filled=True,
-        radius_scale=1,
-        radius_min_pixels=3,
-        radius_max_pixels=15,
-    )
-    
-    # Set the viewport location
-    view_state = pdk.ViewState(
-        latitude=39.8283,
-        longitude=-98.5795,
+    # Create Plotly scatter mapbox
+    fig = px.scatter_mapbox(
+        df,
+        lat='LATITUDE',
+        lon='LONGITUDE',
+        color='risk_category',
+        size='size',
+        hover_name='DEVICE_ID',
+        hover_data={
+            'HOSPITAL_NAME': True,
+            'REGION': True,
+            'FAILURE_PROBABILITY': ':.1%',
+            'PREDICTED_FAILURE_TYPE': True,
+            'LATITUDE': False,
+            'LONGITUDE': False,
+            'risk_category': False,
+            'size': False
+        },
+        color_discrete_map={
+            'Critical (>80%)': '#FF0000',
+            'Medium (50-80%)': '#FFA500',
+            'Healthy (<50%)': '#00FF00'
+        },
         zoom=3.5,
-        pitch=0,
+        center={"lat": 39.8283, "lon": -98.5795},
+        title='Interactive Display Fleet Map'
     )
     
-    # Tooltip
-    tooltip = {
-        "html": "<b>Device:</b> {device_id}<br/>"
-                "<b>Hospital:</b> {hospital_name}<br/>"
-                "<b>Region:</b> {region}<br/>"
-                "<b>Failure Probability:</b> {failure_probability:.1%}<br/>"
-                "<b>Failure Type:</b> {predicted_failure_type}",
-        "style": {
-            "backgroundColor": "steelblue",
-            "color": "white"
-        }
-    }
-    
-    # Render
-    deck = pdk.Deck(
-        layers=[layer],
-        initial_view_state=view_state,
-        tooltip=tooltip,
-        map_style='mapbox://styles/mapbox/dark-v10'
+    fig.update_layout(
+        mapbox_style="carto-darkmatter",
+        height=500,
+        margin={"r": 0, "t": 30, "l": 0, "b": 0}
     )
     
-    return deck
+    return fig
 
 def create_failure_type_chart(df):
     """Create a bar chart showing failure type distribution for at-risk devices."""
     fig = px.bar(
         df,
-        x='predicted_failure_type',
-        y='device_count',
+        x='PREDICTED_FAILURE_TYPE',
+        y='DEVICE_COUNT',
         title='At-Risk Devices by Failure Type',
-        labels={'device_count': 'Device Count', 'predicted_failure_type': 'Failure Type'},
-        color='avg_probability',
+        labels={'DEVICE_COUNT': 'Device Count', 'PREDICTED_FAILURE_TYPE': 'Failure Type'},
+        color='AVG_PROBABILITY',
         color_continuous_scale='Reds',
-        text='device_count'
+        text='DEVICE_COUNT'
     )
     fig.update_traces(textposition='outside')
     fig.update_layout(
@@ -388,14 +376,14 @@ def create_regional_heatmap(df):
     """Create a choropleth-style bar chart for regional analysis."""
     fig = px.bar(
         df,
-        x='region',
-        y='critical_count',
+        x='REGION',
+        y='CRITICAL_COUNT',
         title='Critical Devices by Region',
-        labels={'critical_count': 'Critical Device Count', 'region': 'State'},
-        color='avg_failure_prob',
+        labels={'CRITICAL_COUNT': 'Critical Device Count', 'REGION': 'State'},
+        color='AVG_FAILURE_PROB',
         color_continuous_scale='RdYlGn_r',
-        text='critical_count',
-        hover_data=['total_devices', 'revenue_at_risk']
+        text='CRITICAL_COUNT',
+        hover_data=['TOTAL_DEVICES', 'REVENUE_AT_RISK']
     )
     fig.update_traces(textposition='outside')
     fig.update_layout(
@@ -537,8 +525,8 @@ def main():
     
     with col_map:
         if not filtered_df.empty:
-            map_deck = create_geospatial_map(filtered_df)
-            st.pydeck_chart(map_deck)
+            map_fig = create_geospatial_map(filtered_df)
+            st.plotly_chart(map_fig, use_container_width=True)
         else:
             st.warning("No devices match the selected filters.")
     
