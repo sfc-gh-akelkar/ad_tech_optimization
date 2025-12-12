@@ -477,9 +477,10 @@ def main():
         metrics = metrics_df.iloc[0]
         
         # Calculate fleet health percentage
-        fleet_health_pct = (1 - metrics['avg_failure_probability']) * 100
-        critical_devices = int(metrics['critical_devices'])
-        revenue_at_risk = float(metrics['revenue_at_risk_usd'])
+        # Note: Snowflake returns column names in UPPERCASE
+        fleet_health_pct = (1 - metrics['AVG_FAILURE_PROBABILITY']) * 100
+        critical_devices = int(metrics['CRITICAL_DEVICES'])
+        revenue_at_risk = float(metrics['REVENUE_AT_RISK_USD'])
         
         # Display critical alert if needed
         if critical_devices >= 15:
@@ -516,7 +517,7 @@ def main():
             )
         
         with col4:
-            offline_count = int(metrics.get('offline_devices', 0))
+            offline_count = int(metrics.get('OFFLINE_DEVICES', 0))
             st.metric(
                 label="Offline Devices",
                 value=f"{offline_count}",
