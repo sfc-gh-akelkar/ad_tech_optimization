@@ -91,16 +91,22 @@ CREATE WAREHOUSE COMPUTE_WH WITH WAREHOUSE_SIZE = 'X-SMALL';
 - This is now properly implemented in dashboard_app.py
 
 ### Error: "KeyError: 'avg_failure_probability'" (or similar column name errors)
-**Status**: ✅ **FIXED** (v1.0.5)  
+**Status**: ✅ **FIXED** (v1.0.7)  
 **Solution**: Snowflake returns column names in UPPERCASE by default.
+
+**All DataFrame column references now use UPPERCASE**:
+- Metrics: `AVG_FAILURE_PROBABILITY`, `CRITICAL_DEVICES`, `REVENUE_AT_RISK_USD`, `OFFLINE_DEVICES`
+- Map columns: `FAILURE_PROBABILITY`, `LONGITUDE`, `LATITUDE`
+- Filter columns: `REGION`
+- Table columns: `DEVICE_ID`, `HOSPITAL_NAME`, `PREDICTED_FAILURE_TYPE`, etc.
 
 **Technical Details**:
 - View defines: `avg_failure_probability`
 - Snowflake returns: `AVG_FAILURE_PROBABILITY`
-- ❌ Wrong: `metrics['avg_failure_probability']`
-- ✅ Correct: `metrics['AVG_FAILURE_PROBABILITY']`
+- ❌ Wrong: `df['failure_probability']`
+- ✅ Correct: `df['FAILURE_PROBABILITY']`
 
-This has been fixed in dashboard_app.py for all metric column references.
+All occurrences have been fixed in dashboard_app.py (v1.0.7).
 
 ### Error: "String is too long and would be truncated"
 **Status**: ✅ **FIXED** (v1.0.2)  
@@ -240,6 +246,6 @@ Once verification passes, proceed to:
 ---
 
 **Last Updated**: December 12, 2025  
-**Status**: All errors fixed (6 issues resolved)  
-**Version**: 1.0.5
+**Status**: All errors fixed (7 complete sets of issues resolved)  
+**Version**: 1.0.7
 
