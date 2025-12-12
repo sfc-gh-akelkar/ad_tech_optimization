@@ -35,12 +35,13 @@ WITH SEQUENCE_GEN AS (
     FROM TABLE(GENERATOR(ROWCOUNT => 100))
 )
 SELECT
-    -- Device IDs: 4001-4100 (with 4532 as our problem device)
+    -- Device IDs: 4501-4600 (with 4532 and 7821 as problem devices)
     CASE 
-        WHEN SEQ <= 32 THEN 4500 + SEQ
-        WHEN SEQ = 33 THEN 4532  -- Our "sick" device
-        WHEN SEQ <= 66 THEN 4500 + SEQ
-        WHEN SEQ = 67 THEN 7821  -- Second problem device
+        WHEN SEQ <= 31 THEN 4500 + SEQ           -- Creates 4501-4531
+        WHEN SEQ = 32 THEN 4532                   -- Our "sick" device
+        WHEN SEQ <= 65 THEN 4501 + SEQ           -- Creates 4533-4566 (skips 4532)
+        WHEN SEQ = 66 THEN 7821                   -- Second problem device
+        WHEN SEQ <= 99 THEN 4502 + SEQ           -- Creates 4568-4601 (skips 4567/7821)
         ELSE 4500 + SEQ
     END AS DEVICE_ID,
     
@@ -61,8 +62,8 @@ SELECT
     
     -- Installation dates (1-4 years ago, older devices more likely to fail)
     CASE 
-        WHEN SEQ = 33 THEN DATEADD('day', -1065, CURRENT_DATE())  -- 4532: ~2.9 years old
-        WHEN SEQ = 67 THEN DATEADD('day', -950, CURRENT_DATE())   -- 7821: ~2.6 years old
+        WHEN SEQ = 32 THEN DATEADD('day', -1065, CURRENT_DATE())  -- 4532: ~2.9 years old
+        WHEN SEQ = 66 THEN DATEADD('day', -950, CURRENT_DATE())   -- 7821: ~2.6 years old
         ELSE DATEADD('day', -(UNIFORM(365, 1460, RANDOM())), CURRENT_DATE())
     END AS INSTALLATION_DATE,
     
@@ -135,8 +136,8 @@ SELECT
     
     -- Environment types
     CASE 
-        WHEN SEQ = 33 THEN 'Lobby'  -- 4532: High traffic area
-        WHEN SEQ = 67 THEN 'Waiting Room'
+        WHEN SEQ = 32 THEN 'Lobby'  -- 4532: High traffic area
+        WHEN SEQ = 66 THEN 'Waiting Room'
         WHEN (SEQ % 4) = 0 THEN 'Lobby'
         WHEN (SEQ % 4) = 1 THEN 'Waiting Room'
         WHEN (SEQ % 4) = 2 THEN 'Exam Room'
@@ -147,15 +148,15 @@ SELECT
     
     -- Firmware versions (older versions more problematic)
     CASE 
-        WHEN SEQ = 33 THEN 'v2.3.8'  -- 4532: Older firmware with known power issues
+        WHEN SEQ = 32 THEN 'v2.3.8'  -- 4532: Older firmware with known power issues
         WHEN SEQ < 20 THEN 'v2.4.1'  -- Newer firmware
         WHEN SEQ < 60 THEN 'v2.3.8'  -- Older firmware
         ELSE 'v2.4.0'
     END AS FIRMWARE_VERSION,
     
     CASE 
-        WHEN SEQ = 33 THEN 'Expired'  -- 4532: Out of warranty
-        WHEN SEQ = 67 THEN 'Expired'
+        WHEN SEQ = 32 THEN 'Expired'  -- 4532: Out of warranty
+        WHEN SEQ = 66 THEN 'Expired'
         WHEN DATEDIFF('day', DATEADD('day', -(UNIFORM(365, 1460, RANDOM())), CURRENT_DATE()), CURRENT_DATE()) > 1095 
             THEN 'Expired'
         ELSE 'Active'
@@ -163,7 +164,7 @@ SELECT
     
     -- Last maintenance (60-180 days ago)
     CASE
-        WHEN SEQ = 33 THEN DATEADD('day', -118, CURRENT_DATE())  -- 4532: Recent maintenance but still degrading
+        WHEN SEQ = 32 THEN DATEADD('day', -118, CURRENT_DATE())  -- 4532: Recent maintenance but still degrading
         ELSE DATEADD('day', -(UNIFORM(60, 180, RANDOM())), CURRENT_DATE())
     END AS LAST_MAINTENANCE_DATE,
     
