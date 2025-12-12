@@ -229,7 +229,7 @@ BEGIN
         
         -- Ambient temperature (seasonal variation)
         70 + 
-        (SIN((SEQ / (total_intervals * 1.0)) * 2 * PI()) * 5) +  -- Seasonal wave
+        (SIN((SEQ / (:total_intervals * 1.0)) * 2 * PI()) * 5) +  -- Seasonal wave
         UNIFORM(-2, 2, RANDOM()) AS AMBIENT_TEMP_F,
         
         -- Power consumption: Correlates with temperature for power supply issues
@@ -264,7 +264,7 @@ BEGIN
         UNIFORM(40, 70, RANDOM()) AS MEMORY_USAGE_PCT,
         
         -- Disk usage (slowly growing)
-        50 + ((total_intervals - SEQ) / (total_intervals * 1.0)) * 15 AS DISK_USAGE_PCT,
+        50 + ((:total_intervals - SEQ) / (:total_intervals * 1.0)) * 15 AS DISK_USAGE_PCT,
         
         -- Brightness (business hours vs. night)
         CASE 
@@ -274,7 +274,7 @@ BEGIN
         END AS BRIGHTNESS_LEVEL,
         
         -- Screen on hours (cumulative)
-        (total_intervals - SEQ) * (:interval_minutes / 60.0) AS SCREEN_ON_HOURS,
+        (:total_intervals - SEQ) * (:interval_minutes / 60.0) AS SCREEN_ON_HOURS,
         
         -- Network latency
         15 + UNIFORM(-5, 15, RANDOM()) + 
