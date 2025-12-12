@@ -116,7 +116,11 @@ Tie to PatientPoint dollars:
 
 ### 14:00–17:00 — Action #4: Automated remote remediation (simulated) + escalation
 Say:
-“Now the ‘wow’: remote remediation. In this demo we simulate executions, but the pattern is production-ready: runbooks, outcomes, and escalation when remote is unlikely.”
+“Now the ‘wow’: automated remote remediation.
+
+Important note for the demo: we’re **not going to run real commands on your endpoints in a demo**. What we *will* show is the full operating model: **how predicted failures turn into automated remediation workflows with audit trails and escalation to field service**.
+
+In production, the same workflow would call your endpoint tooling (MDM/RMM/device management APIs) and create/update tickets in your field service system (e.g., ServiceNow/Salesforce Field Service).”
 
 Copy/paste to Agent:
 - “Pick the highest priority remote work order and provide step-by-step runbook instructions.”
