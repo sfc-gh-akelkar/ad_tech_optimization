@@ -176,6 +176,87 @@ with col7:
     )
 
 #============================================================================
+# BASELINE (PRE-ML) METRICS
+#============================================================================
+
+with st.expander("📊 Baseline (Pre-ML) Monitoring Metrics", expanded=False):
+    st.markdown(
+        "These are **threshold-based** monitoring metrics (no ML yet). "
+        "We use them as a baseline so Acts 2–3 can show measurable improvements."
+    )
+    try:
+        baseline = session.sql("""
+            SELECT *
+            FROM PREDICTIVE_MAINTENANCE.ANALYTICS.V_BASELINE_METRICS
+        """).to_pandas().iloc[0]
+
+        b1, b2, b3, b4 = st.columns(4)
+        with b1:
+            st.metric("Fleet size", int(baseline["FLEET_SIZE"]))
+        with b2:
+            st.metric("Devices needing review today", int(baseline["DEVICES_REQUIRING_REVIEW_TODAY"]))
+        with b3:
+            st.metric("Manual charts to review (proxy)", f"{int(baseline['CHARTS_TO_REVIEW_IF_MANUAL']):,}")
+        with b4:
+            st.metric("Critical devices", int(baseline["DEVICES_CRITICAL"]))
+
+        st.caption(
+            "In Act 2, anomaly detection should increase lead time and reduce manual review by surfacing only unusual devices."
+        )
+    except Exception:
+        st.warning(
+            "Baseline views not found. Re-run the latest `sql/01_setup_database.sql` to create "
+            "`PREDICTIVE_MAINTENANCE.ANALYTICS.V_BASELINE_METRICS`."
+        )
+
+with st.expander("🧪 Demo Scenario Devices (for walkthroughs)", expanded=False):
+    scenarios = {
+        "4532": "Power supply degradation (temp↑, power↑, errors↑)",
+        "7821": "Display degradation (brightness↓, driver warnings)",
+        "4512": "Network degradation (latency↑, packet loss↑)",
+        "4523": "Software/memory leak (cpu↑, mem↑, temp↑)",
+        "4545": "Intermittent issues (sporadic spikes)",
+        "4556": "Early-stage subtle drift (below thresholds, good for Act 2)",
+    }
+    scenario_ids = "', '".join(scenarios.keys())
+    scenario_df = session.sql(f"""
+        SELECT
+            DEVICE_ID,
+            DEVICE_MODEL,
+            FACILITY_CITY,
+            FACILITY_STATE,
+            ENVIRONMENT_TYPE,
+            TEMP_STATUS,
+            POWER_STATUS,
+            TEMPERATURE_F,
+            POWER_CONSUMPTION_W,
+            ERROR_COUNT
+        FROM PREDICTIVE_MAINTENANCE.RAW_DATA.V_DEVICE_HEALTH_SUMMARY
+        WHERE DEVICE_ID IN ('{scenario_ids}')
+        ORDER BY DEVICE_ID
+    """).to_pandas()
+    scenario_df["SCENARIO"] = scenario_df["DEVICE_ID"].map(scenarios)
+    st.dataframe(
+        scenario_df[
+            [
+                "DEVICE_ID",
+                "SCENARIO",
+                "DEVICE_MODEL",
+                "FACILITY_CITY",
+                "FACILITY_STATE",
+                "ENVIRONMENT_TYPE",
+                "TEMP_STATUS",
+                "POWER_STATUS",
+                "TEMPERATURE_F",
+                "POWER_CONSUMPTION_W",
+                "ERROR_COUNT",
+            ]
+        ],
+        use_container_width=True,
+        hide_index=True,
+    )
+
+#============================================================================
 # DEVICE LIST - Priority Queue
 #============================================================================
 

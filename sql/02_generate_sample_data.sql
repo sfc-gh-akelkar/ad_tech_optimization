@@ -220,8 +220,45 @@ BEGIN
             WHEN d.DEVICE_ID = '7821' THEN
                 m.TYPICAL_TEMP_F + UNIFORM(-2, 2, RANDOM())
             
+            -- Device 4512: Network issue (temperature normal)
+            WHEN d.DEVICE_ID = '4512' THEN
+                m.TYPICAL_TEMP_F + UNIFORM(-2, 2, RANDOM())
+            
+            -- Device 4523: Memory leak causing overheating (gradual climb over 14 days)
+            WHEN d.DEVICE_ID = '4523' THEN
+                CASE 
+                    WHEN SEQ < (14 * 24 * 12) THEN  -- Last 14 days
+                        m.TYPICAL_TEMP_F + 
+                        UNIFORM(-2, 2, RANDOM()) +
+                        ((14 * 24 * 12) - SEQ) * 0.005  -- Slower climb (~10° over 14 days)
+                    ELSE
+                        m.TYPICAL_TEMP_F + UNIFORM(-2, 2, RANDOM())
+                END
+            
+            -- Device 4545: Overheating environmental issue (lobby placement, climbing over 10 days)
+            WHEN d.DEVICE_ID = '4545' THEN
+                CASE 
+                    WHEN SEQ < (10 * 24 * 12) THEN  -- Last 10 days
+                        m.TYPICAL_TEMP_F + 
+                        UNIFORM(-1, 3, RANDOM()) +
+                        ((10 * 24 * 12) - SEQ) * 0.007  -- ~14° over 10 days
+                    ELSE
+                        m.TYPICAL_TEMP_F + UNIFORM(-1, 3, RANDOM())
+                END
+            
+            -- Device 4556: Early-stage degradation (subtle, just starting)
+            WHEN d.DEVICE_ID = '4556' THEN
+                CASE 
+                    WHEN SEQ < (3 * 24 * 12) THEN  -- Last 3 days only
+                        m.TYPICAL_TEMP_F + 
+                        UNIFORM(-2, 4, RANDOM()) +  -- Slightly elevated
+                        ((3 * 24 * 12) - SEQ) * 0.008  -- ~5° over 3 days (subtle)
+                    ELSE
+                        m.TYPICAL_TEMP_F + UNIFORM(-2, 2, RANDOM())
+                END
+            
             -- Minor anomaly devices (slightly elevated but not critical)
-            WHEN d.DEVICE_ID IN ('4505', '4512', '4523', '4534', '4545', '4556', '4567', '4578') THEN
+            WHEN d.DEVICE_ID IN ('4505', '4515', '4534', '4567', '4578', '4589', '4595') THEN
                 m.TYPICAL_TEMP_F + UNIFORM(-2, 5, RANDOM())  -- Occasionally warmer
                 
             -- Normal devices
@@ -247,6 +284,40 @@ BEGIN
                         m.TYPICAL_POWER_W + UNIFORM(-5, 10, RANDOM())
                 END
             
+            -- Device 7821: Display panel (power normal)
+            WHEN d.DEVICE_ID = '7821' THEN
+                m.TYPICAL_POWER_W + UNIFORM(-5, 10, RANDOM())
+            
+            -- Device 4512: Network issue (power normal)
+            WHEN d.DEVICE_ID = '4512' THEN
+                m.TYPICAL_POWER_W + UNIFORM(-5, 10, RANDOM())
+            
+            -- Device 4523: Memory leak (power increasing gradually)
+            WHEN d.DEVICE_ID = '4523' THEN
+                CASE 
+                    WHEN SEQ < (14 * 24 * 12) THEN
+                        m.TYPICAL_POWER_W + 
+                        UNIFORM(-5, 10, RANDOM()) +
+                        ((14 * 24 * 12) - SEQ) * 0.025  -- ~50W increase over 14 days
+                    ELSE
+                        m.TYPICAL_POWER_W + UNIFORM(-5, 10, RANDOM())
+                END
+            
+            -- Device 4545: Environmental issue (power normal)
+            WHEN d.DEVICE_ID = '4545' THEN
+                m.TYPICAL_POWER_W + UNIFORM(-5, 10, RANDOM())
+            
+            -- Device 4556: Early-stage (slight power increase)
+            WHEN d.DEVICE_ID = '4556' THEN
+                CASE 
+                    WHEN SEQ < (3 * 24 * 12) THEN
+                        m.TYPICAL_POWER_W + 
+                        UNIFORM(-5, 15, RANDOM()) +  -- More variation
+                        ((3 * 24 * 12) - SEQ) * 0.020  -- ~14W over 3 days
+                    ELSE
+                        m.TYPICAL_POWER_W + UNIFORM(-5, 10, RANDOM())
+                END
+            
             -- Normal devices
             ELSE m.TYPICAL_POWER_W + UNIFORM(-10, 15, RANDOM())
         END AS POWER_CONSUMPTION_W,
@@ -258,33 +329,69 @@ BEGIN
         CASE 
             WHEN d.DEVICE_ID = '4532' AND SEQ < (7 * 24 * 12) THEN
                 UNIFORM(30, 70, RANDOM())  -- Higher CPU due to system stress
+            WHEN d.DEVICE_ID = '4523' AND SEQ < (14 * 24 * 12) THEN
+                UNIFORM(40, 80, RANDOM())  -- Memory leak causing high CPU
             ELSE UNIFORM(15, 45, RANDOM())
         END AS CPU_USAGE_PCT,
         
         -- Memory usage
-        UNIFORM(40, 70, RANDOM()) AS MEMORY_USAGE_PCT,
+        CASE 
+            WHEN d.DEVICE_ID = '4523' AND SEQ < (14 * 24 * 12) THEN
+                60 + ((14 * 24 * 12) - SEQ) * 0.015  -- Memory leak: climbing to 90%
+            ELSE UNIFORM(40, 70, RANDOM())
+        END AS MEMORY_USAGE_PCT,
         
         -- Disk usage (slowly growing)
         50 + ((:total_intervals - SEQ) / (:total_intervals * 1.0)) * 15 AS DISK_USAGE_PCT,
         
         -- Brightness (business hours vs. night)
         CASE 
-            WHEN HOUR(DATEADD('minute', -(SEQ * :interval_minutes), CURRENT_TIMESTAMP())) BETWEEN 7 AND 19 
-                THEN 85 
-            ELSE 30  -- Dimmed at night
+            WHEN d.DEVICE_ID = '7821' THEN
+                -- Display panel degradation: brightness drops over last 14 days (worse during business hours)
+                CASE
+                    WHEN HOUR(DATEADD('minute', -(SEQ * :interval_minutes), CURRENT_TIMESTAMP())) BETWEEN 7 AND 19 THEN
+                        GREATEST(20, LEAST(90, 85 - (CASE WHEN SEQ < (14 * 24 * 12) THEN ((14 * 24 * 12) - SEQ) * 0.020 ELSE 0 END)))
+                    ELSE
+                        GREATEST(10, LEAST(40, 30 - (CASE WHEN SEQ < (14 * 24 * 12) THEN ((14 * 24 * 12) - SEQ) * 0.008 ELSE 0 END)))
+                END
+            ELSE
+                CASE 
+                    WHEN HOUR(DATEADD('minute', -(SEQ * :interval_minutes), CURRENT_TIMESTAMP())) BETWEEN 7 AND 19 
+                        THEN 85 
+                    ELSE 30  -- Dimmed at night
+                END
         END AS BRIGHTNESS_LEVEL,
         
         -- Screen on hours (cumulative)
         (:total_intervals - SEQ) * (:interval_minutes / 60.0) AS SCREEN_ON_HOURS,
         
         -- Network latency
-        15 + UNIFORM(-5, 15, RANDOM()) + 
-        (CASE WHEN UNIFORM(0, 100, RANDOM()) < 5 THEN UNIFORM(50, 200, RANDOM()) ELSE 0 END) AS NETWORK_LATENCY_MS,
+        CASE
+            WHEN d.DEVICE_ID = '4512' THEN
+                -- Network degradation: latency climbs over last 5 days + bursts
+                25 + UNIFORM(-5, 10, RANDOM()) +
+                (CASE WHEN SEQ < (5 * 24 * 12) THEN ((5 * 24 * 12) - SEQ) * 0.10 ELSE 0 END) +
+                (CASE WHEN UNIFORM(0, 100, RANDOM()) < 15 THEN UNIFORM(100, 600, RANDOM()) ELSE 0 END)
+            ELSE
+                15 + UNIFORM(-5, 15, RANDOM()) + 
+                (CASE WHEN UNIFORM(0, 100, RANDOM()) < 5 THEN UNIFORM(50, 200, RANDOM()) ELSE 0 END)
+        END AS NETWORK_LATENCY_MS,
         
         -- Packet loss (normally near zero)
-        CASE 
-            WHEN UNIFORM(0, 100, RANDOM()) < 95 THEN UNIFORM(0.0, 0.5, RANDOM())
-            ELSE UNIFORM(1.0, 10.0, RANDOM())
+        CASE
+            WHEN d.DEVICE_ID = '4512' THEN
+                CASE
+                    WHEN SEQ < (5 * 24 * 12) THEN
+                        -- Rising packet loss + occasional heavy loss events
+                        (CASE WHEN UNIFORM(0, 100, RANDOM()) < 80 THEN UNIFORM(1.0, 4.0, RANDOM()) ELSE UNIFORM(4.0, 15.0, RANDOM()) END)
+                    ELSE
+                        UNIFORM(0.0, 0.5, RANDOM())
+                END
+            ELSE
+                CASE 
+                    WHEN UNIFORM(0, 100, RANDOM()) < 95 THEN UNIFORM(0.0, 0.5, RANDOM())
+                    ELSE UNIFORM(1.0, 10.0, RANDOM())
+                END
         END AS PACKET_LOSS_PCT,
         
         -- Bandwidth
@@ -294,7 +401,19 @@ BEGIN
         CASE 
             WHEN d.DEVICE_ID = '4532' AND SEQ < (7 * 24 * 12) THEN
                 FLOOR(UNIFORM(5, 15, RANDOM()) + ((7 * 24 * 12) - SEQ) * 0.001)
-            WHEN d.DEVICE_ID IN ('4505', '4512', '4523') THEN
+            WHEN d.DEVICE_ID = '4512' AND SEQ < (5 * 24 * 12) THEN
+                -- Network errors climb with latency/packet loss
+                FLOOR(UNIFORM(3, 9, RANDOM()) + ((5 * 24 * 12) - SEQ) * 0.001)
+            WHEN d.DEVICE_ID = '4523' AND SEQ < (14 * 24 * 12) THEN
+                -- Software/memory leak errors rise over time
+                FLOOR(UNIFORM(2, 6, RANDOM()) + ((14 * 24 * 12) - SEQ) * 0.0008)
+            WHEN d.DEVICE_ID = '7821' AND SEQ < (14 * 24 * 12) THEN
+                -- Display driver warnings often show as errors
+                FLOOR(UNIFORM(1, 4, RANDOM()) + ((14 * 24 * 12) - SEQ) * 0.0004)
+            WHEN d.DEVICE_ID = '4545' THEN
+                -- Intermittent: mostly fine, occasional spikes
+                CASE WHEN UNIFORM(0, 100, RANDOM()) < 8 THEN FLOOR(UNIFORM(8, 20, RANDOM())) ELSE FLOOR(UNIFORM(0, 2, RANDOM())) END
+            WHEN d.DEVICE_ID IN ('4505', '4515', '4534', '4567', '4578', '4589', '4595') THEN
                 FLOOR(UNIFORM(1, 4, RANDOM()))
             ELSE 
                 FLOOR(UNIFORM(0, 2, RANDOM()))
@@ -304,6 +423,14 @@ BEGIN
         CASE 
             WHEN d.DEVICE_ID = '4532' AND SEQ < (7 * 24 * 12) THEN
                 FLOOR(UNIFORM(2, 8, RANDOM()))
+            WHEN d.DEVICE_ID = '4512' AND SEQ < (5 * 24 * 12) THEN
+                FLOOR(UNIFORM(3, 10, RANDOM()))
+            WHEN d.DEVICE_ID = '4523' AND SEQ < (14 * 24 * 12) THEN
+                FLOOR(UNIFORM(2, 7, RANDOM()))
+            WHEN d.DEVICE_ID = '7821' AND SEQ < (14 * 24 * 12) THEN
+                FLOOR(UNIFORM(3, 12, RANDOM()))
+            WHEN d.DEVICE_ID = '4556' AND SEQ < (3 * 24 * 12) THEN
+                FLOOR(UNIFORM(1, 5, RANDOM()))
             ELSE FLOOR(UNIFORM(0, 3, RANDOM()))
         END AS WARNING_COUNT,
         
@@ -338,59 +465,100 @@ CALL GENERATE_TELEMETRY_DATA();
   STEP 4: Generate historical maintenance records
 ----------------------------------------------------------------------------*/
 
+-- Backwards-compatible schema enrichment (safe to re-run)
+ALTER TABLE MAINTENANCE_HISTORY ADD COLUMN IF NOT EXISTS PRE_FAILURE_TEMP_TREND VARCHAR(20);
+ALTER TABLE MAINTENANCE_HISTORY ADD COLUMN IF NOT EXISTS PRE_FAILURE_POWER_TREND VARCHAR(20);
+ALTER TABLE MAINTENANCE_HISTORY ADD COLUMN IF NOT EXISTS PRE_FAILURE_NETWORK_TREND VARCHAR(20);
+ALTER TABLE MAINTENANCE_HISTORY ADD COLUMN IF NOT EXISTS DAYS_OF_WARNING_SIGNS INT;
+ALTER TABLE MAINTENANCE_HISTORY ADD COLUMN IF NOT EXISTS FIRMWARE_VERSION_AT_INCIDENT VARCHAR(50);
+ALTER TABLE MAINTENANCE_HISTORY ADD COLUMN IF NOT EXISTS ENVIRONMENT_TYPE_AT_INCIDENT VARCHAR(50);
+ALTER TABLE MAINTENANCE_HISTORY ADD COLUMN IF NOT EXISTS DEVICE_MODEL_AT_INCIDENT VARCHAR(100);
+ALTER TABLE MAINTENANCE_HISTORY ADD COLUMN IF NOT EXISTS DEVICE_AGE_DAYS_AT_INCIDENT INT;
+ALTER TABLE MAINTENANCE_HISTORY ADD COLUMN IF NOT EXISTS OPERATOR_NOTES TEXT;
+ALTER TABLE MAINTENANCE_HISTORY ADD COLUMN IF NOT EXISTS SIMILAR_RECENT_FAILURES INT;
+
 INSERT INTO MAINTENANCE_HISTORY
 (MAINTENANCE_ID, DEVICE_ID, INCIDENT_DATE, INCIDENT_TYPE, FAILURE_TYPE,
  FAILURE_SYMPTOMS, RESOLUTION_TYPE, RESOLUTION_DATE, RESOLUTION_TIME_HOURS,
  ACTIONS_TAKEN, REMOTE_FIX_ATTEMPTED, REMOTE_FIX_SUCCESSFUL,
  PARTS_REPLACED, LABOR_COST_USD, PARTS_COST_USD, TRAVEL_COST_USD, TOTAL_COST_USD,
- DOWNTIME_HOURS, REVENUE_IMPACT_USD, CUSTOMER_NOTIFIED, ROOT_CAUSE, PREVENTABLE)
+ DOWNTIME_HOURS, REVENUE_IMPACT_USD, CUSTOMER_NOTIFIED, ROOT_CAUSE, PREVENTABLE,
+ PRE_FAILURE_TEMP_TREND, PRE_FAILURE_POWER_TREND, PRE_FAILURE_NETWORK_TREND,
+ DAYS_OF_WARNING_SIGNS, FIRMWARE_VERSION_AT_INCIDENT, ENVIRONMENT_TYPE_AT_INCIDENT,
+ DEVICE_MODEL_AT_INCIDENT, DEVICE_AGE_DAYS_AT_INCIDENT, OPERATOR_NOTES, SIMILAR_RECENT_FAILURES)
 WITH SEQUENCE_GEN AS (
     SELECT ROW_NUMBER() OVER (ORDER BY NULL) AS SEQ
-    FROM TABLE(GENERATOR(ROWCOUNT => 150))
+    FROM TABLE(GENERATOR(ROWCOUNT => 800))
+),
+BASE AS (
+    SELECT
+        sg.SEQ,
+        d.DEVICE_ID,
+        d.DEVICE_MODEL,
+        d.ENVIRONMENT_TYPE,
+        d.FIRMWARE_VERSION,
+        d.INSTALLATION_DATE,
+        d.LAST_MAINTENANCE_DATE
+    FROM SEQUENCE_GEN sg,
+    LATERAL (
+        SELECT DEVICE_ID, DEVICE_MODEL, ENVIRONMENT_TYPE, FIRMWARE_VERSION, INSTALLATION_DATE, LAST_MAINTENANCE_DATE
+        FROM DEVICE_INVENTORY
+        WHERE OPERATIONAL_STATUS = 'Active'
+        ORDER BY RANDOM()
+        LIMIT 1
+    ) d
+),
+EVENTS AS (
+    SELECT
+        b.*,
+        -- Incident dates over past 18 months
+        DATEADD('day', -(UNIFORM(1, 540, RANDOM())), CURRENT_DATE()) AS INCIDENT_DATE,
+        -- Incident types
+        CASE (b.SEQ % 3)
+            WHEN 0 THEN 'Preventive'
+            WHEN 1 THEN 'Corrective'
+            ELSE 'Predictive'
+        END AS INCIDENT_TYPE,
+        -- Failure types (distribution reflects reality)
+        CASE (b.SEQ % 10)
+            WHEN 0 THEN 'Power Supply'
+            WHEN 1 THEN 'Power Supply'
+            WHEN 2 THEN 'Display Panel'
+            WHEN 3 THEN 'Software Crash'
+            WHEN 4 THEN 'Software Crash'
+            WHEN 5 THEN 'Network Connectivity'
+            WHEN 6 THEN 'Configuration Issue'
+            WHEN 7 THEN 'Firmware Bug'
+            WHEN 8 THEN 'Overheating'
+            ELSE 'Hardware - Other'
+        END AS FAILURE_TYPE,
+        -- Symptoms (for similarity search later)
+        CASE (b.SEQ % 10)
+            WHEN 0 THEN 'Temperature climbing, power consumption spiking, voltage regulation warnings'
+            WHEN 1 THEN 'Intermittent power cycling, unusual power draw patterns'
+            WHEN 2 THEN 'Screen flickering, brightness dropping, display artifacts'
+            WHEN 3 THEN 'Application crashes, system reboots, frozen screen'
+            WHEN 4 THEN 'Unresponsive interface, high CPU usage, memory errors'
+            WHEN 5 THEN 'Connection drops, high latency, unable to reach content server'
+            WHEN 6 THEN 'Content not displaying correctly, wrong resolution settings'
+            WHEN 7 THEN 'Random reboots after firmware update, boot loops'
+            WHEN 8 THEN 'High internal temperature, fan noise, thermal shutdowns'
+            ELSE 'General hardware malfunction'
+        END AS FAILURE_SYMPTOMS
 )
 SELECT
-    'M-2025-' || LPAD(SEQ, 5, '0') AS MAINTENANCE_ID,
+    UUID_STRING() AS MAINTENANCE_ID,
     
-    -- Random device from inventory
-    (SELECT DEVICE_ID FROM DEVICE_INVENTORY ORDER BY RANDOM() LIMIT 1) AS DEVICE_ID,
+    -- Random device from inventory (consistent row context via LATERAL in BASE)
+    DEVICE_ID,
     
-    -- Incident dates over past 18 months
-    DATEADD('day', -(UNIFORM(1, 540, RANDOM())), CURRENT_DATE()) AS INCIDENT_DATE,
+    INCIDENT_DATE,
     
-    -- Incident types
-    CASE (SEQ % 3)
-        WHEN 0 THEN 'Preventive'
-        WHEN 1 THEN 'Corrective'
-        ELSE 'Predictive'
-    END AS INCIDENT_TYPE,
+    INCIDENT_TYPE,
     
-    -- Failure types (distribution reflects reality)
-    CASE (SEQ % 10)
-        WHEN 0 THEN 'Power Supply'
-        WHEN 1 THEN 'Power Supply'
-        WHEN 2 THEN 'Display Panel'
-        WHEN 3 THEN 'Software Crash'
-        WHEN 4 THEN 'Software Crash'
-        WHEN 5 THEN 'Network Connectivity'
-        WHEN 6 THEN 'Configuration Issue'
-        WHEN 7 THEN 'Firmware Bug'
-        WHEN 8 THEN 'Overheating'
-        ELSE 'Hardware - Other'
-    END AS FAILURE_TYPE,
+    FAILURE_TYPE,
     
-    -- Symptoms (for similarity search later)
-    CASE (SEQ % 10)
-        WHEN 0 THEN 'Temperature climbing, power consumption spiking, voltage regulation warnings'
-        WHEN 1 THEN 'Intermittent power cycling, unusual power draw patterns'
-        WHEN 2 THEN 'Screen flickering, brightness dropping, display artifacts'
-        WHEN 3 THEN 'Application crashes, system reboots, frozen screen'
-        WHEN 4 THEN 'Unresponsive interface, high CPU usage, memory errors'
-        WHEN 5 THEN 'Connection drops, high latency, unable to reach content server'
-        WHEN 6 THEN 'Content not displaying correctly, wrong resolution settings'
-        WHEN 7 THEN 'Random reboots after firmware update, boot loops'
-        WHEN 8 THEN 'High internal temperature, fan noise, thermal shutdowns'
-        ELSE 'General hardware malfunction'
-    END AS FAILURE_SYMPTOMS,
+    FAILURE_SYMPTOMS,
     
     -- Resolution type (68% remote success for power, lower for hardware)
     CASE 
@@ -404,7 +572,7 @@ SELECT
         ELSE 'Remote Fix'
     END AS RESOLUTION_TYPE,
     
-    DATEADD('hour', UNIFORM(1, 48, RANDOM()), DATEADD('day', -(UNIFORM(1, 540, RANDOM())), CURRENT_DATE())) AS RESOLUTION_DATE,
+    DATEADD('hour', UNIFORM(1, 48, RANDOM()), INCIDENT_DATE) AS RESOLUTION_DATE,
     
     -- Resolution time based on type
     CASE 
@@ -495,9 +663,50 @@ SELECT
     END AS ROOT_CAUSE,
     
     -- Preventable
-    CASE WHEN (SEQ % 10) IN (0, 6, 7, 8) THEN TRUE ELSE FALSE END AS PREVENTABLE
+    CASE WHEN (SEQ % 10) IN (0, 6, 7, 8) THEN TRUE ELSE FALSE END AS PREVENTABLE,
+
+    -- Enriched context columns (used in later acts for search/training/analytics)
+    CASE
+        WHEN FAILURE_TYPE IN ('Overheating') THEN 'CLIMBING'
+        WHEN FAILURE_TYPE IN ('Power Supply') THEN 'CLIMBING'
+        WHEN FAILURE_TYPE IN ('Software Crash', 'Firmware Bug') THEN 'ERRATIC'
+        ELSE 'STABLE'
+    END AS PRE_FAILURE_TEMP_TREND,
+    CASE
+        WHEN FAILURE_TYPE IN ('Power Supply') THEN 'CLIMBING'
+        WHEN FAILURE_TYPE IN ('Software Crash', 'Firmware Bug') THEN 'CLIMBING'
+        ELSE 'STABLE'
+    END AS PRE_FAILURE_POWER_TREND,
+    CASE
+        WHEN FAILURE_TYPE IN ('Network Connectivity') THEN 'CLIMBING'
+        ELSE 'STABLE'
+    END AS PRE_FAILURE_NETWORK_TREND,
+    CASE
+        WHEN INCIDENT_TYPE = 'Preventive' THEN UNIFORM(0, 2, RANDOM())
+        WHEN FAILURE_TYPE IN ('Power Supply', 'Overheating') THEN UNIFORM(2, 10, RANDOM())
+        WHEN FAILURE_TYPE IN ('Network Connectivity') THEN UNIFORM(1, 7, RANDOM())
+        WHEN FAILURE_TYPE IN ('Software Crash', 'Firmware Bug') THEN UNIFORM(0, 5, RANDOM())
+        ELSE UNIFORM(0, 3, RANDOM())
+    END AS DAYS_OF_WARNING_SIGNS,
+    FIRMWARE_VERSION AS FIRMWARE_VERSION_AT_INCIDENT,
+    ENVIRONMENT_TYPE AS ENVIRONMENT_TYPE_AT_INCIDENT,
+    DEVICE_MODEL AS DEVICE_MODEL_AT_INCIDENT,
+    DATEDIFF('day', INSTALLATION_DATE, INCIDENT_DATE) AS DEVICE_AGE_DAYS_AT_INCIDENT,
+    CASE
+        WHEN FAILURE_TYPE = 'Power Supply' THEN 'Observed rising power draw and temperature; suspected PSU degradation.'
+        WHEN FAILURE_TYPE = 'Display Panel' THEN 'Flickering/artifacts reported by facility; brightness drop confirmed.'
+        WHEN FAILURE_TYPE = 'Network Connectivity' THEN 'Frequent disconnects and high latency; upstream ISP instability suspected.'
+        WHEN FAILURE_TYPE IN ('Software Crash', 'Firmware Bug') THEN 'App instability; logs show repeated crashes and high resource usage.'
+        WHEN FAILURE_TYPE = 'Overheating' THEN 'Thermal warnings; ventilation/ambient conditions likely contributing.'
+        ELSE 'General maintenance follow-up; diagnostics performed.'
+    END AS OPERATOR_NOTES,
+    CASE
+        WHEN UNIFORM(0, 100, RANDOM()) < 60 THEN UNIFORM(0, 2, RANDOM())
+        WHEN UNIFORM(0, 100, RANDOM()) < 90 THEN UNIFORM(2, 5, RANDOM())
+        ELSE UNIFORM(5, 12, RANDOM())
+    END AS SIMILAR_RECENT_FAILURES
     
-FROM SEQUENCE_GEN;
+FROM EVENTS;
 
 /*----------------------------------------------------------------------------
   VERIFICATION QUERIES
@@ -548,6 +757,18 @@ ORDER BY OVERALL_STATUS;
 SELECT 
     '✅ Act 1 Data Generation Complete!' AS STATUS,
     'You now have 100 devices with 30 days of telemetry' AS SUMMARY,
-    'Device 4532 shows degradation pattern (power supply issue)' AS KEY_FINDING,
+    'Scenario devices: 4532 (power), 4512 (network), 4523 (memory leak), 4545 (intermittent), 4556 (subtle), 7821 (display)' AS KEY_FINDING,
     'Next: Build Streamlit monitoring dashboard' AS NEXT_STEP;
 
+
+
+SELECT 
+    DEVICE_ID,
+    TIMESTAMP,
+    TEMPERATURE_F,
+    POWER_CONSUMPTION_W,
+    ERROR_COUNT
+FROM SCREEN_TELEMETRY
+WHERE DEVICE_ID = '4532'
+ORDER BY TIMESTAMP DESC
+LIMIT 5;
