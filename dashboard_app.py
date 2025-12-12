@@ -469,7 +469,7 @@ def main():
     filtered_df = fleet_df.copy()
     
     if region_filter != "All":
-        filtered_df = filtered_df[filtered_df['region'] == region_filter]
+        filtered_df = filtered_df[filtered_df['REGION'] == region_filter]
     
     # ========================================================================
     # SECTION A: TOP-LINE KPIs (Metric Row)
@@ -572,15 +572,15 @@ def main():
     # Critical devices table
     st.markdown('<div class="section-header">🚨 Critical Devices Requiring Immediate Action</div>', unsafe_allow_html=True)
     
-    critical_df = filtered_df[filtered_df['failure_probability'] > 0.80].copy()
+    critical_df = filtered_df[filtered_df['FAILURE_PROBABILITY'] > 0.80].copy()
     critical_df = critical_df[[
-        'device_id', 'hospital_name', 'region', 'failure_probability', 
-        'predicted_failure_type', 'cpu_load', 'temperature', 'last_ping'
-    ]].sort_values('failure_probability', ascending=False)
+        'DEVICE_ID', 'HOSPITAL_NAME', 'REGION', 'FAILURE_PROBABILITY', 
+        'PREDICTED_FAILURE_TYPE', 'CPU_LOAD', 'TEMPERATURE', 'LAST_PING'
+    ]].sort_values('FAILURE_PROBABILITY', ascending=False)
     
     if not critical_df.empty:
         st.dataframe(
-            critical_df.style.background_gradient(subset=['failure_probability'], cmap='Reds'),
+            critical_df.style.background_gradient(subset=['FAILURE_PROBABILITY'], cmap='Reds'),
             use_container_width=True,
             height=300
         )
