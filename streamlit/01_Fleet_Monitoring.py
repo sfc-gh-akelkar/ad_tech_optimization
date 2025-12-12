@@ -269,8 +269,8 @@ st.header("Device Deep Dive")
 # Device selector
 selected_device_id = st.selectbox(
     "Select Device to Inspect",
-    options=device_list['DEVICE_ID'].tolist(),
-    index=device_list[device_list['DEVICE_ID'] == '4532'].index[0] if '4532' in device_list['DEVICE_ID'].values else 0
+    options=device_list['DEVICE_ID'].astype(str).tolist(),
+    index=device_list[device_list['DEVICE_ID'].astype(str) == '4532'].index[0] if '4532' in device_list['DEVICE_ID'].astype(str).values else 0
 )
 
 if selected_device_id:
