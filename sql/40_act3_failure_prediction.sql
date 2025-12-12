@@ -1,0 +1,218 @@
+/*============================================================================
+  Act 3 (Simulated ML): 24–48h Failure Prediction + Accuracy Tracking
+
+  Goal:
+  - Provide a credible demo of "predictive failure modeling" without training
+    an ML model, by using explainable heuristics from telemetry + Act 2 scores.
+  - Track prediction quality against "ground truth" incidents (scenario rows)
+    inserted by sql/02_generate_sample_data.sql (DEMO-* incidents).
+
+  IMPORTANT (credibility):
+  - Accuracy metrics here are "demo accuracy" against a small, deterministic
+    scenario set. Do not present as production accuracy unless evaluated on
+    real labeled data.
+============================================================================*/
+
+USE ROLE SF_INTELLIGENCE_DEMO;
+
+USE DATABASE PREDICTIVE_MAINTENANCE;
+USE SCHEMA OPERATIONS;
+
+CREATE OR REPLACE TABLE OPERATIONS.FAILURE_PREDICTIONS (
+  RUN_ID STRING,
+  AS_OF_TS TIMESTAMP_NTZ,
+  HORIZON_HOURS INT, -- e.g., 24 or 48
+  MODE STRING, -- LIVE_SCORING | SCENARIO_LOCK
+
+  DEVICE_ID STRING,
+  PREDICTED_FAILURE_TYPE STRING,
+  PREDICTION_PROBABILITY FLOAT, -- 0..1
+  CONFIDENCE_BAND STRING, -- LOW | MEDIUM | HIGH
+
+  PREDICTION_WINDOW_START TIMESTAMP_NTZ,
+  PREDICTION_WINDOW_END TIMESTAMP_NTZ,
+
+  WHY_PREDICTED STRING,
+  SIGNALS VARIANT,
+
+  CREATED_AT TIMESTAMP_NTZ DEFAULT CURRENT_TIMESTAMP()
+);
+
+CREATE OR REPLACE TABLE OPERATIONS.PREDICTION_EVAL_RUNS (
+  RUN_ID STRING,
+  AS_OF_TS TIMESTAMP_NTZ,
+  HORIZON_HOURS INT,
+  MODE STRING,
+
+  EVAL_START_TS TIMESTAMP_NTZ,
+  EVAL_END_TS TIMESTAMP_NTZ,
+
+  PREDICTIONS INT,
+  ACTUAL_INCIDENTS INT,
+  TRUE_POSITIVES INT,
+  FALSE_POSITIVES INT,
+  FALSE_NEGATIVES INT,
+  PRECISION FLOAT,
+  RECALL FLOAT,
+  F1 FLOAT,
+
+  NOTES STRING,
+  CREATED_AT TIMESTAMP_NTZ DEFAULT CURRENT_TIMESTAMP()
+);
+
+CREATE OR REPLACE VIEW ANALYTICS.V_FAILURE_PREDICTIONS_CURRENT AS
+SELECT
+  AS_OF_TS,
+  HORIZON_HOURS,
+  MODE,
+  DEVICE_ID,
+  PREDICTED_FAILURE_TYPE,
+  PREDICTION_PROBABILITY,
+  CONFIDENCE_BAND,
+  PREDICTION_WINDOW_START,
+  PREDICTION_WINDOW_END,
+  WHY_PREDICTED,
+  SIGNALS
+FROM PREDICTIVE_MAINTENANCE.OPERATIONS.FAILURE_PREDICTIONS
+QUALIFY ROW_NUMBER() OVER (PARTITION BY DEVICE_ID, HORIZON_HOURS ORDER BY AS_OF_TS DESC) = 1;
+
+CREATE OR REPLACE VIEW ANALYTICS.V_PREDICTION_EVAL_LATEST AS
+SELECT *
+FROM PREDICTIVE_MAINTENANCE.OPERATIONS.PREDICTION_EVAL_RUNS
+QUALIFY ROW_NUMBER() OVER (ORDER BY CREATED_AT DESC) = 1;
+
+CREATE OR REPLACE PROCEDURE OPERATIONS.REFRESH_FAILURE_PREDICTIONS(
+  MODE STRING DEFAULT 'LIVE_SCORING',
+  AS_OF_TS TIMESTAMP_NTZ DEFAULT CURRENT_TIMESTAMP(),
+  HORIZON_HOURS INT DEFAULT 48,
+  MIN_PROBABILITY FLOAT DEFAULT 0.55
+)
+RETURNS STRING
+LANGUAGE SQL
+AS
+$$
+DECLARE
+  run_id STRING DEFAULT UUID_STRING();
+BEGIN
+  -- Ensure Act 2 watchlist exists and is fresh enough for this AS_OF_TS in demo mode.
+  -- For simplicity, we compute predictions directly from the most recent watchlist snapshot.
+
+  INSERT INTO OPERATIONS.FAILURE_PREDICTIONS (
+    RUN_ID, AS_OF_TS, HORIZON_HOURS, MODE,
+    DEVICE_ID, PREDICTED_FAILURE_TYPE, PREDICTION_PROBABILITY, CONFIDENCE_BAND,
+    PREDICTION_WINDOW_START, PREDICTION_WINDOW_END,
+    WHY_PREDICTED, SIGNALS
+  )
+  WITH w AS (
+    SELECT
+      DEVICE_ID,
+      SCORE_OVERALL,
+      SCORE_THERMAL,
+      SCORE_POWER,
+      SCORE_NETWORK,
+      SCORE_DISPLAY,
+      SCORE_STABILITY,
+      CONFIDENCE_BAND,
+      WHY_FLAGGED,
+      TOP_SIGNALS
+    FROM PREDICTIVE_MAINTENANCE.OPERATIONS.WATCHLIST_CURRENT
+    WHERE (:MODE = 'SCENARIO_LOCK' AND DEVICE_ID IN ('4532','4512','4523','7821','4545','4556'))
+       OR (:MODE <> 'SCENARIO_LOCK')
+  ),
+  mapped AS (
+    SELECT
+      DEVICE_ID,
+      SCORE_OVERALL,
+      CONFIDENCE_BAND,
+      WHY_FLAGGED,
+      TOP_SIGNALS,
+      -- Map dominant domain to an ops-friendly failure type (demo heuristic)
+      CASE
+        WHEN SCORE_DISPLAY = GREATEST(SCORE_THERMAL, SCORE_POWER, SCORE_NETWORK, SCORE_STABILITY, SCORE_DISPLAY) THEN 'Display Panel'
+        WHEN SCORE_NETWORK = GREATEST(SCORE_THERMAL, SCORE_POWER, SCORE_NETWORK, SCORE_STABILITY, SCORE_DISPLAY) THEN 'Network Connectivity'
+        WHEN SCORE_POWER = GREATEST(SCORE_THERMAL, SCORE_POWER, SCORE_NETWORK, SCORE_STABILITY, SCORE_DISPLAY) THEN 'Power Supply'
+        WHEN SCORE_THERMAL = GREATEST(SCORE_THERMAL, SCORE_POWER, SCORE_NETWORK, SCORE_STABILITY, SCORE_DISPLAY) THEN 'Overheating'
+        ELSE 'Software Crash'
+      END AS PREDICTED_FAILURE_TYPE,
+      -- Convert overall anomaly to probability (simple monotonic mapping)
+      LEAST(0.98, GREATEST(0.05, 0.15 + (0.90 * SCORE_OVERALL))) AS PREDICTION_PROBABILITY
+    FROM w
+  )
+  SELECT
+    :run_id,
+    :AS_OF_TS,
+    :HORIZON_HOURS,
+    :MODE,
+    DEVICE_ID,
+    PREDICTED_FAILURE_TYPE,
+    PREDICTION_PROBABILITY,
+    CASE
+      WHEN PREDICTION_PROBABILITY >= 0.85 THEN 'HIGH'
+      WHEN PREDICTION_PROBABILITY >= 0.70 THEN 'MEDIUM'
+      ELSE 'LOW'
+    END AS CONFIDENCE_BAND,
+    :AS_OF_TS AS PREDICTION_WINDOW_START,
+    DATEADD('hour', :HORIZON_HOURS, :AS_OF_TS) AS PREDICTION_WINDOW_END,
+    CONCAT('Predicted based on anomaly watchlist. ', WHY_FLAGGED) AS WHY_PREDICTED,
+    TOP_SIGNALS AS SIGNALS
+  FROM mapped
+  WHERE PREDICTION_PROBABILITY >= :MIN_PROBABILITY;
+
+  -- Evaluate predictions against actual incidents occurring AFTER AS_OF_TS within horizon.
+  LET eval_start TIMESTAMP_NTZ := AS_OF_TS;
+  LET eval_end TIMESTAMP_NTZ := DATEADD('hour', HORIZON_HOURS, AS_OF_TS);
+
+  CREATE OR REPLACE TEMP TABLE _pred AS
+  SELECT DISTINCT DEVICE_ID
+  FROM OPERATIONS.FAILURE_PREDICTIONS
+  WHERE RUN_ID = :run_id;
+
+  CREATE OR REPLACE TEMP TABLE _actual AS
+  SELECT DISTINCT DEVICE_ID
+  FROM PREDICTIVE_MAINTENANCE.RAW_DATA.MAINTENANCE_HISTORY
+  WHERE INCIDENT_DATE >= :eval_start
+    AND INCIDENT_DATE < :eval_end
+    AND MAINTENANCE_ID LIKE 'DEMO-%';
+
+  LET preds INT := (SELECT COUNT(*) FROM _pred);
+  LET actuals INT := (SELECT COUNT(*) FROM _actual);
+  LET tp INT := (
+    SELECT COUNT(*)
+    FROM _pred p
+    JOIN _actual a ON p.DEVICE_ID = a.DEVICE_ID
+  );
+  LET fp INT := (SELECT COUNT(*) FROM _pred) - tp;
+  LET fn INT := (SELECT COUNT(*) FROM _actual) - tp;
+
+  LET precision FLOAT := IFF((tp + fp) = 0, NULL, tp / (tp + fp));
+  LET recall FLOAT := IFF((tp + fn) = 0, NULL, tp / (tp + fn));
+  LET f1 FLOAT := IFF(precision IS NULL OR recall IS NULL OR (precision + recall) = 0, NULL, (2 * precision * recall) / (precision + recall));
+
+  INSERT INTO OPERATIONS.PREDICTION_EVAL_RUNS (
+    RUN_ID, AS_OF_TS, HORIZON_HOURS, MODE,
+    EVAL_START_TS, EVAL_END_TS,
+    PREDICTIONS, ACTUAL_INCIDENTS,
+    TRUE_POSITIVES, FALSE_POSITIVES, FALSE_NEGATIVES,
+    PRECISION, RECALL, F1,
+    NOTES
+  )
+  SELECT
+    :run_id, :AS_OF_TS, :HORIZON_HOURS, :MODE,
+    :eval_start, :eval_end,
+    :preds, :actuals,
+    :tp, :fp, :fn,
+    :precision, :recall, :f1,
+    'Demo evaluation vs deterministic scenario incidents (MAINTENANCE_ID like DEMO-%).';
+
+  RETURN 'Failure predictions refreshed ✅ run_id=' || run_id || ', horizon_hours=' || HORIZON_HOURS || ', as_of=' || AS_OF_TS;
+END;
+$$;
+
+-- Convenience: run predictions for a historical AS_OF_TS to evaluate against recent scenario incidents
+-- (so incidents fall AFTER the as_of timestamp within the horizon).
+CALL OPERATIONS.REFRESH_FAILURE_PREDICTIONS('SCENARIO_LOCK', DATEADD('hour', -48, CURRENT_TIMESTAMP()), 48, 0.55);
+
+SELECT * FROM ANALYTICS.V_FAILURE_PREDICTIONS_CURRENT ORDER BY PREDICTION_PROBABILITY DESC;
+SELECT * FROM ANALYTICS.V_PREDICTION_EVAL_LATEST;
+
+

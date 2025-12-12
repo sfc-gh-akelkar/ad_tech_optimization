@@ -1,6 +1,6 @@
-# 🎉 Act 1: Complete & Ready to Deploy!
+## PatientPoint Predictive Maintenance Demo (Start Here)
 
-## ✅ What We've Built
+### ✅ What’s built (repo inventory)
 
 **PatientPoint Predictive Maintenance - Act 1: Foundation & Monitoring**
 
@@ -14,9 +14,19 @@ A complete monitoring solution for a simulated fleet of 100 digital screens, dem
 
 ## 📦 Deliverables
 
-### SQL Scripts (2 files)
-1. **`sql/01_setup_database.sql`** - Database, schemas, tables, views
-2. **`sql/02_generate_sample_data.sql`** - Synthetic data generation
+### SQL Scripts (end-to-end)
+- **Act 1**: `sql/01_setup_database.sql`, `sql/02_generate_sample_data.sql`
+- **Intelligence semantic layer**: `sql/20_intelligence_semantic_layer.sql`, `sql/22_create_semantic_views.sql`
+- **Cortex Search (KB)**: `sql/21_cortex_search_kb.sql`
+- **Act 2 (Watchlist)**: `sql/30_act2_watchlist.sql`, `sql/31_act2_semantic_view_watchlist.sql`
+- **Act 3 (Predictions + eval)**: `sql/40_act3_failure_prediction.sql`, `sql/41_act3_semantic_views_prediction.sql`
+- **Ops Center (Work orders)**: `sql/45_ops_work_orders.sql`, `sql/46_ops_semantic_view_work_orders.sql`
+- **Act 5 (Remote remediation)**: `sql/50_act5_remote_remediation.sql`, `sql/51_act5_semantic_view_remote_remediation.sql`
+- **Act 6 (Executive KPIs)**: `sql/60_act6_business_metrics.sql`, `sql/61_act6_semantic_view_exec_kpis.sql`
+- **Cortex Agent**: `sql/23_create_cortex_agent.sql`
+
+### Focus Framework
+- See `FOCUS_FRAMEWORK.md` for the **Challenge → Action → Result** mapping and demo flow for Exec/Ops/Tech/Agent.
 
 ### Streamlit Application (1 file)
 3. **`streamlit/01_Fleet_Monitoring.py`** - Interactive dashboard
@@ -33,11 +43,11 @@ A complete monitoring solution for a simulated fleet of 100 digital screens, dem
 
 ---
 
-## 🚀 Quick Deploy Guide
+### 🚀 Quick Deploy Guide (Snowsight)
 
-### 1. Open Snowsight (2 minutes)
+#### 1) Open Snowsight
 
-**Create Database:**
+**Create database + tables (Act 1):**
 ```sql
 -- Copy from sql/01_setup_database.sql
 -- Paste into Snowsight worksheet
@@ -45,7 +55,7 @@ A complete monitoring solution for a simulated fleet of 100 digital screens, dem
 -- Wait for "Act 1 Database Setup Complete!" message
 ```
 
-**Generate Data:**
+**Generate synthetic data (Act 1):**
 ```sql
 -- Copy from sql/02_generate_sample_data.sql  
 -- Paste into Snowsight worksheet
@@ -53,7 +63,7 @@ A complete monitoring solution for a simulated fleet of 100 digital screens, dem
 -- Wait 30-60 seconds for data generation
 ```
 
-### 2. Create Streamlit App (3 minutes)
+#### 2) (Optional) Streamlit App (Act 1 UI)
 
 1. Snowsight → **Projects** → **Streamlit** → **+ Streamlit App**
 2. Name: `PatientPoint Fleet Monitoring`
@@ -63,7 +73,7 @@ A complete monitoring solution for a simulated fleet of 100 digital screens, dem
 6. Copy all from `streamlit/01_Fleet_Monitoring.py`
 7. Paste and click **Run**
 
-### 3. Validate (2 minutes)
+#### 3) Validate (Act 1)
 
 - ✅ Dashboard loads showing 100 devices
 - ✅ Select Device #4532
@@ -74,7 +84,19 @@ A complete monitoring solution for a simulated fleet of 100 digital screens, dem
 
 ---
 
-## 🎬 Demo Script
+### 🎬 Demo Script (Snowflake Intelligence-first)
+
+#### Exec (30–60 seconds)
+- Query `ANALYTICS.V_EXEC_KPIS` (or ask the Agent) to show fleet health + downtime/revenue impact + transparent estimates.
+
+#### Ops Center (60–120 seconds)
+- Use the Agent to ask:
+  - “What devices should we look at first and why?” (watchlist)
+  - “Which devices are likely to fail in the next 48 hours?” (predictions)
+  - “What work orders are open and which require field dispatch?” (work orders)
+
+#### Field Tech (60 seconds)
+- Ask the Agent: “For work order X, give step-by-step repair guidance” (runbooks + KB context).
 
 **For executives (30 seconds):**
 
@@ -258,7 +280,25 @@ See detailed troubleshooting in `QUICKSTART.md` or `ACT1_VALIDATION.md`
 
 ---
 
-## 🚀 Ready for Act 2?
+### Next Steps
+
+If you want a “full Intelligence demo” (no Streamlit required), run scripts in this order:
+1. `sql/01_setup_database.sql`
+2. `sql/02_generate_sample_data.sql`
+3. `sql/20_intelligence_semantic_layer.sql`
+4. `sql/21_cortex_search_kb.sql`
+5. `sql/22_create_semantic_views.sql`
+6. `sql/30_act2_watchlist.sql`
+7. `sql/31_act2_semantic_view_watchlist.sql`
+8. `sql/40_act3_failure_prediction.sql`
+9. `sql/41_act3_semantic_views_prediction.sql`
+10. `sql/45_ops_work_orders.sql`
+11. `sql/46_ops_semantic_view_work_orders.sql`
+12. `sql/50_act5_remote_remediation.sql`
+13. `sql/51_act5_semantic_view_remote_remediation.sql`
+14. `sql/60_act6_business_metrics.sql`
+15. `sql/61_act6_semantic_view_exec_kpis.sql`
+16. `sql/23_create_cortex_agent.sql`
 
 ### When to Move Forward
 

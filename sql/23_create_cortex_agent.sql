@@ -15,6 +15,14 @@
   - sql/21_cortex_search_kb.sql
   - sql/30_act2_watchlist.sql
   - sql/31_act2_semantic_view_watchlist.sql
+  - sql/40_act3_failure_prediction.sql
+  - sql/41_act3_semantic_views_prediction.sql
+  - sql/45_ops_work_orders.sql
+  - sql/46_ops_semantic_view_work_orders.sql
+  - sql/50_act5_remote_remediation.sql
+  - sql/51_act5_semantic_view_remote_remediation.sql
+  - sql/60_act6_business_metrics.sql
+  - sql/61_act6_semantic_view_exec_kpis.sql
 
   IMPORTANT:
   - This script uses warehouse APP_WH for Analyst execution.
@@ -53,11 +61,16 @@ instructions:
   orchestration: |
     Tooling rules:
     - Use Analyst_Watchlist to identify which devices are most abnormal right now (baseline 14d vs scoring 1d) and why.
+    - Use Analyst_Predictions for 24–48h predicted failures (simulated) and their confidence.
+    - Use Analyst_PredAccuracy for demo evaluation metrics (explicitly demo-only vs scenario incidents).
     - Use Analyst_Fleet for fleet status, current critical/warning devices, and locations.
     - Use Analyst_Telemetry for 7–30 day trends (temperature/power/network/errors/brightness).
     - Use Analyst_Incidents for incident history, downtime, cost and revenue impact.
     - Use Analyst_RemoteRates for remote resolution success rates by failure type.
     - Use Analyst_Baseline for pre-ML baseline monitoring workload.
+    - Use Analyst_WorkOrders for the operational queue (what to do next; remote vs field).
+    - Use Analyst_RemoteRemediation for remote runbook executions and outcomes (simulated).
+    - Use Analyst_ExecKPIs for executive KPIs (observed + assumption-driven estimates).
     - Use Search_KB to retrieve similar incidents and troubleshooting knowledge; prefer filters by FAILURE_TYPE when applicable.
 
     Workflow for device deep dive:
@@ -77,6 +90,16 @@ instructions:
   sample_questions:
     - question: "What devices should the ops team look at first today, and why?"
       answer: "I will use the anomaly watchlist semantic view to rank devices and summarize the top abnormal signals."
+    - question: "Which devices are likely to fail in the next 48 hours?"
+      answer: "I will use the failure predictions semantic view to list high-confidence predicted failures and explain why."
+    - question: "What is the demo prediction accuracy and what does it represent?"
+      answer: "I will use the prediction accuracy semantic view and explain that this is demo-only evaluation against scenario incidents."
+    - question: "What work orders are open and which require field dispatch?"
+      answer: "I will use the work orders semantic view to summarize priorities, due times, and recommended channel."
+    - question: "What remote remediations succeeded recently?"
+      answer: "I will use the remote remediation semantic view to summarize execution outcomes."
+    - question: "Show executive KPIs: downtime, revenue impact, and estimated avoided field costs."
+      answer: "I will use the executive KPI semantic view and clearly separate observed vs assumption-driven estimates."
     - question: "How many devices are critical today, and where are they located?"
       answer: "I will use the fleet status semantic view to summarize critical devices by city/state."
     - question: "Why is device 4532 flagged? Show the last 7 days of key metrics."
@@ -91,6 +114,14 @@ tools:
       type: "cortex_analyst_text_to_sql"
       name: "Analyst_Watchlist"
       description: "Ranked anomaly watchlist (baseline 14d vs scoring 1d) with explainable domain scores and why-flagged."
+  - tool_spec:
+      type: "cortex_analyst_text_to_sql"
+      name: "Analyst_Predictions"
+      description: "Simulated 24–48h failure predictions with probability and predicted failure type."
+  - tool_spec:
+      type: "cortex_analyst_text_to_sql"
+      name: "Analyst_PredAccuracy"
+      description: "Prediction evaluation metrics (demo-only vs deterministic scenario incidents)."
   - tool_spec:
       type: "cortex_analyst_text_to_sql"
       name: "Analyst_Fleet"
@@ -112,6 +143,18 @@ tools:
       name: "Analyst_Baseline"
       description: "Baseline (pre-ML) monitoring workload and counts."
   - tool_spec:
+      type: "cortex_analyst_text_to_sql"
+      name: "Analyst_WorkOrders"
+      description: "Ops queue of open work orders with recommended actions and remote vs field guidance."
+  - tool_spec:
+      type: "cortex_analyst_text_to_sql"
+      name: "Analyst_RemoteRemediation"
+      description: "Remote runbook executions and outcomes (simulated)."
+  - tool_spec:
+      type: "cortex_analyst_text_to_sql"
+      name: "Analyst_ExecKPIs"
+      description: "Executive KPIs: fleet health, downtime/revenue impact (observed), and assumption-driven estimates."
+  - tool_spec:
       type: "cortex_search"
       name: "Search_KB"
       description: "Searches the maintenance knowledge base for similar incidents and troubleshooting steps."
@@ -119,6 +162,14 @@ tools:
 tool_resources:
   Analyst_Watchlist:
     semantic_view: "PREDICTIVE_MAINTENANCE.ANALYTICS.SV_ANOMALY_WATCHLIST"
+    warehouse: "APP_WH"
+    timeout_seconds: 60
+  Analyst_Predictions:
+    semantic_view: "PREDICTIVE_MAINTENANCE.ANALYTICS.SV_FAILURE_PREDICTIONS"
+    warehouse: "APP_WH"
+    timeout_seconds: 60
+  Analyst_PredAccuracy:
+    semantic_view: "PREDICTIVE_MAINTENANCE.ANALYTICS.SV_PREDICTION_ACCURACY"
     warehouse: "APP_WH"
     timeout_seconds: 60
   Analyst_Fleet:
@@ -139,6 +190,18 @@ tool_resources:
     timeout_seconds: 60
   Analyst_Baseline:
     semantic_view: "PREDICTIVE_MAINTENANCE.ANALYTICS.SV_BASELINE_PRE_ML"
+    warehouse: "APP_WH"
+    timeout_seconds: 60
+  Analyst_WorkOrders:
+    semantic_view: "PREDICTIVE_MAINTENANCE.ANALYTICS.SV_WORK_ORDERS"
+    warehouse: "APP_WH"
+    timeout_seconds: 60
+  Analyst_RemoteRemediation:
+    semantic_view: "PREDICTIVE_MAINTENANCE.ANALYTICS.SV_REMOTE_REMEDIATION"
+    warehouse: "APP_WH"
+    timeout_seconds: 60
+  Analyst_ExecKPIs:
+    semantic_view: "PREDICTIVE_MAINTENANCE.ANALYTICS.SV_EXEC_KPIS"
     warehouse: "APP_WH"
     timeout_seconds: 60
   Search_KB:

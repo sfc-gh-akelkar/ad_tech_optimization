@@ -7,14 +7,13 @@ AI/ML-based predictive maintenance system for digital screen fleet management.
 Build a demo showing how Snowflake's Cortex AI and ML capabilities can:
 - Predict device failures before they occur
 - Automatically remediate issues remotely
-- Reduce field service costs by 40-60%
-- Protect revenue by minimizing downtime
+- Provide transparent, assumption-driven business impact estimates (no “fudged” metrics)
 
 ## 📋 Progress Tracker
 
-### ✅ Act 1: Foundation & Monitoring (CURRENT)
+### ✅ Act 1: Foundation & Monitoring
 
-**Status:** Ready to build
+**Status:** Implemented
 
 **What we're building:**
 - Database schema for devices, telemetry, maintenance history
@@ -22,38 +21,30 @@ Build a demo showing how Snowflake's Cortex AI and ML capabilities can:
 - Basic Streamlit monitoring dashboard
 - One "degrading" device (Device #4532) showing power supply issues
 
-**What you can demo after Act 1:**
-> "Here's our simulated fleet of 100 screens. This dashboard shows real-time telemetry. Notice Device #4532 - temperature and power are climbing abnormally. Without ML, an operator would need to manually watch all these charts."
+### ✅ Act 2: Anomaly Detection + Watchlist (simulated)
+- Anomaly scoring (baseline 14d vs scoring 1d)
+- Ranked watchlist + explainable “why flagged”
+- Semantic view + Cortex Agent tool
 
-**Time estimate:** 2-3 hours
+### ✅ Act 3: Failure Prediction (24–48h) + Accuracy Tracking (demo)
+- Simulated 24–48h predictions + predicted failure type
+- Demo evaluation metrics (explicitly demo-only vs deterministic scenario incidents)
 
-### 🔲 Act 2: Anomaly Detection
+### ✅ Act 4: Remediation Knowledge Base (Cortex Search)
+- Knowledge base table + Cortex Search service
 
-Automatically flag devices with unusual patterns using Cortex ML.
+### ✅ Act 5: Automated Remote Remediation (simulated)
+- Work orders generated from watchlist/predictions
+- Remote runbooks + simulated executions + escalation
 
-### 🔲 Act 3: Prediction Model
+### ✅ Act 6: Executive KPIs (observed + assumption-driven estimates)
+- Executive KPI view powered by real incident history
+- Transparent assumptions table for any counterfactual estimates
 
-Build ML model to forecast failures 24-48 hours in advance.
+### ✅ Snowflake Intelligence (Cortex Agent)
+- Native semantic views + Cortex Search + Agent orchestration (`auto`)
 
-### 🔲 Act 4: Remediation Knowledge Base
-
-Add Cortex Search to find similar past incidents and recommend fixes.
-
-### 🔲 Act 5: Automated Remediation
-
-Execute remote troubleshooting workflows and track outcomes.
-
-### 🔲 Act 6: Business Metrics
-
-Calculate ROI, cost avoidance, and financial impact.
-
-### 🔲 Act 7: Natural Language Interface
-
-Add Cortex Analyst for conversational queries.
-
-### 🔲 Act 8: Polish & Advanced Features
-
-LLM summaries, demo controls, final touches.
+See `FOCUS_FRAMEWORK.md` for the Challenge → Action → Result mapping.
 
 ---
 
