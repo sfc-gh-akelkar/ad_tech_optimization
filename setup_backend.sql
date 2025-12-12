@@ -626,23 +626,25 @@ GRANT SELECT ON ALL VIEWS IN SCHEMA PATIENTPOINT_OPS.DEVICE_ANALYTICS TO ROLE PU
 GRANT USAGE ON CORTEX SEARCH SERVICE RUNBOOK_SEARCH_SERVICE TO ROLE PUBLIC;
 
 -- ============================================================================
--- VERIFICATION QUERIES
+-- VERIFICATION QUERIES (Optional - uncomment to test after setup)
 -- ============================================================================
 
--- Quick health check
-SELECT 'Fleet Summary' AS metric_type, * FROM VW_FLEET_HEALTH_METRICS
-UNION ALL
-SELECT 'Top 5 Critical Devices' AS metric_type, 
-       device_id::VARCHAR, 
-       hospital_name::VARCHAR, 
-       region::VARCHAR, 
-       failure_probability::VARCHAR,
-       predicted_failure_type::VARCHAR,
-       NULL::VARCHAR
+-- Fleet summary metrics
+-- SELECT * FROM VW_FLEET_HEALTH_METRICS;
+
+-- Top critical devices
+/*
+SELECT 
+    device_id,
+    hospital_name,
+    region,
+    failure_probability,
+    predicted_failure_type
 FROM FLEET_HEALTH_SCORED 
 WHERE failure_probability > 0.85 
 ORDER BY failure_probability DESC 
 LIMIT 5;
+*/
 
 -- ============================================================================
 -- OPTIONAL: SCHEDULED TASK TO REFRESH INFERENCE DATA
