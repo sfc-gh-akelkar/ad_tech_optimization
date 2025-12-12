@@ -66,6 +66,9 @@ Then say (Snowflake differentiator):
 Copy/paste to Agent:
 - “Show executive KPIs: fleet size, critical/warning now, watchlist count, predicted failures in the next 48 hours, downtime hours and revenue impact in the last 30 days.”
 
+If the response shows watchlist/predictions as 0, immediately follow with:
+- “Why might watchlist count or predicted failures be zero? Check whether scoring/predictions were refreshed recently and summarize the current critical devices and their telemetry signals.”
+
 Say:
 “Two important credibility points:
 1) **Observed** downtime and revenue impact come from incident history.

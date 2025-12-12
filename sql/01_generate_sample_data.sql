@@ -20,6 +20,14 @@ USE DATABASE PREDICTIVE_MAINTENANCE;
 USE SCHEMA RAW_DATA;
 
 /*----------------------------------------------------------------------------
+  Idempotency: clear existing demo data on re-run
+----------------------------------------------------------------------------*/
+
+TRUNCATE TABLE IF EXISTS RAW_DATA.SCREEN_TELEMETRY;
+TRUNCATE TABLE IF EXISTS RAW_DATA.MAINTENANCE_HISTORY;
+TRUNCATE TABLE IF EXISTS RAW_DATA.DEVICE_INVENTORY;
+
+/*----------------------------------------------------------------------------
   STEP 1: Generate Device Inventory (100 devices)
 ----------------------------------------------------------------------------*/
 
