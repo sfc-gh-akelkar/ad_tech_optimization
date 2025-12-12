@@ -20,10 +20,6 @@ This repo is a **single end-to-end demo**. Provision it by running the SQL scrip
 15. `sql/61_semantic_view_executive_kpis.sql`
 16. `sql/70_cortex_agent.sql`
 
-### Optional: run everything with one script (Workspaces)
-If you prefer a single “run-all”, upload the SQL files to a stage and run:
-- `sql/99_run_all_from_stage.sql`
-
 ### 2) Rehearse the customer demo
 - **Talk track + wow moments**: `DEMO_GUIDE.md`
 - **Challenge → Action → Result mapping**: `FOCUS_FRAMEWORK.md`
