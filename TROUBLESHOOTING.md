@@ -81,6 +81,15 @@ CREATE WAREHOUSE COMPUTE_WH WITH WAREHOUSE_SIZE = 'X-SMALL';
 ### Error: "Cortex features not available"
 **Solution**: Contact Snowflake support to enable Cortex AI features in your account.
 
+### Error: "ModuleNotFoundError: No module named 'snowflake.cortex'"
+**Status**: ✅ **FIXED** (v1.0.4)  
+**Solution**: In Streamlit in Snowflake, Cortex functions must be called via SQL, not Python imports.
+
+**Technical Details**:
+- ❌ Cannot use: `from snowflake.cortex import Complete`  
+- ✅ Instead use: `SELECT SNOWFLAKE.CORTEX.COMPLETE('model', 'prompt')`  
+- This is now properly implemented in dashboard_app.py
+
 ### Error: "String is too long and would be truncated"
 **Status**: ✅ **FIXED** (v1.0.2)  
 **Solution**: Column sizes increased. Re-run the latest version of `setup_backend.sql` from GitHub.
@@ -219,6 +228,6 @@ Once verification passes, proceed to:
 ---
 
 **Last Updated**: December 12, 2025  
-**Status**: All SQL errors fixed (4 issues resolved)  
-**Version**: 1.0.3
+**Status**: All errors fixed (5 issues resolved)  
+**Version**: 1.0.4
 
