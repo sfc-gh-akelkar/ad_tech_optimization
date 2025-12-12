@@ -2,11 +2,12 @@
 ================================================================================
 PATIENTPOINT COMMAND CENTER - STREAMLIT DASHBOARD
 ================================================================================
-A sophisticated operations dashboard for monitoring medical device fleet health.
+A sophisticated operations dashboard for monitoring interactive display fleet health.
 Features real-time geospatial visualization, predictive analytics, and an
 AI-powered operations agent for natural language queries.
 
-This dashboard abstracts away ML complexity - inference runs in the background.
+PatientPoint's digital displays deliver patient engagement content and pharmaceutical
+advertising across healthcare facilities nationwide.
 ================================================================================
 """
 
@@ -312,14 +313,15 @@ def create_geospatial_map(df):
         else:
             return [0, 255, 0, 200]  # Green - Healthy
     
-    df['color'] = df['failure_probability'].apply(get_color)
-    df['radius'] = df['failure_probability'].apply(lambda x: 15000 if x > 0.8 else 10000)
+    # Note: Column names from Snowflake are UPPERCASE
+    df['color'] = df['FAILURE_PROBABILITY'].apply(get_color)
+    df['radius'] = df['FAILURE_PROBABILITY'].apply(lambda x: 15000 if x > 0.8 else 10000)
     
     # Create PyDeck layer
     layer = pdk.Layer(
         "ScatterplotLayer",
         data=df,
-        get_position=['longitude', 'latitude'],
+        get_position=['LONGITUDE', 'LATITUDE'],
         get_color='color',
         get_radius='radius',
         pickable=True,
@@ -408,7 +410,7 @@ def create_regional_heatmap(df):
 def main():
     # Header
     st.markdown('<div class="main-header">🏥 PatientPoint Command Center</div>', unsafe_allow_html=True)
-    st.markdown("**Real-Time Medical Device Fleet Monitoring & Predictive Maintenance**")
+    st.markdown("**Real-Time Interactive Display Fleet Monitoring & Predictive Maintenance**")
     
     # Initialize Snowflake session
     try:
@@ -453,6 +455,7 @@ def main():
         st.markdown("### 📊 System Info")
         st.markdown(f"**Last Updated:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
         st.markdown(f"**Data Refresh:** Every 5 minutes")
+        st.markdown(f"**Displays Monitored:** 500")
         st.markdown(f"**ML Model:** XGBoost v2.1")
         
     # Load data
@@ -546,8 +549,8 @@ def main():
         st.markdown("🟢 **Healthy** (<50%)")
         st.markdown("---")
         st.markdown(f"**Total Devices:** {len(filtered_df)}")
-        st.markdown(f"**Critical:** {len(filtered_df[filtered_df['failure_probability'] > 0.80])}")
-        st.markdown(f"**At Risk:** {len(filtered_df[filtered_df['failure_probability'] > 0.70])}")
+        st.markdown(f"**Critical:** {len(filtered_df[filtered_df['FAILURE_PROBABILITY'] > 0.80])}")
+        st.markdown(f"**At Risk:** {len(filtered_df[filtered_df['FAILURE_PROBABILITY'] > 0.70])}")
     
     # ========================================================================
     # ADDITIONAL ANALYTICS

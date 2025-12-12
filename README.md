@@ -1,6 +1,6 @@
 # 🏥 PatientPoint Command Center
 
-A sophisticated **Predictive Maintenance Dashboard** for medical device fleet management, deployed on **Streamlit in Snowflake (SiS)** and powered by Snowflake Cortex AI.
+A sophisticated **Predictive Maintenance Dashboard** for interactive display fleet management, deployed on **Streamlit in Snowflake (SiS)** and powered by Snowflake Cortex AI.
 
 ![Snowflake](https://img.shields.io/badge/Snowflake-Native-blue)
 ![Cortex AI](https://img.shields.io/badge/Cortex-AI_Powered-green)
@@ -10,12 +10,14 @@ A sophisticated **Predictive Maintenance Dashboard** for medical device fleet ma
 
 ## 🎯 Overview
 
-The PatientPoint Command Center is an **enterprise operations dashboard** designed for monitoring a fleet of 500+ medical devices across US hospitals. Built specifically for **Streamlit in Snowflake**, it provides:
+The PatientPoint Command Center is an **enterprise operations dashboard** for monitoring a fleet of 500+ **interactive digital displays** across US healthcare facilities. These displays deliver patient engagement content and pharmaceutical advertising, generating revenue through programmatic ads and healthcare education.
 
-- **Real-time monitoring**: Track device health across a geospatial map with color-coded risk levels
+Built specifically for **Streamlit in Snowflake**, it provides:
+
+- **Real-time monitoring**: Track display health across a geospatial map with color-coded risk levels
 - **AI-powered operations**: Natural language queries powered by Snowflake Cortex Analyst + Cortex Search
 - **ML abstraction**: XGBoost inference runs in background; users see actionable insights
-- **Revenue protection**: Quantify potential revenue loss from predicted failures ($50/hour per device)
+- **Revenue protection**: Quantify potential advertising revenue loss from display downtime ($50/hour per display)
 - **Composite intelligence**: Combines structured data queries with unstructured repair documentation
 
 ## 🏗️ Architecture
@@ -139,15 +141,17 @@ Three types of natural language queries:
 ### ROI Calculation
 
 **Without Predictive Maintenance**:
-- 18 critical devices fail unexpectedly
+- 18 critical displays fail unexpectedly
 - Average downtime: 8.5 hours
 - Average repair cost: $6,800
+- Lost advertising revenue: 18 × $50/hr × 8.5 hrs = $7,650
 - **Total cost**: $130,050
 
 **With Predictive Maintenance**:
 - Proactive service during scheduled windows
 - Average downtime: 1.8 hours  
 - Average repair cost: $2,500
+- Lost advertising revenue: 18 × $50/hr × 1.8 hrs = $1,620
 - **Total cost**: $46,620
 
 **NET SAVINGS**: **$83,430 per incident cycle** (64% reduction)
@@ -208,7 +212,7 @@ filters:
 
 ## 🎓 Understanding the Data
 
-### FLEET_HEALTH_SCORED (500 devices)
+### FLEET_HEALTH_SCORED (500 displays)
 
 Real-time health metrics updated hourly by ML pipeline:
 
