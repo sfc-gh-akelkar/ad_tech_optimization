@@ -267,10 +267,21 @@ st.dataframe(
 st.header("Device Deep Dive")
 
 # Device selector
+# Convert DEVICE_ID to string for Streamlit compatibility
+device_id_options = device_list['DEVICE_ID'].astype(str).tolist()
+
+# Try to default to device 4532 if it exists
+default_index = 0
+try:
+    if '4532' in device_id_options:
+        default_index = device_id_options.index('4532')
+except:
+    default_index = 0
+
 selected_device_id = st.selectbox(
     "Select Device to Inspect",
-    options=device_list['DEVICE_ID'].astype(str).tolist(),
-    index=device_list[device_list['DEVICE_ID'].astype(str) == '4532'].index[0] if '4532' in device_list['DEVICE_ID'].astype(str).values else 0
+    options=device_id_options,
+    index=default_index
 )
 
 if selected_device_id:
