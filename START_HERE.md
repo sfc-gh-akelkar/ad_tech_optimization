@@ -27,6 +27,7 @@ A complete monitoring solution for a simulated fleet of 100 digital screens, dem
 
 ### Focus Framework
 - See `FOCUS_FRAMEWORK.md` for the **Challenge → Action → Result** mapping and demo flow for Exec/Ops/Tech/Agent.
+- See `DEMO_GUIDE.md` for a **rehearsal-ready talk track** and copy/paste questions to “wow” customers.
 
 ### Streamlit Application (1 file)
 3. **`streamlit/01_Fleet_Monitoring.py`** - Interactive dashboard
