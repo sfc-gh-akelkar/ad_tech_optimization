@@ -87,10 +87,10 @@ $$
 DECLARE
   run_id STRING DEFAULT UUID_STRING();
 BEGIN
-  LET as_of_ts TIMESTAMP_NTZ := COALESCE(AS_OF_TS, (SELECT DEMO_AS_OF_TS FROM OPERATIONS.V_DEMO_TIME));
+  LET demo_as_of_ts TIMESTAMP_NTZ := COALESCE(AS_OF_TS, (SELECT DEMO_AS_OF_TS FROM OPERATIONS.V_DEMO_TIME));
 
   -- Define date windows
-  LET scoring_end DATE := TO_DATE(as_of_ts);
+  LET scoring_end DATE := TO_DATE(demo_as_of_ts);
   LET scoring_start DATE := DATEADD('day', -SCORING_DAYS, scoring_end);
   LET baseline_end DATE := scoring_start;
   LET baseline_start DATE := DATEADD('day', -BASELINE_DAYS, baseline_end);
@@ -326,7 +326,7 @@ BEGIN
     BASELINE_START, BASELINE_END, SCORING_START, SCORING_END
   )
   SELECT
-    :run_id, :MODE, :as_of_ts, :BASELINE_DAYS, :SCORING_DAYS,
+    :run_id, :MODE, :demo_as_of_ts, :BASELINE_DAYS, :SCORING_DAYS,
     DEVICE_ID,
     SCORE_OVERALL, SCORE_THERMAL, SCORE_POWER, SCORE_NETWORK, SCORE_DISPLAY, SCORE_STABILITY,
     CONFIDENCE_BAND, WHY_FLAGGED, TOP_SIGNALS,
@@ -343,17 +343,17 @@ BEGIN
     LAST_REFRESHED_AT
   )
   SELECT
-    :as_of_ts,
+    :demo_as_of_ts,
     :MODE,
     ROW_NUMBER() OVER (ORDER BY SCORE_OVERALL DESC) AS RANK,
     DEVICE_ID,
     SCORE_OVERALL, SCORE_THERMAL, SCORE_POWER, SCORE_NETWORK, SCORE_DISPLAY, SCORE_STABILITY,
     CONFIDENCE_BAND, WHY_FLAGGED, TOP_SIGNALS,
-    :as_of_ts
+    :demo_as_of_ts
   FROM _final
   QUALIFY ROW_NUMBER() OVER (ORDER BY SCORE_OVERALL DESC) <= :TOP_N;
 
-  RETURN 'Watchlist refreshed ✅ run_id=' || run_id || ', mode=' || MODE || ', as_of=' || as_of_ts;
+  RETURN 'Watchlist refreshed ✅ run_id=' || run_id || ', mode=' || MODE || ', as_of=' || demo_as_of_ts;
 END;
 $$;
 
