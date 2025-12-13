@@ -159,13 +159,13 @@ BEGIN
   SELECT
     :exec_id,
     :WORK_ORDER_ID,
-    device_id,
-    issue_type,
-    runbook_id,
-    started_at,
-    ended_at,
-    outcome,
-    IFF(outcome = 'SUCCESS', 'Remote runbook completed successfully.', 'Escalated to field service based on outcome/likelihood.'),
+    :device_id,
+    :issue_type,
+    :runbook_id,
+    :started_at,
+    :ended_at,
+    :outcome,
+    IFF(:outcome = 'SUCCESS', 'Remote runbook completed successfully.', 'Escalated to field service based on outcome/likelihood.'),
     CONTEXT
   FROM _wo;
 
@@ -173,11 +173,11 @@ BEGIN
   UPDATE OPERATIONS.WORK_ORDERS
   SET
     UPDATED_AT = DATEADD('minute', -10, (SELECT DEMO_AS_OF_TS FROM PREDICTIVE_MAINTENANCE.OPERATIONS.V_DEMO_TIME)),
-    STATUS = IFF(outcome = 'SUCCESS', 'COMPLETED', 'IN_PROGRESS'),
-    NOTES = CONCAT(COALESCE(NOTES, ''), ' | Remote execution: ', outcome)
+    STATUS = IFF(:outcome = 'SUCCESS', 'COMPLETED', 'IN_PROGRESS'),
+    NOTES = CONCAT(COALESCE(NOTES, ''), ' | Remote execution: ', :outcome)
   WHERE WORK_ORDER_ID = :WORK_ORDER_ID;
 
-  RETURN 'Remote execution complete ✅ execution_id=' || exec_id || ', outcome=' || outcome;
+  RETURN 'Remote execution complete ✅ execution_id=' || :exec_id || ', outcome=' || :outcome;
 END;
 $$;
 
