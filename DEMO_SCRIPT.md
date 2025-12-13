@@ -97,11 +97,21 @@ Which devices have critical or high risk levels right now?
 ```
 *Show: Real-time risk detection with specific device IDs and risk factors*
 
-**Prompt 4: Device Deep-Dive**
+**Prompt 4: Remote Fix Triage** *(Natural follow-up)*
 ```
-What's the status of device DEV-003 and what's causing the issue?
+Can any of these critical or high risk devices be fixed remotely?
 ```
-*Show: Detailed device diagnostics - CPU temp trends, memory usage, error counts*
+*Show: AI cross-references device issues with KB to identify remote fix opportunities*
+
+*Expected Response: Agent identifies which issues (HIGH_CPU, MEMORY_LEAK, DISPLAY_FREEZE) can be fixed remotely with 87-94% success rates, vs. issues requiring dispatch (NO_NETWORK, OVERHEATING hardware)*
+
+> **💡 Talking Point:** "This is the power of combining structured data with a knowledge base. The agent doesn't just alert—it recommends the most cost-effective action. At scale, this optimization is worth millions."
+
+**Prompt 5: Device Deep-Dive**
+```
+What's the status of device DEV-005 and what's causing the issue?
+```
+*Show: Detailed device diagnostics - CPU temp trends, memory usage, error counts, recommended actions*
 
 ### Key Points to Highlight
 | Capability | Demo Evidence |
@@ -228,6 +238,8 @@ How many critical issues do we have right now?
 ### Operations Center
 ```
 Which devices are predicted to fail in the next 48 hours?
+Which devices have critical or high risk levels right now?
+Can any of these devices be fixed remotely?
 Show me all active work orders
 Which technicians are available for dispatch?
 What devices in Ohio need attention?
