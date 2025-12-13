@@ -103,6 +103,8 @@ If they ask “is the accuracy real?” say:
 
 Copy/paste to Agent:
 - “Show the latest prediction evaluation metrics and explain what they represent.”
+Say (one line, if asked “why not 100%?”):
+“In real operations we *choose* an operating point; for PatientPoint we typically prefer a **balanced** setting that catches most failures while keeping false alarms manageable.”
 
 ### 11:00–14:00 — Action #3: Turn insight into an ops queue (work orders)
 Say:
