@@ -89,38 +89,39 @@ CREATE OR REPLACE TABLE DEVICE_INVENTORY (
 );
 
 -- Insert sample device inventory (100 devices across various facilities)
+-- DEMO-OPTIMIZED: 90% healthy fleet with a few issues to demonstrate predictive value
 -- Note: HOURLY_AD_REVENUE_USD and MONTHLY_IMPRESSIONS use defaults if not specified
 INSERT INTO DEVICE_INVENTORY (DEVICE_ID, DEVICE_MODEL, FACILITY_NAME, FACILITY_TYPE, LOCATION_CITY, LOCATION_STATE, INSTALL_DATE, WARRANTY_EXPIRY, LAST_MAINTENANCE_DATE, FIRMWARE_VERSION, STATUS, HOURLY_AD_REVENUE_USD, MONTHLY_IMPRESSIONS) VALUES
-    ('DEV-001', 'HealthScreen Pro 55', 'Downtown Medical Center', 'Hospital', 'Chicago', 'IL', '2023-01-15', '2026-01-15', '2024-06-01', 'v3.2.1', 'ONLINE', 15.00, 18000),
-    ('DEV-002', 'HealthScreen Pro 55', 'Lakeside Family Practice', 'Primary Care', 'Chicago', 'IL', '2023-02-20', '2026-02-20', '2024-05-15', 'v3.2.1', 'ONLINE', 12.50, 15000),
-    ('DEV-003', 'HealthScreen Lite 32', 'North Shore Pediatrics', 'Pediatrics', 'Evanston', 'IL', '2022-11-10', '2025-11-10', '2024-04-20', 'v3.1.8', 'DEGRADED', 8.50, 10000),
-    ('DEV-004', 'HealthScreen Pro 55', 'Midwest Cardiology Associates', 'Specialty', 'Oak Park', 'IL', '2023-03-05', '2026-03-05', '2024-07-10', 'v3.2.1', 'ONLINE', 14.00, 16500),
-    ('DEV-005', 'HealthScreen Lite 32', 'Springfield Urgent Care', 'Urgent Care', 'Springfield', 'IL', '2022-08-22', '2025-08-22', '2024-03-01', 'v3.0.5', 'OFFLINE', 9.00, 11000),
-    ('DEV-006', 'HealthScreen Pro 55', 'Memorial Hospital West', 'Hospital', 'Columbus', 'OH', '2023-04-18', '2026-04-18', '2024-08-05', 'v3.2.1', 'ONLINE', 15.50, 18500),
-    ('DEV-007', 'HealthScreen Max 65', 'Cleveland Clinic Annex', 'Hospital', 'Cleveland', 'OH', '2023-06-01', '2026-06-01', '2024-09-01', 'v3.2.2', 'ONLINE', 22.00, 25000),
-    ('DEV-008', 'HealthScreen Lite 32', 'Buckeye Family Medicine', 'Primary Care', 'Columbus', 'OH', '2022-09-14', '2025-09-14', '2024-02-28', 'v3.1.2', 'DEGRADED', 8.00, 9500),
-    ('DEV-009', 'HealthScreen Pro 55', 'Cincinnati Womens Health', 'OB/GYN', 'Cincinnati', 'OH', '2023-05-22', '2026-05-22', '2024-07-20', 'v3.2.1', 'ONLINE', 13.50, 16000),
-    ('DEV-010', 'HealthScreen Pro 55', 'Dayton Orthopedic Center', 'Specialty', 'Dayton', 'OH', '2023-07-10', '2026-07-10', '2024-09-15', 'v3.2.1', 'ONLINE', 13.00, 15500),
-    ('DEV-011', 'HealthScreen Max 65', 'Henry Ford Health Detroit', 'Hospital', 'Detroit', 'MI', '2023-01-08', '2026-01-08', '2024-05-01', 'v3.2.0', 'ONLINE', 21.00, 24000),
-    ('DEV-012', 'HealthScreen Pro 55', 'Ann Arbor Family Care', 'Primary Care', 'Ann Arbor', 'MI', '2023-02-14', '2026-02-14', '2024-06-10', 'v3.2.1', 'ONLINE', 12.00, 14500),
-    ('DEV-013', 'HealthScreen Lite 32', 'Grand Rapids Pediatrics', 'Pediatrics', 'Grand Rapids', 'MI', '2022-10-05', '2025-10-05', '2024-04-15', 'v3.1.5', 'ONLINE', 8.50, 10200),
-    ('DEV-014', 'HealthScreen Pro 55', 'Lansing Cardiology Group', 'Specialty', 'Lansing', 'MI', '2023-04-01', '2026-04-01', '2024-08-01', 'v3.2.1', 'DEGRADED', 13.50, 16200),
-    ('DEV-015', 'HealthScreen Lite 32', 'Kalamazoo Walk-In Clinic', 'Urgent Care', 'Kalamazoo', 'MI', '2022-07-20', '2025-07-20', '2024-01-15', 'v3.0.3', 'ONLINE', 9.50, 11500),
-    ('DEV-016', 'HealthScreen Pro 55', 'IU Health Indianapolis', 'Hospital', 'Indianapolis', 'IN', '2023-03-12', '2026-03-12', '2024-07-05', 'v3.2.1', 'ONLINE', 16.00, 19000),
-    ('DEV-017', 'HealthScreen Max 65', 'Fort Wayne Medical Center', 'Hospital', 'Fort Wayne', 'IN', '2023-05-08', '2026-05-08', '2024-09-10', 'v3.2.2', 'ONLINE', 20.50, 23500),
-    ('DEV-018', 'HealthScreen Lite 32', 'Evansville Family Practice', 'Primary Care', 'Evansville', 'IN', '2022-12-01', '2025-12-01', '2024-05-20', 'v3.1.8', 'OFFLINE', 7.50, 9000),
-    ('DEV-019', 'HealthScreen Pro 55', 'South Bend Womens Clinic', 'OB/GYN', 'South Bend', 'IN', '2023-06-15', '2026-06-15', '2024-08-25', 'v3.2.1', 'ONLINE', 12.50, 15000),
-    ('DEV-020', 'HealthScreen Lite 32', 'Bloomington Urgent Care', 'Urgent Care', 'Bloomington', 'IN', '2022-08-10', '2025-08-10', '2024-02-10', 'v3.0.8', 'DEGRADED', 9.00, 10800),
-    ('DEV-021', 'HealthScreen Pro 55', 'Aurora Health Milwaukee', 'Hospital', 'Milwaukee', 'WI', '2023-02-28', '2026-02-28', '2024-06-20', 'v3.2.1', 'ONLINE', 15.00, 17800),
-    ('DEV-022', 'HealthScreen Max 65', 'UW Health Madison', 'Hospital', 'Madison', 'WI', '2023-04-10', '2026-04-10', '2024-08-15', 'v3.2.2', 'ONLINE', 23.00, 26000),
-    ('DEV-023', 'HealthScreen Lite 32', 'Green Bay Pediatrics', 'Pediatrics', 'Green Bay', 'WI', '2022-09-25', '2025-09-25', '2024-03-25', 'v3.1.3', 'ONLINE', 8.00, 9600),
-    ('DEV-024', 'HealthScreen Pro 55', 'Kenosha Heart Center', 'Specialty', 'Kenosha', 'WI', '2023-05-05', '2026-05-05', '2024-09-01', 'v3.2.1', 'ONLINE', 14.00, 16800),
-    ('DEV-025', 'HealthScreen Lite 32', 'Appleton Walk-In Care', 'Urgent Care', 'Appleton', 'WI', '2022-06-18', '2025-06-18', '2024-01-05', 'v3.0.2', 'DEGRADED', 8.50, 10200),
-    ('DEV-026', 'HealthScreen Pro 55', 'Mayo Clinic Rochester', 'Hospital', 'Rochester', 'MN', '2023-01-20', '2026-01-20', '2024-05-25', 'v3.2.1', 'ONLINE', 18.00, 21000),
-    ('DEV-027', 'HealthScreen Max 65', 'Hennepin Healthcare', 'Hospital', 'Minneapolis', 'MN', '2023-03-15', '2026-03-15', '2024-07-15', 'v3.2.2', 'ONLINE', 24.00, 27000),
-    ('DEV-028', 'HealthScreen Lite 32', 'St Paul Family Medicine', 'Primary Care', 'St Paul', 'MN', '2022-10-20', '2025-10-20', '2024-04-10', 'v3.1.6', 'ONLINE', 9.00, 10800),
-    ('DEV-029', 'HealthScreen Pro 55', 'Duluth Womens Health', 'OB/GYN', 'Duluth', 'MN', '2023-06-01', '2026-06-01', '2024-08-20', 'v3.2.1', 'ONLINE', 11.50, 13800),
-    ('DEV-030', 'HealthScreen Lite 32', 'Bloomington MN Urgent Care', 'Urgent Care', 'Bloomington', 'MN', '2022-07-08', '2025-07-08', '2024-01-20', 'v3.0.4', 'ONLINE', 9.50, 11400);
+    ('DEV-001', 'HealthScreen Pro 55', 'Downtown Medical Center', 'Hospital', 'Chicago', 'IL', '2023-01-15', '2026-01-15', '2024-11-01', 'v3.2.1', 'ONLINE', 15.00, 18000),
+    ('DEV-002', 'HealthScreen Pro 55', 'Lakeside Family Practice', 'Primary Care', 'Chicago', 'IL', '2023-02-20', '2026-02-20', '2024-10-15', 'v3.2.1', 'ONLINE', 12.50, 15000),
+    ('DEV-003', 'HealthScreen Lite 32', 'North Shore Pediatrics', 'Pediatrics', 'Evanston', 'IL', '2022-11-10', '2025-11-10', '2024-11-20', 'v3.2.1', 'ONLINE', 8.50, 10000),
+    ('DEV-004', 'HealthScreen Pro 55', 'Midwest Cardiology Associates', 'Specialty', 'Oak Park', 'IL', '2023-03-05', '2026-03-05', '2024-10-10', 'v3.2.1', 'ONLINE', 14.00, 16500),
+    ('DEV-005', 'HealthScreen Lite 32', 'Springfield Urgent Care', 'Urgent Care', 'Springfield', 'IL', '2022-08-22', '2025-08-22', '2024-09-01', 'v3.2.1', 'DEGRADED', 9.00, 11000),
+    ('DEV-006', 'HealthScreen Pro 55', 'Memorial Hospital West', 'Hospital', 'Columbus', 'OH', '2023-04-18', '2026-04-18', '2024-11-05', 'v3.2.1', 'ONLINE', 15.50, 18500),
+    ('DEV-007', 'HealthScreen Max 65', 'Cleveland Clinic Annex', 'Hospital', 'Cleveland', 'OH', '2023-06-01', '2026-06-01', '2024-12-01', 'v3.2.2', 'ONLINE', 22.00, 25000),
+    ('DEV-008', 'HealthScreen Lite 32', 'Buckeye Family Medicine', 'Primary Care', 'Columbus', 'OH', '2022-09-14', '2025-09-14', '2024-10-28', 'v3.2.1', 'ONLINE', 8.00, 9500),
+    ('DEV-009', 'HealthScreen Pro 55', 'Cincinnati Womens Health', 'OB/GYN', 'Cincinnati', 'OH', '2023-05-22', '2026-05-22', '2024-11-20', 'v3.2.1', 'ONLINE', 13.50, 16000),
+    ('DEV-010', 'HealthScreen Pro 55', 'Dayton Orthopedic Center', 'Specialty', 'Dayton', 'OH', '2023-07-10', '2026-07-10', '2024-12-01', 'v3.2.1', 'ONLINE', 13.00, 15500),
+    ('DEV-011', 'HealthScreen Max 65', 'Henry Ford Health Detroit', 'Hospital', 'Detroit', 'MI', '2023-01-08', '2026-01-08', '2024-10-01', 'v3.2.2', 'ONLINE', 21.00, 24000),
+    ('DEV-012', 'HealthScreen Pro 55', 'Ann Arbor Family Care', 'Primary Care', 'Ann Arbor', 'MI', '2023-02-14', '2026-02-14', '2024-11-10', 'v3.2.1', 'ONLINE', 12.00, 14500),
+    ('DEV-013', 'HealthScreen Lite 32', 'Grand Rapids Pediatrics', 'Pediatrics', 'Grand Rapids', 'MI', '2022-10-05', '2025-10-05', '2024-10-15', 'v3.2.1', 'ONLINE', 8.50, 10200),
+    ('DEV-014', 'HealthScreen Pro 55', 'Lansing Cardiology Group', 'Specialty', 'Lansing', 'MI', '2023-04-01', '2026-04-01', '2024-11-01', 'v3.2.1', 'ONLINE', 13.50, 16200),
+    ('DEV-015', 'HealthScreen Lite 32', 'Kalamazoo Walk-In Clinic', 'Urgent Care', 'Kalamazoo', 'MI', '2022-07-20', '2025-07-20', '2024-09-15', 'v3.2.1', 'ONLINE', 9.50, 11500),
+    ('DEV-016', 'HealthScreen Pro 55', 'IU Health Indianapolis', 'Hospital', 'Indianapolis', 'IN', '2023-03-12', '2026-03-12', '2024-12-05', 'v3.2.1', 'ONLINE', 16.00, 19000),
+    ('DEV-017', 'HealthScreen Max 65', 'Fort Wayne Medical Center', 'Hospital', 'Fort Wayne', 'IN', '2023-05-08', '2026-05-08', '2024-11-10', 'v3.2.2', 'ONLINE', 20.50, 23500),
+    ('DEV-018', 'HealthScreen Lite 32', 'Evansville Family Practice', 'Primary Care', 'Evansville', 'IN', '2022-12-01', '2025-12-01', '2024-10-20', 'v3.2.1', 'DEGRADED', 7.50, 9000),
+    ('DEV-019', 'HealthScreen Pro 55', 'South Bend Womens Clinic', 'OB/GYN', 'South Bend', 'IN', '2023-06-15', '2026-06-15', '2024-11-25', 'v3.2.1', 'ONLINE', 12.50, 15000),
+    ('DEV-020', 'HealthScreen Lite 32', 'Bloomington Urgent Care', 'Urgent Care', 'Bloomington', 'IN', '2022-08-10', '2025-08-10', '2024-10-10', 'v3.2.1', 'ONLINE', 9.00, 10800),
+    ('DEV-021', 'HealthScreen Pro 55', 'Aurora Health Milwaukee', 'Hospital', 'Milwaukee', 'WI', '2023-02-28', '2026-02-28', '2024-11-20', 'v3.2.1', 'ONLINE', 15.00, 17800),
+    ('DEV-022', 'HealthScreen Max 65', 'UW Health Madison', 'Hospital', 'Madison', 'WI', '2023-04-10', '2026-04-10', '2024-12-01', 'v3.2.2', 'ONLINE', 23.00, 26000),
+    ('DEV-023', 'HealthScreen Lite 32', 'Green Bay Pediatrics', 'Pediatrics', 'Green Bay', 'WI', '2022-09-25', '2025-09-25', '2024-10-25', 'v3.2.1', 'ONLINE', 8.00, 9600),
+    ('DEV-024', 'HealthScreen Pro 55', 'Kenosha Heart Center', 'Specialty', 'Kenosha', 'WI', '2023-05-05', '2026-05-05', '2024-12-01', 'v3.2.1', 'ONLINE', 14.00, 16800),
+    ('DEV-025', 'HealthScreen Lite 32', 'Appleton Walk-In Care', 'Urgent Care', 'Appleton', 'WI', '2022-06-18', '2025-06-18', '2024-09-05', 'v3.2.1', 'OFFLINE', 8.50, 10200),
+    ('DEV-026', 'HealthScreen Pro 55', 'Mayo Clinic Rochester', 'Hospital', 'Rochester', 'MN', '2023-01-20', '2026-01-20', '2024-11-25', 'v3.2.1', 'ONLINE', 18.00, 21000),
+    ('DEV-027', 'HealthScreen Max 65', 'Hennepin Healthcare', 'Hospital', 'Minneapolis', 'MN', '2023-03-15', '2026-03-15', '2024-12-01', 'v3.2.2', 'ONLINE', 24.00, 27000),
+    ('DEV-028', 'HealthScreen Lite 32', 'St Paul Family Medicine', 'Primary Care', 'St Paul', 'MN', '2022-10-20', '2025-10-20', '2024-10-10', 'v3.2.1', 'ONLINE', 9.00, 10800),
+    ('DEV-029', 'HealthScreen Pro 55', 'Duluth Womens Health', 'OB/GYN', 'Duluth', 'MN', '2023-06-01', '2026-06-01', '2024-11-20', 'v3.2.1', 'ONLINE', 11.50, 13800),
+    ('DEV-030', 'HealthScreen Lite 32', 'Bloomington MN Urgent Care', 'Urgent Care', 'Bloomington', 'MN', '2022-07-08', '2025-07-08', '2024-10-20', 'v3.2.1', 'ONLINE', 9.50, 11400);
 
 -- Add more devices to reach ~100 for a realistic demo
 INSERT INTO DEVICE_INVENTORY (DEVICE_ID, DEVICE_MODEL, FACILITY_NAME, FACILITY_TYPE, LOCATION_CITY, LOCATION_STATE, INSTALL_DATE, WARRANTY_EXPIRY, LAST_MAINTENANCE_DATE, FIRMWARE_VERSION, STATUS, HOURLY_AD_REVENUE_USD, MONTHLY_IMPRESSIONS)
@@ -157,11 +158,13 @@ SELECT
     END,
     DATEADD('day', -1 * (SEQ4() * 7 + 100), CURRENT_DATE()),
     DATEADD('year', 3, DATEADD('day', -1 * (SEQ4() * 7 + 100), CURRENT_DATE())),
-    DATEADD('day', -1 * MOD(SEQ4() * 17, 180), CURRENT_DATE()),
-    'v3.' || MOD(SEQ4(), 3)::VARCHAR || '.' || MOD(SEQ4(), 10)::VARCHAR,
+    -- DEMO-OPTIMIZED: Recent maintenance dates (within last 60 days)
+    DATEADD('day', -1 * MOD(SEQ4() * 7, 60), CURRENT_DATE()),
+    'v3.2.' || MOD(SEQ4(), 3)::VARCHAR,
+    -- DEMO-OPTIMIZED: 93% ONLINE, 5% DEGRADED, 2% OFFLINE for healthy fleet
     CASE 
-        WHEN MOD(SEQ4(), 15) = 0 THEN 'OFFLINE'
-        WHEN MOD(SEQ4(), 8) = 0 THEN 'DEGRADED'
+        WHEN MOD(SEQ4(), 50) = 0 THEN 'OFFLINE'
+        WHEN MOD(SEQ4(), 20) = 0 THEN 'DEGRADED'
         ELSE 'ONLINE'
     END,
     -- Revenue based on device model (Max > Pro > Lite)
@@ -199,48 +202,48 @@ CREATE OR REPLACE TABLE DEVICE_TELEMETRY (
 );
 
 -- Generate telemetry data for the past 30 days
--- This simulates real IoT sensor data with some devices showing degradation patterns
+-- DEMO-OPTIMIZED: Healthy fleet with a few devices showing predictable warning signs
 INSERT INTO DEVICE_TELEMETRY (DEVICE_ID, TIMESTAMP, CPU_TEMP_CELSIUS, CPU_USAGE_PCT, MEMORY_USAGE_PCT, 
                                DISK_USAGE_PCT, NETWORK_LATENCY_MS, DISPLAY_BRIGHTNESS_PCT, 
                                UPTIME_HOURS, ERROR_COUNT, LAST_HEARTBEAT)
 SELECT 
     d.DEVICE_ID,
     DATEADD('hour', -1 * t.SEQ, CURRENT_TIMESTAMP()) as TIMESTAMP,
-    -- CPU temp: normally 45-55, degraded devices run hotter
+    -- CPU temp: healthy 42-52°C, degraded 55-65°C (showing warning signs, not critical)
     CASE 
-        WHEN d.STATUS = 'DEGRADED' THEN 55 + (RANDOM() / POW(10, 18)) * 20
-        WHEN d.STATUS = 'OFFLINE' THEN 70 + (RANDOM() / POW(10, 18)) * 15
-        ELSE 42 + (RANDOM() / POW(10, 18)) * 13
+        WHEN d.STATUS = 'DEGRADED' THEN 55 + (RANDOM() / POW(10, 18)) * 10
+        WHEN d.STATUS = 'OFFLINE' THEN 62 + (RANDOM() / POW(10, 18)) * 8
+        ELSE 42 + (RANDOM() / POW(10, 18)) * 10
     END as CPU_TEMP_CELSIUS,
-    -- CPU usage: normally 15-40%, degraded higher
+    -- CPU usage: healthy 15-35%, degraded 50-70% (elevated but manageable)
     CASE 
-        WHEN d.STATUS = 'DEGRADED' THEN 60 + (RANDOM() / POW(10, 18)) * 35
-        WHEN d.STATUS = 'OFFLINE' THEN 85 + (RANDOM() / POW(10, 18)) * 15
-        ELSE 15 + (RANDOM() / POW(10, 18)) * 25
+        WHEN d.STATUS = 'DEGRADED' THEN 50 + (RANDOM() / POW(10, 18)) * 20
+        WHEN d.STATUS = 'OFFLINE' THEN 65 + (RANDOM() / POW(10, 18)) * 15
+        ELSE 15 + (RANDOM() / POW(10, 18)) * 20
     END as CPU_USAGE_PCT,
-    -- Memory usage
+    -- Memory usage: healthy 25-50%, degraded 60-75%
     CASE 
-        WHEN d.STATUS = 'DEGRADED' THEN 70 + (RANDOM() / POW(10, 18)) * 25
-        ELSE 30 + (RANDOM() / POW(10, 18)) * 40
+        WHEN d.STATUS = 'DEGRADED' THEN 60 + (RANDOM() / POW(10, 18)) * 15
+        ELSE 25 + (RANDOM() / POW(10, 18)) * 25
     END as MEMORY_USAGE_PCT,
-    -- Disk usage
-    40 + (RANDOM() / POW(10, 18)) * 45 as DISK_USAGE_PCT,
-    -- Network latency: normally 10-50ms, issues cause spikes
+    -- Disk usage: healthy 35-55%
+    35 + (RANDOM() / POW(10, 18)) * 20 as DISK_USAGE_PCT,
+    -- Network latency: healthy 10-30ms, degraded 50-100ms
     CASE 
-        WHEN d.STATUS IN ('DEGRADED', 'OFFLINE') THEN 100 + (RANDOM() / POW(10, 18)) * 400
-        ELSE 10 + (RANDOM() / POW(10, 18)) * 40
+        WHEN d.STATUS IN ('DEGRADED', 'OFFLINE') THEN 50 + (RANDOM() / POW(10, 18)) * 50
+        ELSE 10 + (RANDOM() / POW(10, 18)) * 20
     END as NETWORK_LATENCY_MS,
-    -- Display brightness
-    70 + (RANDOM() / POW(10, 18)) * 30 as DISPLAY_BRIGHTNESS_PCT,
-    -- Uptime hours since last reboot
-    24 + (RANDOM() / POW(10, 18)) * 720 as UPTIME_HOURS,
-    -- Error count
+    -- Display brightness: consistent 80-100%
+    80 + (RANDOM() / POW(10, 18)) * 20 as DISPLAY_BRIGHTNESS_PCT,
+    -- Uptime hours: 24-336 hours (1-14 days, regular reboots show good maintenance)
+    24 + (RANDOM() / POW(10, 18)) * 312 as UPTIME_HOURS,
+    -- Error count: healthy 0-1, degraded 3-8 (noticeable but not alarming)
     CASE 
-        WHEN d.STATUS = 'DEGRADED' THEN FLOOR((RANDOM() / POW(10, 18)) * 15)
-        WHEN d.STATUS = 'OFFLINE' THEN FLOOR((RANDOM() / POW(10, 18)) * 50)
-        ELSE FLOOR((RANDOM() / POW(10, 18)) * 3)
+        WHEN d.STATUS = 'DEGRADED' THEN FLOOR((RANDOM() / POW(10, 18)) * 5) + 3
+        WHEN d.STATUS = 'OFFLINE' THEN FLOOR((RANDOM() / POW(10, 18)) * 8) + 5
+        ELSE FLOOR((RANDOM() / POW(10, 18)) * 2)
     END as ERROR_COUNT,
-    DATEADD('minute', -1 * FLOOR((RANDOM() / POW(10, 18)) * 5), DATEADD('hour', -1 * t.SEQ, CURRENT_TIMESTAMP())) as LAST_HEARTBEAT
+    DATEADD('minute', -1 * FLOOR((RANDOM() / POW(10, 18)) * 2), DATEADD('hour', -1 * t.SEQ, CURRENT_TIMESTAMP())) as LAST_HEARTBEAT
 FROM DEVICE_INVENTORY d
 CROSS JOIN (SELECT SEQ4() as SEQ FROM TABLE(GENERATOR(ROWCOUNT => 720))) t  -- 30 days * 24 hours
 WHERE t.SEQ < 720;
@@ -279,7 +282,13 @@ INSERT INTO MAINTENANCE_HISTORY VALUES
     ('TKT-2024-012', 'DEV-019', '2024-11-10 11:00:00', '2024-11-10 11:05:00', 'HIGH_MEMORY', 'Memory at 88%, preemptive maintenance flag', 'REMOTE_FIX', 'Cleared application cache and restarted services proactively.', 'REMOTE_AGENT', 0),
     ('TKT-2024-013', 'DEV-022', '2024-11-15 08:45:00', '2024-11-15 09:00:00', 'SLOW_RESPONSE', 'UI lag reported by staff', 'REMOTE_FIX', 'Optimized database queries and cleared log files.', 'REMOTE_AGENT', 0),
     ('TKT-2024-014', 'DEV-008', '2024-11-20 15:30:00', '2024-11-21 11:00:00', 'OVERHEATING', 'CPU temp above 80C, automatic shutdown triggered', 'FIELD_DISPATCH', 'Replaced cooling fan and cleaned dust filters.', 'TECH-018', 195.00),
-    ('TKT-2024-015', 'DEV-014', '2024-11-25 10:15:00', '2024-11-25 10:30:00', 'DISPLAY_FLICKER', 'Occasional screen flicker', 'REMOTE_FIX', 'Adjusted display refresh rate settings remotely.', 'REMOTE_AGENT', 0);
+    ('TKT-2024-015', 'DEV-014', '2024-11-25 10:15:00', '2024-11-25 10:30:00', 'DISPLAY_FLICKER', 'Occasional screen flicker', 'REMOTE_FIX', 'Adjusted display refresh rate settings remotely.', 'REMOTE_AGENT', 0),
+    -- DEMO-OPTIMIZED: Additional successful remote fixes to boost resolution rate
+    ('TKT-2024-016', 'DEV-001', '2024-11-28 09:00:00', '2024-11-28 09:12:00', 'HIGH_CPU', 'CPU usage spike detected by AI monitoring', 'REMOTE_FIX', 'AI agent proactively restarted services before user impact.', 'REMOTE_AGENT', 0),
+    ('TKT-2024-017', 'DEV-006', '2024-11-29 14:30:00', '2024-11-29 14:45:00', 'CONNECTIVITY', 'Brief network latency spike', 'REMOTE_FIX', 'Reset network stack and DNS cache remotely.', 'REMOTE_AGENT', 0),
+    ('TKT-2024-018', 'DEV-011', '2024-12-01 10:00:00', '2024-12-01 10:08:00', 'MEMORY_LEAK', 'Predictive alert: memory trending high', 'REMOTE_FIX', 'Proactive cache clear prevented potential crash.', 'REMOTE_AGENT', 0),
+    ('TKT-2024-019', 'DEV-016', '2024-12-03 11:15:00', '2024-12-03 11:25:00', 'SOFTWARE_UPDATE', 'Scheduled security patch deployment', 'REMOTE_FIX', 'Successfully applied security patches across batch.', 'REMOTE_AGENT', 0),
+    ('TKT-2024-020', 'DEV-021', '2024-12-05 08:30:00', '2024-12-05 08:42:00', 'SLOW_RESPONSE', 'AI detected performance degradation', 'REMOTE_FIX', 'Optimized application settings and cleared temp files.', 'REMOTE_AGENT', 0);
 
 -- ============================================================================
 -- TROUBLESHOOTING KNOWLEDGE BASE
@@ -426,23 +435,27 @@ INSERT INTO PROVIDER_FEEDBACK (FACILITY_NAME, DEVICE_ID, FEEDBACK_DATE, NPS_SCOR
     ('Mayo Clinic Rochester', 'DEV-026', '2024-11-22', 10, 5, 5, 5, 'POSITIVE', 
      'Top-notch equipment and support. Exactly what we expect from a premium partner.', FALSE),
     
-    -- Neutral feedback
-    ('North Shore Pediatrics', 'DEV-003', '2024-10-25', 6, 3, 4, 3, 'NEUTRAL', 
-     'Device works okay but has had some performance issues. Hoping it improves after recent maintenance.', FALSE),
-    ('Buckeye Family Medicine', 'DEV-008', '2024-11-01', 5, 3, 3, 2, 'NEUTRAL', 
-     'Had multiple issues this quarter. Support was helpful but reliability needs improvement.', TRUE),
-    ('Lansing Cardiology Group', 'DEV-014', '2024-10-15', 6, 3, 4, 3, 'NEUTRAL', 
-     'Recent hardware replacement fixed the display issue. Monitoring performance now.', FALSE),
-    ('Appleton Walk-In Care', 'DEV-025', '2024-11-08', 5, 3, 3, 3, 'NEUTRAL', 
-     'Occasional connectivity issues but nothing major. Would appreciate more proactive monitoring.', FALSE),
+    -- Additional positive feedback (DEMO-OPTIMIZED for higher satisfaction scores)
+    ('Henry Ford Health Detroit', 'DEV-011', '2024-11-25', 9, 5, 5, 5, 'POSITIVE', 
+     'Outstanding reliability. The device has been running perfectly for months.', FALSE),
+    ('IU Health Indianapolis', 'DEV-016', '2024-11-28', 10, 5, 5, 5, 'POSITIVE', 
+     'Best digital signage solution we have used. Patients and staff love it.', FALSE),
+    ('Fort Wayne Medical Center', 'DEV-017', '2024-11-30', 9, 4, 5, 5, 'POSITIVE', 
+     'The predictive maintenance alerts have been incredibly helpful.', FALSE),
+    ('UW Health Madison', 'DEV-022', '2024-12-01', 10, 5, 5, 5, 'POSITIVE', 
+     'World-class support team. Issues get resolved before we even notice them.', FALSE),
+    ('Hennepin Healthcare', 'DEV-027', '2024-12-05', 9, 5, 4, 5, 'POSITIVE', 
+     'Remote fix capability is a game changer. No more waiting for technicians.', FALSE),
     
-    -- Negative feedback (for devices with issues)
-    ('Springfield Urgent Care', 'DEV-005', '2024-11-10', 2, 2, 2, 1, 'NEGATIVE', 
-     'Device has been offline multiple times. Very frustrating for staff and patients.', TRUE),
-    ('Evansville Family Practice', 'DEV-018', '2024-10-20', 3, 2, 3, 2, 'NEGATIVE', 
-     'Boot loop issue caused significant downtime. Need better preventive maintenance.', TRUE),
-    ('Bloomington Urgent Care', 'DEV-020', '2024-11-05', 4, 2, 3, 2, 'NEGATIVE', 
-     'Memory issues causing app crashes. Affects our ability to show content to patients.', TRUE);
+    -- Neutral feedback (only 2 for realistic balance)
+    ('North Shore Pediatrics', 'DEV-003', '2024-10-25', 7, 4, 4, 4, 'NEUTRAL', 
+     'Device works well. Would love to see more pediatric-focused content options.', FALSE),
+    ('Lansing Cardiology Group', 'DEV-014', '2024-10-15', 7, 4, 4, 4, 'NEUTRAL', 
+     'Solid performance. Recent firmware update improved responsiveness.', FALSE),
+    
+    -- Negative feedback (only 1 to show opportunity for improvement)
+    ('Springfield Urgent Care', 'DEV-005', '2024-11-10', 5, 3, 3, 3, 'NEGATIVE', 
+     'Had a brief network outage last month. Support resolved it quickly but would prefer proactive alerts.', TRUE);
 
 -- ============================================================================
 -- REVENUE IMPACT VIEW
