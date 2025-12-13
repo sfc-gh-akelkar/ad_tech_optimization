@@ -471,30 +471,48 @@ SELECT * FROM SEMANTIC_VIEW(
 
 CREATE OR REPLACE SEMANTIC VIEW SV_EXTERNAL_ACTIONS
   TABLES (
-    actions AS V_RECENT_EXTERNAL_ACTIONS PRIMARY KEY (TIMESTAMP)
+    actions AS V_RECENT_EXTERNAL_ACTIONS PRIMARY KEY (DEVICE_ID)
   )
   DIMENSIONS (
-    actions.TIMESTAMP AS action_timestamp
+    actions.action_timestamp AS actions.TIMESTAMP
+      WITH SYNONYMS = ('when', 'time', 'date')
       COMMENT = 'When the action was triggered',
-    actions.ACTION_TYPE AS action_type
+    
+    actions.action_type AS actions.ACTION_TYPE
+      WITH SYNONYMS = ('type', 'category')
       COMMENT = 'Type of action: DEVICE_COMMAND, ALERT, or WORK_ORDER',
-    actions.TARGET_SYSTEM AS target_system
+    
+    actions.target_system AS actions.TARGET_SYSTEM
+      WITH SYNONYMS = ('system', 'destination', 'platform')
       COMMENT = 'System the action was sent to: Device API, Slack, ServiceNow, etc.',
-    actions.DEVICE_ID AS device_id
+    
+    actions.device_id AS actions.DEVICE_ID
+      WITH SYNONYMS = ('device', 'unit')
       COMMENT = 'Device ID the action was for',
-    actions.COMMAND AS command
+    
+    actions.command AS actions.COMMAND
+      WITH SYNONYMS = ('action', 'operation')
       COMMENT = 'Command or action that was executed',
-    actions.STATUS AS status
+    
+    actions.status AS actions.STATUS
+      WITH SYNONYMS = ('state', 'result')
       COMMENT = 'Status of the action: SIMULATED, PENDING, SENT, FAILED',
-    actions.INITIATED_BY AS initiated_by
+    
+    actions.initiated_by AS actions.INITIATED_BY
+      WITH SYNONYMS = ('source', 'triggered by', 'who')
       COMMENT = 'Who initiated the action: AI_AGENT, SCHEDULED_TASK, MANUAL',
-    actions.API_ENDPOINT AS api_endpoint
+    
+    actions.api_endpoint AS actions.API_ENDPOINT
+      WITH SYNONYMS = ('endpoint', 'url')
       COMMENT = 'API endpoint that would be called',
-    actions.NOTES AS notes
+    
+    actions.notes AS actions.NOTES
+      WITH SYNONYMS = ('description', 'details')
       COMMENT = 'Additional notes about the action'
   )
   METRICS (
     actions.total_actions AS COUNT(*)
+      WITH SYNONYMS = ('count', 'number of actions')
       COMMENT = 'Total number of actions in the log'
   )
   COMMENT = 'Audit log of automated actions triggered by the AI agent';
