@@ -464,3 +464,40 @@ SELECT * FROM SEMANTIC_VIEW(
     METRICS total_work_orders, unassigned_work_orders
 );
 
+-- ============================================================================
+-- EXTERNAL ACTIONS SEMANTIC VIEW
+-- Provides natural language access to the action audit log
+-- ============================================================================
+
+CREATE OR REPLACE SEMANTIC VIEW SV_EXTERNAL_ACTIONS
+  TABLES (
+    actions AS V_RECENT_EXTERNAL_ACTIONS PRIMARY KEY (TIMESTAMP)
+  )
+  DIMENSIONS (
+    actions.TIMESTAMP AS action_timestamp
+      COMMENT = 'When the action was triggered',
+    actions.ACTION_TYPE AS action_type
+      COMMENT = 'Type of action: DEVICE_COMMAND, ALERT, or WORK_ORDER',
+    actions.TARGET_SYSTEM AS target_system
+      COMMENT = 'System the action was sent to: Device API, Slack, ServiceNow, etc.',
+    actions.DEVICE_ID AS device_id
+      COMMENT = 'Device ID the action was for',
+    actions.COMMAND AS command
+      COMMENT = 'Command or action that was executed',
+    actions.STATUS AS status
+      COMMENT = 'Status of the action: SIMULATED, PENDING, SENT, FAILED',
+    actions.INITIATED_BY AS initiated_by
+      COMMENT = 'Who initiated the action: AI_AGENT, SCHEDULED_TASK, MANUAL',
+    actions.API_ENDPOINT AS api_endpoint
+      COMMENT = 'API endpoint that would be called',
+    actions.NOTES AS notes
+      COMMENT = 'Additional notes about the action'
+  )
+  METRICS (
+    actions.total_actions AS COUNT(*)
+      COMMENT = 'Total number of actions in the log'
+  )
+  COMMENT = 'Audit log of automated actions triggered by the AI agent';
+
+GRANT SELECT ON SEMANTIC VIEW SV_EXTERNAL_ACTIONS TO ROLE SF_INTELLIGENCE_DEMO;
+
