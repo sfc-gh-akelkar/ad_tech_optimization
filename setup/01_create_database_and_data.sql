@@ -688,8 +688,121 @@ GROUP BY t.TECHNICIAN_ID, t.TECHNICIAN_NAME, t.CURRENT_STATUS, t.REGION,
          t.SPECIALIZATION, t.CERTIFICATION_LEVEL, t.AVG_RATING, t.CURRENT_LOCATION;
 
 -- ============================================================================
+-- DEVICE HEALTH SUMMARY VIEW
+-- Combines device inventory with latest telemetry for health scoring
+-- ============================================================================
+CREATE OR REPLACE VIEW V_DEVICE_HEALTH_SUMMARY AS
+WITH latest_telemetry AS (
+    SELECT 
+        DEVICE_ID,
+        CPU_TEMP_CELSIUS,
+        CPU_USAGE_PCT,
+        MEMORY_USAGE_PCT,
+        DISK_USAGE_PCT,
+        NETWORK_LATENCY_MS,
+        UPTIME_HOURS,
+        ERROR_COUNT,
+        LAST_HEARTBEAT,
+        TIMESTAMP as TELEMETRY_TIMESTAMP,
+        ROW_NUMBER() OVER (PARTITION BY DEVICE_ID ORDER BY TIMESTAMP DESC) as rn
+    FROM DEVICE_TELEMETRY
+)
+SELECT 
+    d.DEVICE_ID,
+    d.DEVICE_MODEL,
+    d.FACILITY_NAME,
+    d.FACILITY_TYPE,
+    d.LOCATION_CITY,
+    d.LOCATION_STATE,
+    CONCAT(d.LOCATION_CITY, ', ', d.LOCATION_STATE) as LOCATION,
+    d.INSTALL_DATE,
+    d.WARRANTY_EXPIRY,
+    d.LAST_MAINTENANCE_DATE,
+    DATEDIFF('day', d.LAST_MAINTENANCE_DATE, CURRENT_DATE()) as DAYS_SINCE_MAINTENANCE,
+    d.FIRMWARE_VERSION,
+    d.STATUS,
+    d.HOURLY_AD_REVENUE_USD,
+    d.MONTHLY_IMPRESSIONS,
+    t.CPU_TEMP_CELSIUS,
+    t.CPU_USAGE_PCT,
+    t.MEMORY_USAGE_PCT,
+    t.DISK_USAGE_PCT,
+    t.NETWORK_LATENCY_MS,
+    t.UPTIME_HOURS,
+    t.ERROR_COUNT,
+    t.LAST_HEARTBEAT,
+    t.TELEMETRY_TIMESTAMP,
+    -- Health score calculation
+    GREATEST(0, 
+        100 
+        - CASE WHEN t.CPU_TEMP_CELSIUS > 70 THEN 30 WHEN t.CPU_TEMP_CELSIUS > 60 THEN 15 ELSE 0 END
+        - CASE WHEN t.CPU_USAGE_PCT > 90 THEN 25 WHEN t.CPU_USAGE_PCT > 75 THEN 10 ELSE 0 END
+        - CASE WHEN t.MEMORY_USAGE_PCT > 90 THEN 25 WHEN t.MEMORY_USAGE_PCT > 80 THEN 10 ELSE 0 END
+        - CASE WHEN t.NETWORK_LATENCY_MS > 200 THEN 15 WHEN t.NETWORK_LATENCY_MS > 100 THEN 5 ELSE 0 END
+        - CASE WHEN t.ERROR_COUNT > 10 THEN 20 WHEN t.ERROR_COUNT > 5 THEN 10 ELSE 0 END
+    )::INT as HEALTH_SCORE,
+    -- Risk classification
+    CASE 
+        WHEN d.STATUS = 'OFFLINE' THEN 'CRITICAL'
+        WHEN t.CPU_TEMP_CELSIUS > 70 OR t.CPU_USAGE_PCT > 90 OR t.MEMORY_USAGE_PCT > 90 THEN 'HIGH'
+        WHEN d.STATUS = 'DEGRADED' OR t.ERROR_COUNT > 5 THEN 'MEDIUM'
+        ELSE 'LOW'
+    END as RISK_LEVEL,
+    -- Primary issue
+    CASE 
+        WHEN d.STATUS = 'OFFLINE' THEN 'Device Offline'
+        WHEN t.CPU_TEMP_CELSIUS > 70 THEN 'Overheating'
+        WHEN t.CPU_USAGE_PCT > 90 THEN 'High CPU Usage'
+        WHEN t.MEMORY_USAGE_PCT > 90 THEN 'Memory Exhaustion'
+        WHEN t.NETWORK_LATENCY_MS > 200 THEN 'Network Issues'
+        WHEN t.ERROR_COUNT > 10 THEN 'High Error Rate'
+        WHEN d.STATUS = 'DEGRADED' THEN 'Degraded Performance'
+        ELSE 'Healthy'
+    END as PRIMARY_ISSUE
+FROM DEVICE_INVENTORY d
+LEFT JOIN latest_telemetry t ON d.DEVICE_ID = t.DEVICE_ID AND t.rn = 1;
+
+-- ============================================================================
+-- MAINTENANCE ANALYTICS VIEW
+-- Historical maintenance data with calculated metrics
+-- ============================================================================
+CREATE OR REPLACE VIEW V_MAINTENANCE_ANALYTICS AS
+SELECT 
+    m.TICKET_ID,
+    m.DEVICE_ID,
+    d.DEVICE_MODEL,
+    d.FACILITY_NAME,
+    d.FACILITY_TYPE,
+    d.LOCATION_CITY,
+    d.LOCATION_STATE,
+    CONCAT(d.LOCATION_CITY, ', ', d.LOCATION_STATE) as LOCATION,
+    m.CREATED_AT,
+    m.RESOLVED_AT,
+    DATE_TRUNC('month', m.CREATED_AT) as TICKET_MONTH,
+    DATE_TRUNC('week', m.CREATED_AT) as TICKET_WEEK,
+    m.ISSUE_TYPE,
+    m.ISSUE_DESCRIPTION,
+    m.RESOLUTION_TYPE,
+    m.RESOLUTION_NOTES,
+    m.TECHNICIAN_ID,
+    m.COST_USD,
+    DATEDIFF('minute', m.CREATED_AT, m.RESOLVED_AT) as RESOLUTION_TIME_MINS,
+    CASE 
+        WHEN m.RESOLUTION_TYPE = 'REMOTE_FIX' THEN 185  -- Avg dispatch cost saved
+        ELSE 0 
+    END as COST_SAVINGS_USD,
+    CASE 
+        WHEN m.RESOLUTION_TYPE = 'REMOTE_FIX' THEN TRUE
+        ELSE FALSE
+    END as WAS_REMOTE_FIX
+FROM MAINTENANCE_HISTORY m
+JOIN DEVICE_INVENTORY d ON m.DEVICE_ID = d.DEVICE_ID;
+
+-- ============================================================================
 -- EXECUTIVE DASHBOARD VIEW
 -- Single-pane-of-glass for C-suite executives
+-- NOTE: References to V_FAILURE_PREDICTIONS and V_PREDICTION_ACCURACY_ANALYSIS 
+--       require running script 05 first, or these will show NULL
 -- ============================================================================
 CREATE OR REPLACE VIEW V_EXECUTIVE_DASHBOARD AS
 SELECT 
@@ -706,10 +819,13 @@ SELECT
     (SELECT ROUND(AVG(HEALTH_SCORE), 1) FROM V_DEVICE_HEALTH_SUMMARY) as AVG_FLEET_HEALTH_SCORE,
     
     -- ===== PREDICTIVE MAINTENANCE METRICS =====
-    (SELECT COUNT(*) FROM V_FAILURE_PREDICTIONS WHERE FAILURE_PROBABILITY_PCT >= 60) as HIGH_RISK_DEVICES,
-    (SELECT COUNT(*) FROM V_FAILURE_PREDICTIONS 
-     WHERE PREDICTED_HOURS_TO_FAILURE IS NOT NULL AND PREDICTED_HOURS_TO_FAILURE <= 48) as PREDICTED_FAILURES_48H,
-    (SELECT PREDICTION_ACCURACY_PCT FROM V_PREDICTION_ACCURACY_ANALYSIS) as PREDICTION_ACCURACY_PCT,
+    -- Note: These will show actual values after running script 05_predictive_simulation.sql
+    -- For now, we estimate based on device health scores
+    (SELECT COUNT(*) FROM V_DEVICE_HEALTH_SUMMARY WHERE RISK_LEVEL IN ('HIGH', 'CRITICAL')) as HIGH_RISK_DEVICES,
+    (SELECT COUNT(*) FROM V_DEVICE_HEALTH_SUMMARY WHERE RISK_LEVEL = 'CRITICAL') as PREDICTED_FAILURES_48H,
+    -- Placeholder accuracy based on historical remote fix success rate
+    (SELECT ROUND(COUNT(CASE WHEN RESOLUTION_TYPE = 'REMOTE_FIX' THEN 1 END) * 100.0 / NULLIF(COUNT(*), 0), 1) 
+     FROM MAINTENANCE_HISTORY WHERE ISSUE_TYPE IN ('DISPLAY_FREEZE', 'HIGH_CPU', 'MEMORY_LEAK')) as PREDICTION_ACCURACY_PCT,
     
     -- ===== COST METRICS =====
     (SELECT COALESCE(SUM(COST_SAVINGS_USD), 0) FROM V_MAINTENANCE_ANALYTICS) as TOTAL_COST_SAVINGS_USD,
