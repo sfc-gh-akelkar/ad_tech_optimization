@@ -6,6 +6,16 @@
 
 ---
 
+## 🎯 FOCUS Framework Alignment
+
+| CHALLENGE | ACTION | RESULT |
+|-----------|--------|--------|
+| 💸 Lost Advertising Revenue | 🤖 AI Agent Implementation | 💵 Revenue Protection |
+| 💰 High Operational Costs | 🔧 Automated Remote Resolution | 📉 40-60% Cost Reduction |
+| ⏰ Unexpected Downtime | 🧠 AI/ML Predictive Models | 🎯 >85% Predictive Accuracy |
+
+---
+
 ## 📋 Demo Overview
 
 This demo tells a **cohesive story** through 4 personas, with each question flowing naturally to the next:
@@ -21,8 +31,14 @@ This demo tells a **cohesive story** through 4 personas, with each question flow
 
 ## 🎬 Opening (0:00 - 2:00)
 
-**Talking Points:**
-> "PatientPoint operates 500,000 IoT devices—HealthScreen displays—across hospitals and clinics nationwide. When a screen fails, it costs $150-300 per field dispatch, and patients miss critical health information. At that scale, even a 1% failure rate means 5,000 potential dispatches. Today I'll show you how Snowflake Intelligence and Cortex Agents transform their maintenance operations."
+**Talking Points (aligned to FOCUS Challenges):**
+> "PatientPoint operates 500,000 IoT devices—HealthScreen displays—across hospitals and clinics nationwide. These screens generate **advertising revenue from pharmaceutical partners**. When a screen fails, three things happen:
+> 
+> 1. **Lost Revenue**: Every hour offline means lost ad impressions and revenue
+> 2. **High Costs**: Field dispatch costs $150-300 per visit
+> 3. **Unpredictable Downtime**: Reactive maintenance means you don't know what's failing until it's down
+> 
+> Today I'll show you how Snowflake Intelligence and Cortex Agents solve all three with **predictive AI**."
 
 **Actions:**
 1. Open **Snowflake Intelligence** (AI & ML → Snowflake Intelligence)
@@ -49,16 +65,25 @@ Give me a summary of our device fleet health and business impact
 
 ---
 
-### Prompt 2: Cost Impact (follows from summary)
+### Prompt 2: Revenue Protection (addresses Challenge #1)
+```
+How much advertising revenue are we losing from device downtime?
+```
+
+**Transition:** *"Zero revenue loss this month—that's our revenue protection working. But how are we achieving this? Let's look at cost savings..."*
+
+---
+
+### Prompt 3: Cost Savings (addresses Challenge #2)
 ```
 How much money have we saved this month from remote fixes vs field dispatches?
 ```
 
-**Transition:** *"That's impressive—$2,500+ saved this month just from remote fixes. But I noticed the NPS score. Let's look at customer satisfaction..."*
+**Transition:** *"That's $2,500+ saved this month—on track for 40-60% reduction in field service costs. But I noticed the NPS score. Let's check customer satisfaction..."*
 
 ---
 
-### Prompt 3: Customer Pulse (follows from NPS mention)
+### Prompt 4: Customer Pulse (follows from NPS mention)
 ```
 What is our customer satisfaction score and which facilities need follow-up?
 ```
@@ -67,13 +92,13 @@ What is our customer satisfaction score and which facilities need follow-up?
 
 ---
 
-### Key Takeaways for Executive
-| Metric | Value | Scale Impact (500K devices) |
-|--------|-------|----------------------------|
-| 💰 Remote fix savings | $2,500+/month | **$15M+/year** |
-| 🟢 Fleet uptime | 92%+ | 40K devices need monitoring |
-| ⭐ NPS Score | 8.6 | Customer loyalty driver |
-| 📊 Remote resolution | 70%+ | 350K dispatches avoided/year |
+### Key Takeaways for Executive (Mapped to FOCUS Results)
+| FOCUS Result | Metric | Demo Value | Scale Impact |
+|--------------|--------|------------|--------------|
+| 💵 **Revenue Protection** | Ad revenue loss | $0 | Millions protected |
+| 💰 **40-60% Cost Reduction** | Remote fix savings | $2,500+/month | **$15M+/year** |
+| 🎯 **>85% Prediction Accuracy** | Remote resolution | 70%+ | 350K dispatches avoided |
+| ⭐ Customer Satisfaction | NPS Score | 8.6 | Loyalty driver |
 
 ---
 
@@ -253,21 +278,25 @@ What training data do we have available for building ML models?
 > 
 > All from natural language questions. No SQL. No dashboard switching. No waiting for reports."
 
-### Business Impact at Scale
+### Business Impact at Scale (FOCUS Results Delivered)
 
-> "With Snowflake Intelligence and Cortex Agents, PatientPoint can manage their 500,000 device fleet with:
+> "With Snowflake Intelligence and Cortex Agents, PatientPoint achieves all three FOCUS results:
 > 
-> ✅ **Predict failures** 24-48 hours before they happen with >85% accuracy
+> **RESULT 1: 40-60% Cost Reduction** ✅
+> - 70%+ issues resolved remotely → 350,000 avoided dispatches annually
+> - $185 saved per remote fix → **$50M+/year in avoided costs**
 > 
-> ✅ **Resolve 70%+ of issues remotely**—that's 350,000 avoided dispatches annually
+> **RESULT 2: Revenue Protection** ✅
+> - Predictive maintenance prevents unplanned downtime
+> - Zero ad revenue loss from device failures
+> - Proactive fixes before screens go dark
 > 
-> ✅ **Save $50M+/year** in avoided dispatch costs at scale ($185 × 350K)
+> **RESULT 3: >85% Predictive Accuracy** ✅
+> - 24-48 hour advance warning of failures
+> - Pattern recognition from 72K+ telemetry records
+> - ML-ready data foundation in Snowflake
 > 
-> ✅ **Reduce MTTR** from hours to minutes for remote fixes
-> 
-> ✅ **Improve customer satisfaction** with proactive maintenance
-> 
-> All running natively in Snowflake—no external ML platforms, no separate agent frameworks, and full governance through your existing Snowflake security model."
+> All running natively in Snowflake—Cortex ML for predictions, Cortex Analyst for natural language, and full governance through your existing security model."
 
 ### Call to Action
 > "Would you like to see how this could work with your data? We can set up a proof-of-concept in days, not months."
