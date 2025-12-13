@@ -476,7 +476,7 @@ SELECT 'DEV-003', DATEADD('hour', 14, DATEADD('day', -27, CURRENT_TIMESTAMP())),
 -- ============================================================================
 CREATE OR REPLACE TABLE PROVIDER_FEEDBACK (
     FEEDBACK_ID VARCHAR(36) DEFAULT UUID_STRING() PRIMARY KEY,
-    FACILITY_NAME VARCHAR(100),
+    FACILITY_NAME VARCHAR(100) NOT NULL,  -- Ensure facility name is always provided
     DEVICE_ID VARCHAR(20),
     FEEDBACK_DATE DATE,
     NPS_SCORE INT,  -- Net Promoter Score: -100 to 100 (calculated from 0-10 rating)
@@ -586,7 +586,8 @@ GROUP BY d.DEVICE_ID, d.FACILITY_NAME, d.FACILITY_TYPE, d.LOCATION_CITY, d.LOCAT
 -- ============================================================================
 CREATE OR REPLACE VIEW V_CUSTOMER_SATISFACTION AS
 SELECT 
-    f.FACILITY_NAME,
+    -- Use device inventory facility name as source of truth (avoids nulls)
+    COALESCE(f.FACILITY_NAME, d.FACILITY_NAME, 'Unknown Facility') as FACILITY_NAME,
     d.FACILITY_TYPE,
     CONCAT(d.LOCATION_CITY, ', ', d.LOCATION_STATE) as LOCATION,
     f.DEVICE_ID,
@@ -612,7 +613,9 @@ SELECT
     END as NPS_CATEGORY
 FROM PROVIDER_FEEDBACK f
 JOIN DEVICE_INVENTORY d ON f.DEVICE_ID = d.DEVICE_ID
-GROUP BY f.FACILITY_NAME, d.FACILITY_TYPE, d.LOCATION_CITY, d.LOCATION_STATE, 
+WHERE f.FACILITY_NAME IS NOT NULL  -- Filter out any null facility names
+GROUP BY COALESCE(f.FACILITY_NAME, d.FACILITY_NAME, 'Unknown Facility'), 
+         d.FACILITY_TYPE, d.LOCATION_CITY, d.LOCATION_STATE, 
          f.DEVICE_ID, d.STATUS;
 
 -- ============================================================================
