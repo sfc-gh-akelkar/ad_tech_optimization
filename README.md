@@ -1,25 +1,21 @@
-# 🏥 PatientPoint AI Agent Demos
+# 🔧 PatientPoint Predictive Device Maintenance
 
-**AI Agents for Healthcare Digital Health Operations**
+**AI-Powered IoT Device Maintenance for PatientPoint HealthScreens**
 
-Two Snowflake Cortex Agent demos for **Snowflake Intelligence** showcasing AI-powered analytics for PatientPoint's digital health platform.
-
----
-
-## 📋 Use Cases Overview
-
-| Use Case | Focus | Business Value |
-|----------|-------|----------------|
-| [**01: Predictive Maintenance**](use_cases/01_predictive_maintenance/) | IoT device health & automated fixes | $96M annual savings |
-| [**02: Patient Engagement**](use_cases/02_patient_engagement/) | Engagement analytics & churn prediction | Revenue protection |
+A Snowflake Cortex Agent demo for **Snowflake Intelligence** showcasing how AI can predict device failures, diagnose issues, and recommend fixes—reducing manual field dispatches.
 
 ---
 
-## 🔧 Use Case 1: Predictive Device Maintenance
+## 🎯 Overview
 
-**AI-powered IoT device maintenance for 500,000 HealthScreen displays**
+PatientPoint operates **500,000 HealthScreen devices** across healthcare facilities nationwide. This demo demonstrates how Snowflake Intelligence and Cortex Agents enable:
+
+- **Predictive failure detection** - 24-48 hour advance warning
+- **Automated remote remediation** - 60%+ issues fixed without dispatch  
+- **Cost optimization** - $96M annual savings projected
 
 ### The Challenge
+
 | Pain Point | Impact |
 |------------|--------|
 | **High Costs** | Field technician dispatches cost $150-300+ per visit |
@@ -27,46 +23,22 @@ Two Snowflake Cortex Agent demos for **Snowflake Intelligence** showcasing AI-po
 | **Reactive Model** | Issues discovered after failure, not before |
 
 ### The Solution
-- **Predictive Failure Detection** - 24-48 hour advance warning
-- **Automated Remote Remediation** - 60%+ issues fixed without dispatch
-- **AI-Powered Triage** - Intelligent routing to remote fix vs. field dispatch
+
+| Capability | Technology |
+|------------|------------|
+| Natural language queries | Cortex Analyst + Semantic Views |
+| Knowledge base search | Cortex Search |
+| Automated actions | Custom stored procedures |
+| Predictive analytics | ML-ready data foundation |
 
 ### Business Impact
+
 | Metric | Value |
 |--------|-------|
-| Annual Cost Baseline | $185M |
+| Annual Cost Baseline | $185M (field dispatches) |
 | Projected Savings | $96M (52% reduction) |
 | Remote Fix Rate | 60%+ |
 | Prediction Accuracy | >85% |
-
-📁 **[View Use Case 1 →](use_cases/01_predictive_maintenance/)**
-
----
-
-## 📊 Use Case 2: Patient Engagement Analytics
-
-**Validate that patient engagement drives retention and outcomes**
-
-### The Three Hypotheses
-| Hypothesis | Question | Business Impact |
-|------------|----------|-----------------|
-| **H1: Patient Retention** | Do engaged patients stay with providers? | Prove value to providers |
-| **H2: Patient Outcomes** | Does engagement improve health metrics? | Prove value to pharma |
-| **H3: Provider Retention** | Does patient engagement predict provider retention? | Protect PatientPoint revenue |
-
-### The Solution
-- **Churn Prediction** - Identify at-risk providers before they leave
-- **Correlation Analysis** - Statistically validate engagement-outcome links
-- **Best Practices Search** - AI-powered intervention recommendations
-
-### Business Impact
-| Metric | Value |
-|--------|-------|
-| Revenue at Risk | Identified proactively |
-| Churn Prediction | >85% accuracy |
-| Intervention Time | Seconds vs weeks |
-
-📁 **[View Use Case 2 →](use_cases/02_patient_engagement/)**
 
 ---
 
@@ -74,27 +46,14 @@ Two Snowflake Cortex Agent demos for **Snowflake Intelligence** showcasing AI-po
 
 ```
 ai_agent_device_maintenance/
-├── use_cases/
-│   ├── 01_predictive_maintenance/
-│   │   ├── setup/
-│   │   │   ├── 01_create_database_and_data.sql
-│   │   │   ├── 02_create_semantic_views.sql
-│   │   │   ├── 03_create_cortex_search.sql
-│   │   │   ├── 04_create_agent.sql
-│   │   │   └── 05_predictive_simulation.sql
-│   │   ├── DEMO_SCRIPT.md
-│   │   └── README.md
-│   │
-│   └── 02_patient_engagement/
-│       ├── setup/
-│       │   ├── 01_create_database_and_data.sql
-│       │   ├── 02_create_semantic_views.sql
-│       │   ├── 03_create_cortex_search.sql
-│       │   └── 04_create_agent.sql
-│       ├── DEMO_SCRIPT.md
-│       └── README.md
-│
-└── README.md                 # This file
+├── setup/
+│   ├── 01_create_database_and_data.sql    # Database, tables, sample data
+│   ├── 02_create_semantic_views.sql       # Semantic views for Cortex Analyst
+│   ├── 03_create_cortex_search.sql        # Knowledge base search services
+│   ├── 04_create_agent.sql                # Agent configuration
+│   └── 05_predictive_simulation.sql       # Predictive analytics views
+├── DEMO_SCRIPT.md                         # 20-minute demo walkthrough
+└── README.md                              # This file
 ```
 
 ---
@@ -104,70 +63,156 @@ ai_agent_device_maintenance/
 ### Prerequisites
 - Snowflake account with **Cortex** access
 - ACCOUNTADMIN role (for initial setup)
-- The demos use the `SF_INTELLIGENCE_DEMO` role (created automatically)
+- The demo uses the `SF_INTELLIGENCE_DEMO` role (created automatically)
 
-### Setup Steps
+### Step 1: Run SQL Scripts
 
-**For Use Case 1 (Predictive Maintenance):**
-```bash
-cd use_cases/01_predictive_maintenance/setup/
-# Run scripts 01-05 in order
+Execute in order in Snowsight:
+
+```sql
+-- 1. Create role, database, tables, and sample data
+-- Run: setup/01_create_database_and_data.sql
+
+-- 2. Create Snowflake Semantic Views
+-- Run: setup/02_create_semantic_views.sql
+
+-- 3. Create Cortex Search services
+-- Run: setup/03_create_cortex_search.sql
+
+-- 4. Create the agent
+-- Run: setup/04_create_agent.sql
+
+-- 5. Create predictive failure detection views
+-- Run: setup/05_predictive_simulation.sql
 ```
 
-**For Use Case 2 (Patient Engagement):**
-```bash
-cd use_cases/02_patient_engagement/setup/
-# Run scripts 01-04 in order
-```
-
-### Access the Agents
+### Step 2: Access via Snowflake Intelligence
 
 1. Navigate to **AI & ML → Snowflake Intelligence**
-2. Select the agent:
-   - **Device Maintenance Assistant** (Use Case 1)
-   - **Patient Engagement Analyst** (Use Case 2)
+2. Select **Device Maintenance Assistant**
 3. Start asking questions!
 
 ---
 
-## 🎬 Demo Scripts
+## 🎬 Demo Script
 
-Each use case includes a detailed 20-minute demo script:
+For the complete **20-minute demo script** with talking points and prompts, see:
 
-| Use Case | Demo Script |
-|----------|-------------|
-| Predictive Maintenance | [DEMO_SCRIPT.md](use_cases/01_predictive_maintenance/DEMO_SCRIPT.md) |
-| Patient Engagement | [DEMO_SCRIPT.md](use_cases/02_patient_engagement/DEMO_SCRIPT.md) |
+📄 **[DEMO_SCRIPT.md](DEMO_SCRIPT.md)**
 
----
+### Key Personas
 
-## 🎯 Key Personas
-
-### Use Case 1: Predictive Maintenance
 | Persona | Focus |
 |---------|-------|
 | Executive (C-Suite) | ROI, fleet health, revenue protection |
 | Operations Center | Risk triage, predictions, dispatch decisions |
 | Field Technician | Work orders, troubleshooting, repair guidance |
 
-### Use Case 2: Patient Engagement
-| Persona | Focus |
-|---------|-------|
-| Executive (C-Suite) | Revenue at risk, churn prediction, ROI |
-| Data Science | Correlation analysis, model validation |
-| Provider Success | At-risk accounts, intervention strategies |
-| Content/Product | Content performance, optimization |
+### Sample Prompts
+
+```
+# Executive
+Give me a summary of our device fleet health and business impact
+What's our annual field service cost and projected savings?
+
+# Operations
+Which devices have critical or high risk levels right now?
+Can any of these be fixed remotely?
+
+# Technician
+What work orders are assigned to Marcus Johnson today?
+What's wrong with device DEV-003 and how do I fix it?
+```
 
 ---
 
-## 💰 Combined Business Value
+## 📊 Data Model
 
-| Metric | Use Case 1 | Use Case 2 | Total Impact |
-|--------|------------|------------|--------------|
-| **Cost Savings** | $96M/year | - | $96M/year |
-| **Revenue Protected** | Ad revenue | Provider contracts | Millions |
-| **Prediction Accuracy** | >85% | >85% | Enterprise AI |
-| **Time to Insight** | Seconds | Seconds | 10x faster |
+### Tables
+
+| Table | Records | Description |
+|-------|---------|-------------|
+| DEVICE_INVENTORY | 100 | Device master data |
+| DEVICE_TELEMETRY | ~72,000 | Hourly health metrics |
+| MAINTENANCE_HISTORY | 24 | Service tickets |
+| TROUBLESHOOTING_KB | 10 | Fix procedures |
+| WORK_ORDERS | 8 | Active work orders |
+| TECHNICIANS | 6 | Field team |
+
+### Key Views
+
+| View | Purpose |
+|------|---------|
+| V_DEVICE_HEALTH_SUMMARY | Current health with risk scores |
+| V_MAINTENANCE_ANALYTICS | Ticket analytics with cost savings |
+| V_FAILURE_PREDICTIONS | AI-predicted failures |
+| V_ROI_ANALYSIS | Cost baseline and savings |
+
+### Agent Tools
+
+| Tool | Type | Purpose |
+|------|------|---------|
+| DeviceFleetAnalytics | Cortex Analyst | Device health & telemetry |
+| MaintenanceAnalytics | Cortex Analyst | Ticket history & costs |
+| ROIAnalytics | Cortex Analyst | Annual costs & ROI |
+| TroubleshootingGuide | Cortex Search | Fix procedures |
+| PastIncidents | Cortex Search | Historical resolutions |
+| SendDeviceCommand | Custom Procedure | Remote device commands |
+| SendAlert | Custom Procedure | Slack/PagerDuty alerts |
+| CreateServiceNowIncident | Custom Procedure | Work order creation |
+
+---
+
+## 🔮 Predictive Capabilities
+
+### What We Prove
+
+| Capability | How It's Demonstrated |
+|------------|----------------------|
+| Historical Data for ML | 30+ days of telemetry, maintenance history |
+| Feature Engineering | Trend detection, spike flags, derived features |
+| Prediction Accuracy | >85% detection rate on historical data |
+| 24-48 Hour Lead Time | Advance warning before failures |
+
+### Sample Queries
+
+```sql
+-- Devices predicted to fail within 48 hours
+SELECT * FROM V_FAILURE_PREDICTIONS 
+WHERE PREDICTED_HOURS_TO_FAILURE <= 48
+ORDER BY FAILURE_PROBABILITY_PCT DESC;
+
+-- Prediction accuracy analysis
+SELECT * FROM V_PREDICTION_ACCURACY_ANALYSIS;
+```
+
+---
+
+## 💰 Value Drivers
+
+### Operational Cost Reduction
+
+| Benefit | Impact |
+|---------|--------|
+| Reduced Downtime | Predict issues before they occur |
+| Optimized Scheduling | Eliminate unnecessary maintenance |
+| Lower Field Costs | Remote fixes vs $185/dispatch |
+
+### Performance Improvements
+
+| Metric | Value |
+|--------|-------|
+| Faster Insights | 10x faster than batch reporting |
+| Query Accuracy | 90% with Cortex AI |
+| Extended Asset Life | Proactive maintenance |
+
+### Customer Success Examples
+
+| Customer | Results |
+|----------|---------|
+| FIIX | 10x improvement in maintenance insights |
+| Toyota | Extended equipment life, reduced disruptions |
+| Telecom | Reduced field costs, improved SLA compliance |
 
 ---
 
@@ -176,8 +221,6 @@ Each use case includes a detailed 20-minute demo script:
 - [Cortex Agents Documentation](https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-agents)
 - [Snowflake Intelligence](https://docs.snowflake.com/en/user-guide/snowflake-cortex/snowflake-intelligence)
 - [Best Practices for Building Cortex Agents](https://github.com/Snowflake-Labs/sfquickstarts/blob/master/site/sfguides/src/best-practices-to-building-cortex-agents/best-practices-to-building-cortex-agents.md)
-- [Cortex Search Documentation](https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-search)
-- [Semantic Views](https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-analyst/semantic-model)
 
 ---
 
