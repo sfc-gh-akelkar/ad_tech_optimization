@@ -207,7 +207,10 @@ BEGIN
 END;
 $$;
 
--- Convenience: execute a few remote work orders so exec KPIs have non-zero “estimated” metrics.
+-- Truncate executions for idempotent demo re-runs
+TRUNCATE TABLE OPERATIONS.REMOTE_EXECUTIONS;
+
+-- Convenience: execute a few remote work orders so exec KPIs have non-zero "estimated" metrics.
 CALL OPERATIONS.EXECUTE_REMOTE_QUEUE(3);
 
 SELECT 'Remote remediation objects created ✅' AS STATUS;
