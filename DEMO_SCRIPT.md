@@ -42,7 +42,7 @@ This demo tells a **cohesive story** through 4 personas, with each question flow
 
 ### Prompt 1: The Big Picture
 ```
-Give me an executive summary of our device fleet health and business impact
+Give me a summary of our device fleet health and business impact
 ```
 
 **Transition:** *"Good overview. I see we have strong uptime, but let me dig into the financials..."*

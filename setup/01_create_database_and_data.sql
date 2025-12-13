@@ -543,6 +543,7 @@ SELECT 'Springfield Urgent Care', 'DEV-005', DATEADD('day', -35, CURRENT_DATE())
 -- ============================================================================
 -- REVENUE IMPACT VIEW
 -- Calculates revenue loss from device downtime
+-- NOTE: Uptime now accounts for current device status (OFFLINE = not 100% uptime)
 -- ============================================================================
 CREATE OR REPLACE VIEW V_REVENUE_IMPACT AS
 SELECT 
@@ -550,23 +551,34 @@ SELECT
     d.FACILITY_NAME,
     d.FACILITY_TYPE,
     CONCAT(d.LOCATION_CITY, ', ', d.LOCATION_STATE) as LOCATION,
+    d.STATUS as CURRENT_STATUS,
     d.HOURLY_AD_REVENUE_USD,
     d.MONTHLY_IMPRESSIONS,
-    -- Downtime statistics
+    -- Downtime statistics from historical records
     COUNT(dt.DOWNTIME_ID) as DOWNTIME_INCIDENTS,
     COALESCE(SUM(dt.DOWNTIME_HOURS), 0) as TOTAL_DOWNTIME_HOURS,
     COALESCE(SUM(dt.REVENUE_LOSS_USD), 0) as TOTAL_REVENUE_LOSS_USD,
     COALESCE(SUM(dt.IMPRESSIONS_LOST), 0) as TOTAL_IMPRESSIONS_LOST,
-    -- Uptime calculation (assuming 720 hours per month)
-    ROUND((720 - COALESCE(SUM(dt.DOWNTIME_HOURS), 0)) / 720 * 100, 2) as UPTIME_PERCENTAGE,
+    -- Uptime calculation that accounts for CURRENT status
+    -- OFFLINE devices get 0% uptime, DEGRADED gets 50%, ONLINE gets 100% (minus historical downtime)
+    CASE 
+        WHEN d.STATUS = 'OFFLINE' THEN 0.0
+        WHEN d.STATUS = 'DEGRADED' THEN 50.0
+        ELSE ROUND((720 - COALESCE(SUM(dt.DOWNTIME_HOURS), 0)) / 720 * 100, 2)
+    END as UPTIME_PERCENTAGE,
     -- Revenue protection (what we saved by quick fixes)
     ROUND(d.HOURLY_AD_REVENUE_USD * 720, 2) as POTENTIAL_MONTHLY_REVENUE,
-    ROUND(d.HOURLY_AD_REVENUE_USD * (720 - COALESCE(SUM(dt.DOWNTIME_HOURS), 0)), 2) as ACTUAL_MONTHLY_REVENUE
+    -- Actual revenue accounts for current status
+    CASE 
+        WHEN d.STATUS = 'OFFLINE' THEN 0
+        WHEN d.STATUS = 'DEGRADED' THEN ROUND(d.HOURLY_AD_REVENUE_USD * 360, 2)  -- 50% capacity
+        ELSE ROUND(d.HOURLY_AD_REVENUE_USD * (720 - COALESCE(SUM(dt.DOWNTIME_HOURS), 0)), 2)
+    END as ACTUAL_MONTHLY_REVENUE
 FROM DEVICE_INVENTORY d
 LEFT JOIN DEVICE_DOWNTIME dt ON d.DEVICE_ID = dt.DEVICE_ID
     AND dt.DOWNTIME_START >= (SELECT REFERENCE_MONTH_START FROM V_DEMO_REFERENCE_TIME)
 GROUP BY d.DEVICE_ID, d.FACILITY_NAME, d.FACILITY_TYPE, d.LOCATION_CITY, d.LOCATION_STATE,
-         d.HOURLY_AD_REVENUE_USD, d.MONTHLY_IMPRESSIONS;
+         d.STATUS, d.HOURLY_AD_REVENUE_USD, d.MONTHLY_IMPRESSIONS;
 
 -- ============================================================================
 -- CUSTOMER SATISFACTION VIEW
