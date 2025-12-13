@@ -65,7 +65,7 @@ instructions:
     - Use Analyst_Watchlist to identify which devices are most abnormal right now (baseline 14d vs scoring 1d) and why.
     - Use Analyst_Predictions for 24–48h predicted failures (simulated) and their confidence.
     - Use Analyst_PredAccuracy for demo evaluation metrics (explicitly demo-only vs scenario incidents).
-    - Use Analyst_Fleet for fleet status, current critical/warning devices, and locations.
+    - Use Analyst_Fleet for fleet status, current critical/warning devices, locations, and device metadata (including firmware/hardware version and warranty status).
     - Use Analyst_Telemetry for 7–30 day trends (temperature/power/network/errors/brightness).
     - Use Analyst_Incidents for incident history, downtime, cost and revenue impact.
     - Use Analyst_RemoteRates for remote resolution success rates by failure type.

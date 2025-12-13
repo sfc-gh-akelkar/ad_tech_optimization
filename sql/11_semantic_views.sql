@@ -34,6 +34,9 @@ CREATE OR REPLACE SEMANTIC VIEW SV_FLEET_STATUS
       WITH SYNONYMS = ('device', 'screen', 'screen id', 'display id')
       COMMENT = 'Unique identifier for an in-office screen.',
     fleet.device_model AS fleet.DEVICE_MODEL WITH SYNONYMS = ('model', 'hardware model'),
+    fleet.firmware_version AS fleet.FIRMWARE_VERSION WITH SYNONYMS = ('firmware', 'firmware version', 'software version'),
+    fleet.hardware_version AS fleet.HARDWARE_VERSION WITH SYNONYMS = ('hardware version', 'hw version'),
+    fleet.warranty_status AS fleet.WARRANTY_STATUS WITH SYNONYMS = ('warranty', 'warranty status'),
     fleet.facility_name AS fleet.FACILITY_NAME WITH SYNONYMS = ('clinic', 'facility', 'location'),
     fleet.facility_city AS fleet.FACILITY_CITY,
     fleet.facility_state AS fleet.FACILITY_STATE WITH SYNONYMS = ('state', 'region'),
