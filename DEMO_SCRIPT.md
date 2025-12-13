@@ -8,7 +8,7 @@
 
 ## 📋 Demo Overview
 
-This demo addresses **4 key personas** with distinct needs:
+This demo tells a **cohesive story** through 4 personas, with each question flowing naturally to the next:
 
 | Persona | Focus | Time |
 |---------|-------|------|
@@ -35,38 +35,45 @@ This demo addresses **4 key personas** with distinct needs:
 
 *Persona: C-Suite / VP of Operations*
 
-### Talking Points
-> "Let's start with what executives care about: the big picture. Our AI agent can instantly surface KPIs that used to require multiple dashboards and hours of report generation."
+### Scene Setup
+> "Let's start with what executives care about: the big picture. Imagine you're the VP of Operations walking into a Monday morning meeting. You need instant answers."
 
-### Prompts to Demo
+---
 
-**Prompt 1: Executive Summary**
+### Prompt 1: The Big Picture
 ```
 Give me an executive summary of our device fleet health and business impact
 ```
-*Expected Response: Fleet size (100 devices), uptime %, cost savings, NPS score, revenue impact*
 
-**Prompt 2: Cost Savings**
+**Transition:** *"Good overview. I see we have strong uptime, but let me dig into the financials..."*
+
+---
+
+### Prompt 2: Cost Impact (follows from summary)
 ```
 How much money have we saved this month from remote fixes vs field dispatches?
 ```
-*Expected Response: Cost savings breakdown, remote fix rate (60%+), avoided dispatch costs ($185 each)*
 
-**Prompt 3: Customer Satisfaction**
+**Transition:** *"That's impressive—$2,500+ saved this month just from remote fixes. But I noticed the NPS score. Let's look at customer satisfaction..."*
+
+---
+
+### Prompt 3: Customer Pulse (follows from NPS mention)
 ```
 What is our customer satisfaction score and which facilities need follow-up?
 ```
-*Expected Response: NPS score, satisfaction ratings, list of facilities with pending follow-ups*
 
-### Key Metrics to Highlight
-| Metric | Value | Talking Point |
-|--------|-------|---------------|
-| 🟢 Fleet uptime | ~85% | "At 500K devices, 85% uptime means 75K devices need attention" |
-| 💰 Cost savings | $1,665+ (demo) | "Each remote fix saves $185—at scale that's millions annually" |
-| ⭐ NPS Score | 6.5 | "Room for improvement through proactive maintenance" |
-| 📊 Remote resolution rate | 60%+ | "At 500K devices, that's 300K+ issues avoided per year" |
+**Transition:** *"I see Springfield Urgent Care flagged for follow-up. Let's hand this over to Operations to understand what's happening there..."*
 
-> **Note:** Demo uses 100 sample devices representing patterns across the full 500K fleet.
+---
+
+### Key Takeaways for Executive
+| Metric | Value | Scale Impact (500K devices) |
+|--------|-------|----------------------------|
+| 💰 Remote fix savings | $2,500+/month | **$15M+/year** |
+| 🟢 Fleet uptime | 92%+ | 40K devices need monitoring |
+| ⭐ NPS Score | 8.6 | Customer loyalty driver |
+| 📊 Remote resolution | 70%+ | 350K dispatches avoided/year |
 
 ---
 
@@ -74,52 +81,63 @@ What is our customer satisfaction score and which facilities need follow-up?
 
 *Persona: IT Manager / Facilities Operations*
 
-### Talking Points
-> "Now let's look at what the operations team sees every day. They need real-time visibility and predictive alerts to prevent failures before they happen. This is where AI really shines."
+### Scene Setup
+> "Now let's switch to the Operations Center. The executive just flagged Springfield Urgent Care. But as an ops manager, you need to see the full picture of what's at risk today."
 
-### Prompts to Demo
+---
 
-**Prompt 1: Predictive Alerts**
-```
-Which devices are predicted to fail in the next 48 hours?
-```
-*Show: Predictive capability with probability scores (78%, 65%, etc.) and lead times*
-
-**Prompt 2: Work Order Management**
-```
-Show me all active work orders and their priority
-```
-*Show: Work order queue with CRITICAL, HIGH, MEDIUM priorities and assignment status*
-
-**Prompt 3: Risk Assessment**
+### Prompt 1: What's At Risk Right Now?
 ```
 Which devices have critical or high risk levels right now?
 ```
-*Show: Real-time risk detection with specific device IDs and risk factors*
 
-**Prompt 4: Remote Fix Triage** *(Natural follow-up)*
+**Transition:** *"I see 7 devices flagged—including DEV-005 at Springfield Urgent Care that the executive mentioned. Before I dispatch technicians, let me see if any of these can be fixed remotely..."*
+
+---
+
+### Prompt 2: Triage for Remote Fixes (follows naturally)
 ```
 Can any of these critical or high risk devices be fixed remotely?
 ```
-*Show: AI cross-references device issues with KB to identify remote fix opportunities*
 
-*Expected Response: Agent identifies which issues (HIGH_CPU, MEMORY_LEAK, DISPLAY_FREEZE) can be fixed remotely with 87-94% success rates, vs. issues requiring dispatch (NO_NETWORK, OVERHEATING hardware)*
+**Transition:** *"Great—the agent identified that HIGH_CPU and MEMORY_LEAK issues can be fixed remotely with 92% success rate. Let me try that first on DEV-005..."*
 
-> **💡 Talking Point:** "This is the power of combining structured data with a knowledge base. The agent doesn't just alert—it recommends the most cost-effective action. At scale, this optimization is worth millions."
+---
 
-**Prompt 5: Device Deep-Dive**
+### Prompt 3: Deep Dive on Problem Device (follows from triage)
 ```
-What's the status of device DEV-005 and what's causing the issue?
+What's the status of device DEV-005 at Springfield Urgent Care and what's causing the issue?
 ```
-*Show: Detailed device diagnostics - CPU temp trends, memory usage, error counts, recommended actions*
 
-### Key Points to Highlight
+**Transition:** *"I see it's a network connectivity issue—that explains the degraded status. This facility has had 3 network issues in 60 days. Let me check if we already have work orders for this..."*
+
+---
+
+### Prompt 4: Work Order Status (follows from device issue)
+```
+Show me all active work orders and their priority
+```
+
+**Transition:** *"I see there's already a CRITICAL work order for DEV-005. Good—let's make sure a technician is assigned and has what they need..."*
+
+---
+
+### Prompt 5: Predictive Intelligence (bonus if time)
+```
+Which devices are predicted to fail in the next 48 hours?
+```
+
+**Transition:** *"This is the power of predictive maintenance—we can see failures 24-48 hours before they happen. Let's switch to the technician's perspective..."*
+
+---
+
+### Key Takeaways for Operations
 | Capability | Demo Evidence |
 |------------|---------------|
-| 🔮 Predictive accuracy | >85% based on historical patterns |
-| ⏰ Lead time | 24-48 hours advance warning |
-| 🎯 AI-generated work orders | Work orders created from predictions |
-| 📍 Trend analysis | Rising temperatures, memory leaks detected |
+| 🎯 Real-time risk detection | 7 devices flagged across fleet |
+| 🔧 Remote fix triage | AI recommends most cost-effective action |
+| 📍 Facility pattern recognition | Springfield flagged for network audit |
+| 🔮 48-hour predictions | Lead time to prevent failures |
 
 ---
 
@@ -127,42 +145,54 @@ What's the status of device DEV-005 and what's causing the issue?
 
 *Persona: Field Service Technician*
 
-### Talking Points
-> "When a technician is dispatched, they need clear instructions—not a 50-page manual. The AI agent searches our knowledge base and learns from past incidents to provide step-by-step guidance."
+### Scene Setup
+> "Now let's see this from the technician's perspective. Marcus Johnson just got assigned the Springfield Urgent Care job. He's in his truck, opening the app. He needs to know: What am I walking into?"
 
-### Prompts to Demo
+---
 
-**Prompt 1: Troubleshooting Steps**
-```
-How do I fix a frozen display screen?
-```
-*Show: Cortex Search retrieving troubleshooting steps from KB with success rates*
-
-**Prompt 2: Technician Work Queue**
+### Prompt 1: My Assignments Today
 ```
 What work orders are assigned to Marcus Johnson today?
 ```
-*Show: Technician-specific work queue with locations, priorities, estimated times*
 
-**Prompt 3: Historical Learning**
-```
-Find past incidents similar to overheating issues and how they were resolved
-```
-*Show: Past incident search with resolution notes and outcomes*
+**Transition:** *"Marcus sees he has the Springfield job—it's marked CRITICAL. Before he drives out, he wants to know what he's dealing with..."*
 
-**Prompt 4: Repair Guidance**
-```
-What parts might I need for a device with boot failure?
-```
-*Show: AI providing repair guidance based on KB and historical data*
+---
 
-### Key Points to Highlight
-| Feature | Value |
-|---------|-------|
-| 📚 Knowledge base | 10 issue categories with detailed procedures |
-| 🔍 Semantic search | Finds relevant procedures even with imprecise queries |
-| 📖 Historical learning | Past incidents inform current repairs |
-| ✅ Success rates | 87-98% for remote fixes by issue type |
+### Prompt 2: Understanding the Problem (follows from assignment)
+```
+What's wrong with device DEV-005 and how do I fix it?
+```
+
+**Transition:** *"The agent pulled the troubleshooting steps from the knowledge base. But this is a recurring network issue at this facility. Let me check what worked last time..."*
+
+---
+
+### Prompt 3: Learning from History (follows from recurring issue)
+```
+Find past incidents at Springfield Urgent Care and how they were resolved
+```
+
+**Transition:** *"I can see two previous network issues—both required network cable replacement. That's valuable intel. Let me make sure I have the right parts..."*
+
+---
+
+### Prompt 4: Parts Preparation (follows from resolution history)
+```
+What parts might I need for a network connectivity issue?
+```
+
+**Transition:** *"Perfect—the agent recommends ethernet cable and USB network adapter based on past fixes. Marcus is now fully prepared for the job."*
+
+---
+
+### Key Takeaways for Field Tech
+| Feature | Benefit |
+|---------|---------|
+| 📋 My work queue | Know what's assigned before leaving |
+| 🔧 Fix instructions | Step-by-step from knowledge base |
+| 📖 Historical learning | What worked at this facility before |
+| 🧰 Parts list | Come prepared, fix first time |
 
 ---
 
@@ -170,67 +200,88 @@ What parts might I need for a device with boot failure?
 
 *Persona: All stakeholders*
 
-### Talking Points
-> "The power of this solution is that anyone can ask questions in natural language. No SQL required, no dashboard navigation, no waiting for IT to run a report. Just ask."
+### Scene Setup
+> "We've seen the agent serve three different personas with three different needs. Let's show a few more examples of what's possible with natural language queries."
 
-### Rapid-Fire Prompts (show versatility)
+---
 
-**Prompt 1: ML Readiness**
-```
-What training data do we have available for building ML models?
-```
-*Show: Data foundation summary - 72K telemetry records, 30 days history*
-
-**Prompt 2: Analytical Query**
+### Prompt 1: Analytical Comparison
 ```
 Compare average resolution time for remote fixes vs field dispatches
 ```
-*Show: MTTR comparison - remote fixes in minutes vs dispatches in hours*
 
-**Prompt 3: Geographic Filter**
-```
-Which facilities in Michigan have devices needing attention?
-```
-*Show: State-level filtering and drill-down*
+**Why it matters:** *"This proves the ROI—remote fixes in minutes vs dispatches in hours."*
 
-**Prompt 4: Pattern Analysis**
+---
+
+### Prompt 2: Geographic Drill-Down
+```
+Which facilities in Ohio have devices needing attention?
+```
+
+**Why it matters:** *"Operations can filter by region, state, or city—no SQL required."*
+
+---
+
+### Prompt 3: Pattern Recognition
 ```
 What's the most common issue type this month and how are we resolving it?
 ```
-*Show: Issue type breakdown with resolution patterns*
+
+**Why it matters:** *"The agent identifies trends—maybe we need a firmware update fleet-wide."*
+
+---
+
+### Prompt 4: ML Readiness (for technical audience)
+```
+What training data do we have available for building ML models?
+```
+
+**Why it matters:** *"72K telemetry records, 30 days of history—ready for custom ML."*
 
 ---
 
 ## 🎬 Closing (18:00 - 20:00)
 
-### Summary Talking Points
+### The Story We Just Told
+
+> "In 20 minutes, we followed a single issue from the executive dashboard all the way to the technician's truck:
+> 
+> 1. **Executive** saw fleet health and flagged a customer satisfaction issue at Springfield
+> 2. **Operations** identified the at-risk device, triaged it for remote vs. dispatch, and found a pattern
+> 3. **Technician** got the assignment, learned from past incidents, and came prepared with the right parts
+> 
+> All from natural language questions. No SQL. No dashboard switching. No waiting for reports."
+
+### Business Impact at Scale
 
 > "With Snowflake Intelligence and Cortex Agents, PatientPoint can manage their 500,000 device fleet with:
 > 
 > ✅ **Predict failures** 24-48 hours before they happen with >85% accuracy
 > 
-> ✅ **Resolve 60%+ of issues remotely**—that's 300,000+ avoided dispatches annually
+> ✅ **Resolve 70%+ of issues remotely**—that's 350,000 avoided dispatches annually
 > 
-> ✅ **Save $50M+/year** in avoided dispatch costs at scale ($185 × 300K)
+> ✅ **Save $50M+/year** in avoided dispatch costs at scale ($185 × 350K)
 > 
 > ✅ **Reduce MTTR** from hours to minutes for remote fixes
 > 
-> ✅ **Improve customer satisfaction** across 500K touchpoints
+> ✅ **Improve customer satisfaction** with proactive maintenance
 > 
-> All of this runs natively in Snowflake—no external ML platforms, no separate agent frameworks, and full governance through your existing Snowflake security model."
+> All running natively in Snowflake—no external ML platforms, no separate agent frameworks, and full governance through your existing Snowflake security model."
 
 ### Call to Action
 > "Would you like to see how this could work with your data? We can set up a proof-of-concept in days, not months."
 
 ---
 
-## 💬 Backup Prompts by Persona
+## 💬 Alternative Prompts by Persona
+
+Use these if the primary flow doesn't work or if you have extra time.
 
 ### Executive (C-Suite)
 ```
 Give me an executive summary of fleet health
-How much money have we saved from remote fixes?
-What is our NPS score?
+How much revenue are we losing from device downtime?
 What's our uptime percentage this month?
 How many critical issues do we have right now?
 ```
@@ -238,28 +289,23 @@ How many critical issues do we have right now?
 ### Operations Center
 ```
 Which devices are predicted to fail in the next 48 hours?
-Which devices have critical or high risk levels right now?
-Can any of these devices be fixed remotely?
-Show me all active work orders
-Which technicians are available for dispatch?
-What devices in Ohio need attention?
-Show me the trend of device failures this month
+What's causing the most device failures this month?
+Which technicians are available for dispatch right now?
+Show me devices with the longest time since maintenance
 ```
 
 ### Field Technician
 ```
 How do I fix a frozen display screen?
 What are the troubleshooting steps for high CPU usage?
-Find past incidents similar to network connectivity issues
-What work orders are assigned to me?
 Which issues typically require a field visit vs remote fix?
+What's the success rate for fixing memory leaks remotely?
 ```
 
 ### Analytical Queries
 ```
 What's our prediction accuracy based on historical data?
 Compare resolution times by issue type
-Show me devices with the longest time since maintenance
 What patterns appear before device failures?
 Which facilities have the most recurring issues?
 ```
@@ -270,25 +316,24 @@ Which facilities have the most recurring issues?
 
 - [ ] SQL scripts 01-05 executed successfully
 - [ ] Agent created in Snowsight (AI & ML → Agents)
-- [ ] Semantic views added to agent (SV_DEVICE_FLEET, SV_MAINTENANCE_ANALYTICS, SV_BUSINESS_IMPACT, SV_OPERATIONS)
-- [ ] Cortex Search services added (TROUBLESHOOTING_SEARCH_SVC, MAINTENANCE_HISTORY_SEARCH_SVC)
-- [ ] Test prompts verified working
+- [ ] Semantic views added to agent
+- [ ] Cortex Search services added
+- [ ] **Test the full flow once before demo**
 - [ ] Snowflake Intelligence accessible
 
 ---
 
 ## 📊 Expected Demo Data
 
-> **Note:** Demo uses a representative sample of 100 devices. In production, this scales to PatientPoint's full 500,000 device fleet.
+> **Note:** Demo uses 100 representative devices. Production scales to 500,000.
 
 | Table | Demo Records | Production Scale | Purpose |
 |-------|--------------|------------------|---------|
 | DEVICE_INVENTORY | 100 | 500,000 | Device fleet |
-| DEVICE_TELEMETRY | ~72,000 | ~360M/month | 30 days of health metrics |
-| MAINTENANCE_HISTORY | 15 | ~50,000/month | Past service tickets |
+| DEVICE_TELEMETRY | ~72,000 | ~360M/month | Health metrics |
+| MAINTENANCE_HISTORY | 24 | ~50,000/month | Past tickets |
 | TROUBLESHOOTING_KB | 10 | 100+ | Fix procedures |
-| WORK_ORDERS | 8 | ~10,000/day | Active/completed jobs |
-| TECHNICIANS | 6 | 500+ | Field team roster |
-| PROVIDER_FEEDBACK | 13 | ~100,000 | Customer satisfaction |
-| DEVICE_DOWNTIME | 10 | ~25,000/month | Revenue impact data |
-
+| WORK_ORDERS | 8 | ~10,000/day | Active jobs |
+| TECHNICIANS | 6 | 500+ | Field team |
+| PROVIDER_FEEDBACK | 14 | ~100,000 | Customer satisfaction |
+| DEVICE_DOWNTIME | 10 | ~25,000/month | Revenue impact |
