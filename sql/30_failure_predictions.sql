@@ -98,7 +98,7 @@ $$
 DECLARE
   run_id STRING DEFAULT UUID_STRING();
 BEGIN
-  LET as_of_ts TIMESTAMP_NTZ := COALESCE(AS_OF_TS, (SELECT DEMO_AS_OF_TS FROM OPERATIONS.V_DEMO_TIME));
+  LET demo_as_of_ts TIMESTAMP_NTZ := COALESCE(AS_OF_TS, (SELECT DEMO_AS_OF_TS FROM OPERATIONS.V_DEMO_TIME));
 
   -- Ensure the anomaly watchlist exists and is fresh enough for this AS_OF_TS in demo mode.
   -- For simplicity, we compute predictions directly from the most recent watchlist snapshot.
@@ -166,7 +166,7 @@ BEGIN
   )
   SELECT
     :run_id,
-    :as_of_ts,
+    :demo_as_of_ts,
     :HORIZON_HOURS,
     :MODE,
     DEVICE_ID,
@@ -177,8 +177,8 @@ BEGIN
       WHEN PREDICTION_PROBABILITY >= 0.70 THEN 'MEDIUM'
       ELSE 'LOW'
     END AS CONFIDENCE_BAND,
-    :as_of_ts AS PREDICTION_WINDOW_START,
-    DATEADD('hour', :HORIZON_HOURS, :as_of_ts) AS PREDICTION_WINDOW_END,
+    :demo_as_of_ts AS PREDICTION_WINDOW_START,
+    DATEADD('hour', :HORIZON_HOURS, :demo_as_of_ts) AS PREDICTION_WINDOW_END,
     CONCAT(
       'Predicted based on anomaly watchlist.',
       IFF(:MODE = 'SCENARIO_LOCK' AND DEVICE_ID = '4501', ' (Demo control prediction to illustrate precision/recall tradeoff.)', ''),
@@ -191,8 +191,8 @@ BEGIN
   QUALIFY ROW_NUMBER() OVER (ORDER BY PREDICTION_PROBABILITY DESC) <= :MAX_PREDICTIONS;
 
   -- Evaluate predictions against actual incidents occurring AFTER AS_OF_TS within horizon.
-  LET eval_start TIMESTAMP_NTZ := as_of_ts;
-  LET eval_end TIMESTAMP_NTZ := DATEADD('hour', HORIZON_HOURS, as_of_ts);
+  LET eval_start TIMESTAMP_NTZ := demo_as_of_ts;
+  LET eval_end TIMESTAMP_NTZ := DATEADD('hour', HORIZON_HOURS, demo_as_of_ts);
 
   CREATE OR REPLACE TEMP TABLE _pred AS
   SELECT DISTINCT DEVICE_ID
@@ -229,14 +229,14 @@ BEGIN
     NOTES
   )
   SELECT
-    :run_id, :as_of_ts, :HORIZON_HOURS, :MODE,
+    :run_id, :demo_as_of_ts, :HORIZON_HOURS, :MODE,
     :eval_start, :eval_end,
     :preds, :actuals,
     :tp, :fp, :fn,
     :precision, :recall, :f1,
     'Demo evaluation vs deterministic scenario incidents (MAINTENANCE_ID like DEMO-%).';
 
-  RETURN 'Failure predictions refreshed ✅ run_id=' || run_id || ', horizon_hours=' || HORIZON_HOURS || ', as_of=' || as_of_ts;
+  RETURN 'Failure predictions refreshed ✅ run_id=' || run_id || ', horizon_hours=' || HORIZON_HOURS || ', as_of=' || demo_as_of_ts;
 END;
 $$;
 
