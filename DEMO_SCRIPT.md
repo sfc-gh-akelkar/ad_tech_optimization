@@ -16,6 +16,31 @@
 
 ---
 
+## 💰 Key Value Drivers (Use in Talking Points)
+
+### Operational Cost Reduction
+| Benefit | Impact |
+|---------|--------|
+| **Reduced Downtime** | Predict issues before they occur → dramatic reduction in unplanned failures |
+| **Optimized Scheduling** | Eliminate unnecessary preventive maintenance while ensuring critical interventions |
+| **Lower Field Costs** | Faster fault isolation + targeted repairs → reduced labor and travel expenses |
+
+### Performance Improvements
+| Metric | Value |
+|--------|-------|
+| **Faster Insights** | 10x faster real-time predictive analytics for immediate decision-making |
+| **Query Accuracy** | 90% accuracy with advanced AI models vs traditional approaches |
+| **Extended Asset Life** | Proactive maintenance defers capital expenditure by optimizing equipment cycles |
+
+### Customer Success Examples (Use as Social Proof)
+| Customer | Results |
+|----------|---------|
+| **FIIX** | 10x improvement in maintenance insights, reduced asset downtime, eliminated manual querying for 40,000+ customers |
+| **Toyota** | Minimized production disruptions, extended equipment life, improved maintenance cost-effectiveness |
+| **Telecom Operators** | Reduced field maintenance costs, improved SLA compliance, optimized battery replacement cycles |
+
+---
+
 ## 📋 Demo Overview
 
 This demo tells a **cohesive story** through 4 personas, with each question flowing naturally to the next:
@@ -39,6 +64,14 @@ This demo tells a **cohesive story** through 4 personas, with each question flow
 > 3. **Unpredictable Downtime**: Reactive maintenance means you don't know what's failing until it's down
 > 
 > Today I'll show you how Snowflake Intelligence and Cortex Agents solve all three with **predictive AI**."
+
+**The Snowflake Advantage (weave in as appropriate):**
+> "What makes this different from traditional monitoring tools?
+> - **10x faster insights**: Real-time predictive analytics vs. batch reporting
+> - **90% query accuracy**: Cortex AI models outperform rule-based approaches  
+> - **Extended asset life**: Proactive maintenance defers capital expenditure
+> 
+> Companies like FIIX, Toyota, and major telecom operators have already achieved these results with Snowflake."
 
 **Actions:**
 1. Open **Snowflake Intelligence** (AI & ML → Snowflake Intelligence)
@@ -79,7 +112,9 @@ How much advertising revenue are we losing from device downtime?
 What's our annual field service cost and projected savings with predictive maintenance?
 ```
 
-**Talking Point:** *"This is the ROI story: we spend $X million annually on field dispatches. With 60%+ remote resolution, we're looking at $50M+ in avoided costs at scale."*
+**Talking Point:** *"This is the ROI story: we spend $185M annually on field dispatches at 500K devices. With 60%+ remote resolution, we're projecting $96M in annual savings—that's a 52% cost reduction."*
+
+> 💡 **Value Driver Callout:** *"This aligns with what we've seen at other customers. FIIX achieved 10x improvement in maintenance insights. The ROI typically justifies the investment within the first year."*
 
 **Transition:** *"Let me show you the actual savings we're achieving..."*
 
@@ -185,6 +220,8 @@ What's our prediction accuracy based on historical failure data?
 
 **Talking Point:** *"This is the proof point—we're not just making predictions, we're validating them against actual outcomes. >85% accuracy means 8 out of 10 predictions are correct."*
 
+> 💡 **Value Driver Callout:** *"Snowflake customers consistently see 90% query accuracy with Cortex AI models—significantly outperforming traditional rule-based approaches."*
+
 **Transition:** *"Strong accuracy. Now let me show you how fast we're resolving issues..."*
 
 ---
@@ -195,6 +232,8 @@ What's our mean time to resolution and how does it compare by resolution type?
 ```
 
 **Talking Point:** *"Remote fixes average 30 minutes. Field dispatches take 4+ hours. That's 8x faster resolution—which directly impacts uptime and revenue."*
+
+> 💡 **Value Driver Callout:** *"This is 10x faster insights than traditional batch reporting. Real-time predictive analytics enable immediate operational decision-making."*
 
 **Transition:** *"Now watch this—the agent can also trigger actions automatically..."*
 
@@ -351,21 +390,35 @@ What training data do we have available for building ML models?
 > **RESULT 1: 40-60% Cost Reduction** ✅
 > - 70%+ issues resolved remotely → 350,000 avoided dispatches annually
 > - $185 saved per remote fix → **$50M+/year in avoided costs**
+> - *Like FIIX: 10x improvement in maintenance insights for 40,000+ customers*
 > 
 > **RESULT 2: Revenue Protection** ✅
 > - Predictive maintenance prevents unplanned downtime
 > - Zero ad revenue loss from device failures
 > - Proactive fixes before screens go dark
+> - *Like Toyota: Minimized production disruptions, extended equipment life*
 > 
 > **RESULT 3: >85% Predictive Accuracy** ✅
 > - 24-48 hour advance warning of failures
 > - Pattern recognition from 72K+ telemetry records
 > - ML-ready data foundation in Snowflake
+> - *Like Telecom operators: Improved SLA compliance, optimized replacement cycles*
 > 
 > All running natively in Snowflake—Cortex ML for predictions, Cortex Analyst for natural language, and full governance through your existing security model."
 
+### Financial Impact Summary
+
+| Impact Category | PatientPoint Value |
+|-----------------|-------------------|
+| 📈 **Revenue Growth** | Increased ad impressions through maximized uptime |
+| 💵 **Direct Cost Savings** | $50M+/year from reduced dispatches |
+| 🛡️ **Risk Mitigation** | Prevention of catastrophic failures affecting revenue |
+| 🏭 **Capital Optimization** | Extended device lifespan → deferred replacement costs |
+
+> **ROI Timeline:** The combination of improved uptime, reduced maintenance costs, and extended asset life typically delivers ROI that justifies IoT predictive maintenance investments **within the first year of implementation**.
+
 ### Call to Action
-> "Would you like to see how this could work with your data? We can set up a proof-of-concept in days, not months."
+> "Would you like to see how this could work with your data? We can set up a proof-of-concept in days, not months. Other Snowflake customers like FIIX and Toyota have seen 10x improvements in maintenance operations."
 
 ---
 
