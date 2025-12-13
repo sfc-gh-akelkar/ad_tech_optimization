@@ -249,6 +249,19 @@ CROSS JOIN (SELECT SEQ4() as SEQ FROM TABLE(GENERATOR(ROWCOUNT => 720))) t  -- 3
 WHERE t.SEQ < 720;
 
 -- ============================================================================
+-- DEMO REFERENCE TIME VIEW
+-- This provides a stable "current time" based on the latest telemetry data
+-- Ensures demo works regardless of when it's run
+-- Column names avoid conflict with Snowflake built-in functions
+-- ============================================================================
+CREATE OR REPLACE VIEW V_DEMO_REFERENCE_TIME AS
+SELECT 
+    MAX(TIMESTAMP) as REFERENCE_TIMESTAMP,
+    MAX(TIMESTAMP)::DATE as REFERENCE_DATE,
+    DATE_TRUNC('month', MAX(TIMESTAMP)) as REFERENCE_MONTH_START
+FROM DEVICE_TELEMETRY;
+
+-- ============================================================================
 -- MAINTENANCE HISTORY TABLE
 -- Past service tickets and resolutions
 -- ============================================================================
@@ -481,7 +494,7 @@ SELECT
     ROUND(d.HOURLY_AD_REVENUE_USD * (720 - COALESCE(SUM(dt.DOWNTIME_HOURS), 0)), 2) as ACTUAL_MONTHLY_REVENUE
 FROM DEVICE_INVENTORY d
 LEFT JOIN DEVICE_DOWNTIME dt ON d.DEVICE_ID = dt.DEVICE_ID
-    AND dt.DOWNTIME_START >= DATE_TRUNC('month', CURRENT_DATE())
+    AND dt.DOWNTIME_START >= (SELECT REFERENCE_MONTH_START FROM V_DEMO_REFERENCE_TIME)
 GROUP BY d.DEVICE_ID, d.FACILITY_NAME, d.FACILITY_TYPE, d.LOCATION_CITY, d.LOCATION_STATE,
          d.HOURLY_AD_REVENUE_USD, d.MONTHLY_IMPRESSIONS;
 
@@ -663,7 +676,7 @@ SELECT
     wo.ESTIMATED_DURATION_MINS,
     wo.CUSTOMER_NOTIFIED,
     wo.CREATED_AT,
-    DATEDIFF('hour', wo.CREATED_AT, CURRENT_TIMESTAMP()) as HOURS_SINCE_CREATED,
+    DATEDIFF('hour', wo.CREATED_AT, (SELECT REFERENCE_TIMESTAMP FROM V_DEMO_REFERENCE_TIME)) as HOURS_SINCE_CREATED,
     -- Urgency score for prioritization
     CASE 
         WHEN wo.PRIORITY = 'CRITICAL' AND wo.STATUS = 'OPEN' THEN 100
@@ -731,7 +744,7 @@ SELECT
     d.INSTALL_DATE,
     d.WARRANTY_EXPIRY,
     d.LAST_MAINTENANCE_DATE,
-    DATEDIFF('day', d.LAST_MAINTENANCE_DATE, CURRENT_DATE()) as DAYS_SINCE_MAINTENANCE,
+    DATEDIFF('day', d.LAST_MAINTENANCE_DATE, (SELECT REFERENCE_DATE FROM V_DEMO_REFERENCE_TIME)) as DAYS_SINCE_MAINTENANCE,
     d.FIRMWARE_VERSION,
     d.STATUS,
     d.HOURLY_AD_REVENUE_USD,
@@ -823,8 +836,8 @@ JOIN DEVICE_INVENTORY d ON m.DEVICE_ID = d.DEVICE_ID;
 -- ============================================================================
 CREATE OR REPLACE VIEW V_EXECUTIVE_DASHBOARD AS
 SELECT 
-    -- Current timestamp for dashboard refresh
-    CURRENT_TIMESTAMP() as DASHBOARD_REFRESH_TIME,
+    -- Current timestamp for dashboard refresh (uses latest telemetry timestamp)
+    (SELECT REFERENCE_TIMESTAMP FROM V_DEMO_REFERENCE_TIME) as DASHBOARD_REFRESH_TIME,
     
     -- ===== FLEET HEALTH METRICS =====
     (SELECT COUNT(*) FROM DEVICE_INVENTORY) as TOTAL_FLEET_SIZE,
