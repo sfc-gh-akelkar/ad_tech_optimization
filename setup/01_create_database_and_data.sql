@@ -527,13 +527,14 @@ CREATE OR REPLACE TABLE TECHNICIANS (
 );
 
 -- Insert sample technicians
-INSERT INTO TECHNICIANS VALUES
-    ('TECH-001', 'Marcus Johnson', 'marcus.johnson@patientpoint.com', '312-555-0101', 'Midwest', ARRAY_CONSTRUCT('IL', 'WI'), 'Hardware', 'Lead', 'AVAILABLE', 'Chicago, IL', 4.8, 156),
-    ('TECH-002', 'Sarah Chen', 'sarah.chen@patientpoint.com', '312-555-0102', 'Midwest', ARRAY_CONSTRUCT('IL', 'IN'), 'Software', 'Senior', 'DISPATCHED', 'Indianapolis, IN', 4.9, 142),
-    ('TECH-003', 'David Martinez', 'david.martinez@patientpoint.com', '614-555-0103', 'Midwest', ARRAY_CONSTRUCT('OH', 'MI'), 'Hardware', 'Senior', 'AVAILABLE', 'Columbus, OH', 4.7, 128),
-    ('TECH-004', 'Emily Williams', 'emily.williams@patientpoint.com', '313-555-0104', 'Midwest', ARRAY_CONSTRUCT('MI', 'OH'), 'Network', 'Senior', 'ON_CALL', 'Detroit, MI', 4.6, 98),
-    ('TECH-005', 'James Thompson', 'james.thompson@patientpoint.com', '414-555-0105', 'Midwest', ARRAY_CONSTRUCT('WI', 'MN'), 'Hardware', 'Junior', 'AVAILABLE', 'Milwaukee, WI', 4.4, 45),
-    ('TECH-006', 'Lisa Anderson', 'lisa.anderson@patientpoint.com', '612-555-0106', 'Midwest', ARRAY_CONSTRUCT('MN', 'WI'), 'Software', 'Lead', 'AVAILABLE', 'Minneapolis, MN', 4.9, 189);
+-- Note: Using SELECT with UNION ALL because VALUES clause doesn't support ARRAY_CONSTRUCT
+INSERT INTO TECHNICIANS 
+SELECT 'TECH-001', 'Marcus Johnson', 'marcus.johnson@patientpoint.com', '312-555-0101', 'Midwest', ARRAY_CONSTRUCT('IL', 'WI'), 'Hardware', 'Lead', 'AVAILABLE', 'Chicago, IL', 4.8, 156
+UNION ALL SELECT 'TECH-002', 'Sarah Chen', 'sarah.chen@patientpoint.com', '312-555-0102', 'Midwest', ARRAY_CONSTRUCT('IL', 'IN'), 'Software', 'Senior', 'DISPATCHED', 'Indianapolis, IN', 4.9, 142
+UNION ALL SELECT 'TECH-003', 'David Martinez', 'david.martinez@patientpoint.com', '614-555-0103', 'Midwest', ARRAY_CONSTRUCT('OH', 'MI'), 'Hardware', 'Senior', 'AVAILABLE', 'Columbus, OH', 4.7, 128
+UNION ALL SELECT 'TECH-004', 'Emily Williams', 'emily.williams@patientpoint.com', '313-555-0104', 'Midwest', ARRAY_CONSTRUCT('MI', 'OH'), 'Network', 'Senior', 'ON_CALL', 'Detroit, MI', 4.6, 98
+UNION ALL SELECT 'TECH-005', 'James Thompson', 'james.thompson@patientpoint.com', '414-555-0105', 'Midwest', ARRAY_CONSTRUCT('WI', 'MN'), 'Hardware', 'Junior', 'AVAILABLE', 'Milwaukee, WI', 4.4, 45
+UNION ALL SELECT 'TECH-006', 'Lisa Anderson', 'lisa.anderson@patientpoint.com', '612-555-0106', 'Midwest', ARRAY_CONSTRUCT('MN', 'WI'), 'Software', 'Lead', 'AVAILABLE', 'Minneapolis, MN', 4.9, 189;
 
 -- ============================================================================
 -- WORK ORDERS TABLE
@@ -564,60 +565,61 @@ CREATE OR REPLACE TABLE WORK_ORDERS (
 );
 
 -- Insert sample work orders (mix of statuses and types)
+-- Note: Using SELECT with UNION ALL because VALUES clause doesn't support ARRAY_CONSTRUCT
 INSERT INTO WORK_ORDERS (WORK_ORDER_ID, DEVICE_ID, CREATED_AT, SCHEDULED_DATE, SCHEDULED_TIME_WINDOW, 
                           PRIORITY, STATUS, WORK_ORDER_TYPE, SOURCE, ISSUE_SUMMARY, AI_DIAGNOSIS, 
                           RECOMMENDED_ACTIONS, ASSIGNED_TECHNICIAN_ID, ESTIMATED_DURATION_MINS, 
-                          ACTUAL_DURATION_MINS, PARTS_REQUIRED, RESOLUTION_NOTES, CUSTOMER_NOTIFIED) VALUES
-    -- Critical/Open work orders (from AI predictions)
-    ('WO-2024-001', 'DEV-003', CURRENT_TIMESTAMP(), CURRENT_DATE(), 'MORNING', 'CRITICAL', 'ASSIGNED', 'PREDICTIVE', 'AI_PREDICTION',
+                          ACTUAL_DURATION_MINS, PARTS_REQUIRED, RESOLUTION_NOTES, CUSTOMER_NOTIFIED)
+-- Critical/Open work orders (from AI predictions)
+SELECT 'WO-2024-001', 'DEV-003', CURRENT_TIMESTAMP(), CURRENT_DATE(), 'MORNING', 'CRITICAL', 'ASSIGNED', 'PREDICTIVE', 'AI_PREDICTION',
      'Device showing rising CPU temperature trend - failure predicted within 12 hours',
      'Telemetry analysis indicates thermal throttling. CPU temp increased 15°C over 24 hours. Fan may be failing or dust accumulation.',
      '1. Check/clean cooling fan\n2. Replace thermal paste\n3. Clear dust from vents\n4. Verify airflow around device',
-     'TECH-001', 45, NULL, ARRAY_CONSTRUCT('Thermal Paste', 'Compressed Air'), NULL, TRUE),
-    
-    ('WO-2024-002', 'DEV-008', CURRENT_TIMESTAMP(), CURRENT_DATE(), 'AFTERNOON', 'HIGH', 'OPEN', 'PREDICTIVE', 'AI_PREDICTION',
+     'TECH-001', 45, NULL, ARRAY_CONSTRUCT('Thermal Paste', 'Compressed Air'), NULL, TRUE
+UNION ALL
+SELECT 'WO-2024-002', 'DEV-008', CURRENT_TIMESTAMP(), CURRENT_DATE(), 'AFTERNOON', 'HIGH', 'OPEN', 'PREDICTIVE', 'AI_PREDICTION',
      'Memory usage trending toward exhaustion - application instability expected',
      'Memory leak pattern detected. Usage increased from 65% to 92% over 48 hours. Likely application-level issue.',
      '1. Attempt remote service restart\n2. If fails, schedule on-site memory diagnostics\n3. May require application update',
-     NULL, 30, NULL, NULL, NULL, FALSE),
-    
-    ('WO-2024-003', 'DEV-005', DATEADD('day', -1, CURRENT_TIMESTAMP()), CURRENT_DATE(), 'MORNING', 'CRITICAL', 'IN_PROGRESS', 'REACTIVE', 'PROVIDER_REQUEST',
+     NULL, 30, NULL, NULL, NULL, FALSE
+UNION ALL
+SELECT 'WO-2024-003', 'DEV-005', DATEADD('day', -1, CURRENT_TIMESTAMP()), CURRENT_DATE(), 'MORNING', 'CRITICAL', 'IN_PROGRESS', 'REACTIVE', 'PROVIDER_REQUEST',
      'Device offline - facility reports no display for 2 hours',
      'Network connectivity lost. Last heartbeat 2 hours ago. Historical pattern: this facility has had 3 network issues in past 60 days.',
      '1. Check network cable and router\n2. Verify facility network is operational\n3. Test with alternate network connection\n4. Recommend facility network audit',
-     'TECH-002', 60, NULL, ARRAY_CONSTRUCT('Ethernet Cable', 'USB Network Adapter'), NULL, TRUE),
-    
-    -- Medium priority work orders
-    ('WO-2024-004', 'DEV-014', DATEADD('day', -2, CURRENT_TIMESTAMP()), DATEADD('day', 1, CURRENT_DATE()), 'AFTERNOON', 'MEDIUM', 'ASSIGNED', 'PREVENTIVE', 'SCHEDULED',
+     'TECH-002', 60, NULL, ARRAY_CONSTRUCT('Ethernet Cable', 'USB Network Adapter'), NULL, TRUE
+UNION ALL
+-- Medium priority work orders
+SELECT 'WO-2024-004', 'DEV-014', DATEADD('day', -2, CURRENT_TIMESTAMP()), DATEADD('day', 1, CURRENT_DATE()), 'AFTERNOON', 'MEDIUM', 'ASSIGNED', 'PREVENTIVE', 'SCHEDULED',
      'Preventive maintenance - device approaching 180 days since last service',
      'Routine maintenance due. Device has been stable but firmware is 2 versions behind.',
      '1. Update firmware to v3.2.2\n2. Clean screen and housing\n3. Check all connections\n4. Run full diagnostic',
-     'TECH-003', 40, NULL, NULL, NULL, TRUE),
-    
-    ('WO-2024-005', 'DEV-020', DATEADD('day', -1, CURRENT_TIMESTAMP()), DATEADD('day', 1, CURRENT_DATE()), 'MORNING', 'MEDIUM', 'ASSIGNED', 'PREDICTIVE', 'AI_PREDICTION',
+     'TECH-003', 40, NULL, NULL, NULL, TRUE
+UNION ALL
+SELECT 'WO-2024-005', 'DEV-020', DATEADD('day', -1, CURRENT_TIMESTAMP()), DATEADD('day', 1, CURRENT_DATE()), 'MORNING', 'MEDIUM', 'ASSIGNED', 'PREDICTIVE', 'AI_PREDICTION',
      'Error rate increasing - 18 errors in past 24 hours',
      'Application errors correlating with memory pressure. Similar pattern preceded failure on DEV-008 last month.',
      '1. Clear application cache\n2. Restart all services\n3. Monitor for 24 hours\n4. Schedule follow-up if errors persist',
-     'TECH-005', 25, NULL, NULL, NULL, FALSE),
-    
-    -- Completed work orders (for history)
-    ('WO-2024-006', 'DEV-007', DATEADD('day', -5, CURRENT_TIMESTAMP()), DATEADD('day', -4, CURRENT_DATE()), 'AFTERNOON', 'LOW', 'COMPLETED', 'PREVENTIVE', 'SCHEDULED',
+     'TECH-005', 25, NULL, NULL, NULL, FALSE
+UNION ALL
+-- Completed work orders (for history)
+SELECT 'WO-2024-006', 'DEV-007', DATEADD('day', -5, CURRENT_TIMESTAMP()), DATEADD('day', -4, CURRENT_DATE()), 'AFTERNOON', 'LOW', 'COMPLETED', 'PREVENTIVE', 'SCHEDULED',
      'Scheduled firmware update and maintenance check',
      'Routine update. Device healthy, no issues detected.',
      'Standard firmware update procedure',
-     'TECH-001', 30, 25, NULL, 'Firmware updated successfully to v3.2.2. All diagnostics passed. Device performing optimally.', TRUE),
-    
-    ('WO-2024-007', 'DEV-012', DATEADD('day', -3, CURRENT_TIMESTAMP()), DATEADD('day', -2, CURRENT_DATE()), 'MORNING', 'HIGH', 'COMPLETED', 'REACTIVE', 'PROVIDER_REQUEST',
+     'TECH-001', 30, 25, NULL, 'Firmware updated successfully to v3.2.2. All diagnostics passed. Device performing optimally.', TRUE
+UNION ALL
+SELECT 'WO-2024-007', 'DEV-012', DATEADD('day', -3, CURRENT_TIMESTAMP()), DATEADD('day', -2, CURRENT_DATE()), 'MORNING', 'HIGH', 'COMPLETED', 'REACTIVE', 'PROVIDER_REQUEST',
      'Display flickering reported by facility staff',
      'Display refresh rate misconfigured after power outage.',
      '1. Check display settings\n2. Recalibrate if needed\n3. Check power supply stability',
-     'TECH-003', 45, 35, NULL, 'Reset display settings to factory defaults. Recalibrated touch screen. Issue resolved. Recommended UPS installation to facility.', TRUE),
-    
-    ('WO-2024-008', 'DEV-019', DATEADD('day', -7, CURRENT_TIMESTAMP()), DATEADD('day', -6, CURRENT_DATE()), 'AFTERNOON', 'MEDIUM', 'COMPLETED', 'PREDICTIVE', 'AI_PREDICTION',
+     'TECH-003', 45, 35, NULL, 'Reset display settings to factory defaults. Recalibrated touch screen. Issue resolved. Recommended UPS installation to facility.', TRUE
+UNION ALL
+SELECT 'WO-2024-008', 'DEV-019', DATEADD('day', -7, CURRENT_TIMESTAMP()), DATEADD('day', -6, CURRENT_DATE()), 'AFTERNOON', 'MEDIUM', 'COMPLETED', 'PREDICTIVE', 'AI_PREDICTION',
      'Disk usage at 88% - proactive cleanup recommended',
      'Log files consuming excessive space. Automated cleanup not running.',
      '1. Clear old logs\n2. Fix log rotation\n3. Verify automated cleanup scheduled',
-     'TECH-006', 20, 15, NULL, 'Cleared 2.3GB of old logs. Fixed cron job for automated cleanup. Disk usage now at 52%.', TRUE);
+     'TECH-006', 20, 15, NULL, 'Cleared 2.3GB of old logs. Fixed cron job for automated cleanup. Disk usage now at 52%.', TRUE;
 
 -- ============================================================================
 -- WORK ORDER VIEWS FOR OPERATIONS
