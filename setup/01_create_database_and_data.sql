@@ -227,17 +227,17 @@ SELECT
         WHEN d.STATUS = 'OFFLINE' THEN 62 + (RANDOM() / POW(10, 18)) * 8
         ELSE 42 + (RANDOM() / POW(10, 18)) * 10
     END as CPU_TEMP_CELSIUS,
-    -- CPU usage: healthy 15-35%, degraded 50-70% (elevated but manageable)
-    CASE 
+    -- CPU usage: healthy 15-35%, degraded 50-70%, capped at 99% (elevated but manageable)
+    LEAST(99, CASE 
         WHEN d.STATUS = 'DEGRADED' THEN 50 + (RANDOM() / POW(10, 18)) * 20
         WHEN d.STATUS = 'OFFLINE' THEN 65 + (RANDOM() / POW(10, 18)) * 15
         ELSE 15 + (RANDOM() / POW(10, 18)) * 20
-    END as CPU_USAGE_PCT,
-    -- Memory usage: healthy 25-50%, degraded 60-75%
-    CASE 
+    END) as CPU_USAGE_PCT,
+    -- Memory usage: healthy 25-50%, degraded 60-75%, capped at 99%
+    LEAST(99, CASE 
         WHEN d.STATUS = 'DEGRADED' THEN 60 + (RANDOM() / POW(10, 18)) * 15
         ELSE 25 + (RANDOM() / POW(10, 18)) * 25
-    END as MEMORY_USAGE_PCT,
+    END) as MEMORY_USAGE_PCT,
     -- Disk usage: healthy 35-55%
     35 + (RANDOM() / POW(10, 18)) * 20 as DISK_USAGE_PCT,
     -- Network latency: healthy 10-30ms, degraded 50-100ms
@@ -835,9 +835,10 @@ SELECT
     d.HOURLY_AD_REVENUE_USD,
     d.MONTHLY_IMPRESSIONS,
     t.CPU_TEMP_CELSIUS,
-    t.CPU_USAGE_PCT,
-    t.MEMORY_USAGE_PCT,
-    t.DISK_USAGE_PCT,
+    -- Cap percentages at 100% for display (handles any bad legacy data)
+    LEAST(100, t.CPU_USAGE_PCT) as CPU_USAGE_PCT,
+    LEAST(100, t.MEMORY_USAGE_PCT) as MEMORY_USAGE_PCT,
+    LEAST(100, t.DISK_USAGE_PCT) as DISK_USAGE_PCT,
     t.NETWORK_LATENCY_MS,
     t.UPTIME_HOURS,
     t.ERROR_COUNT,
