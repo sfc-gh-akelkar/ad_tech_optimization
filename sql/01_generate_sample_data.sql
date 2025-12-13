@@ -52,15 +52,15 @@ WITH SEQUENCE_GEN AS (
     FROM TABLE(GENERATOR(ROWCOUNT => 100))
 )
 SELECT
-    -- Device IDs: 4501-4600 (with 4532 and 7821 as problem devices)
-    CAST(CASE 
-        WHEN SEQ <= 31 THEN 4500 + SEQ           -- Creates 4501-4531
-        WHEN SEQ = 32 THEN 4532                   -- Our "sick" device
-        WHEN SEQ <= 65 THEN 4501 + SEQ           -- Creates 4533-4566 (skips 4532)
-        WHEN SEQ = 66 THEN 7821                   -- Second problem device
-        WHEN SEQ <= 99 THEN 4502 + SEQ           -- Creates 4568-4601 (skips 4567/7821)
-        ELSE 4500 + SEQ
-    END AS VARCHAR) AS DEVICE_ID,
+    -- Device IDs: deterministic, exactly 100 unique IDs every run.
+    -- Base range is 4501–4600, with one "special" device ID used for scenario variety.
+    CAST(
+      CASE
+        WHEN SEQ = 66 THEN 7821      -- Special scenario device ID (replaces 4566)
+        ELSE 4500 + SEQ             -- 4501..4600
+      END
+      AS VARCHAR
+    ) AS DEVICE_ID,
     
     -- Device models (varied distribution)
     CASE (SEQ % 4)
