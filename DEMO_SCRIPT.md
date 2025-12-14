@@ -16,31 +16,6 @@
 
 ---
 
-## 💰 Key Value Drivers (Use in Talking Points)
-
-### Operational Cost Reduction
-| Benefit | Impact |
-|---------|--------|
-| **Reduced Downtime** | Predict issues before they occur → dramatic reduction in unplanned failures |
-| **Optimized Scheduling** | Eliminate unnecessary preventive maintenance while ensuring critical interventions |
-| **Lower Field Costs** | Faster fault isolation + targeted repairs → reduced labor and travel expenses |
-
-### Performance Improvements
-| Metric | Value |
-|--------|-------|
-| **Faster Insights** | 10x faster real-time predictive analytics for immediate decision-making |
-| **Query Accuracy** | 90% accuracy with advanced AI models vs traditional approaches |
-| **Extended Asset Life** | Proactive maintenance defers capital expenditure by optimizing equipment cycles |
-
-### Customer Success Examples (Use as Social Proof)
-| Customer | Results |
-|----------|---------|
-| **FIIX** | 10x improvement in maintenance insights, reduced asset downtime, eliminated manual querying for 40,000+ customers |
-| **Toyota** | Minimized production disruptions, extended equipment life, improved maintenance cost-effectiveness |
-| **Telecom Operators** | Reduced field maintenance costs, improved SLA compliance, optimized battery replacement cycles |
-
----
-
 ## 📋 Demo Overview
 
 This demo tells a **cohesive story** through 4 personas, with each question flowing naturally to the next:
@@ -56,7 +31,9 @@ This demo tells a **cohesive story** through 4 personas, with each question flow
 
 ## 🎬 Opening (0:00 - 2:00)
 
-**Talking Points (aligned to FOCUS Challenges):**
+### Setting the Stage
+
+**SAY THIS:**
 > "PatientPoint operates 500,000 IoT devices—HealthScreen displays—across hospitals and clinics nationwide. These screens generate **advertising revenue from pharmaceutical partners**. When a screen fails, three things happen:
 > 
 > 1. **Lost Revenue**: Every hour offline means lost ad impressions and revenue
@@ -64,14 +41,6 @@ This demo tells a **cohesive story** through 4 personas, with each question flow
 > 3. **Unpredictable Downtime**: Reactive maintenance means you don't know what's failing until it's down
 > 
 > Today I'll show you how Snowflake Intelligence and Cortex Agents solve all three with **predictive AI**."
-
-**The Snowflake Advantage (weave in as appropriate):**
-> "What makes this different from traditional monitoring tools?
-> - **10x faster insights**: Real-time predictive analytics vs. batch reporting
-> - **90% query accuracy**: Cortex AI models outperform rule-based approaches  
-> - **Extended asset life**: Proactive maintenance defers capital expenditure
-> 
-> Companies like FIIX, Toyota, and major telecom operators have already achieved these results with Snowflake."
 
 **Actions:**
 1. Open **Snowflake Intelligence** (AI & ML → Snowflake Intelligence)
@@ -85,66 +54,227 @@ This demo tells a **cohesive story** through 4 personas, with each question flow
 *Persona: C-Suite / VP of Operations*
 
 ### Scene Setup
-> "Let's start with what executives care about: the big picture. Imagine you're the VP of Operations walking into a Monday morning meeting. You need instant answers."
+> "Let's start with what executives care about: the big picture. Imagine you're the VP of Operations walking into a Monday morning meeting. You need instant answers—no waiting for reports, no switching between dashboards."
 
 ---
 
-### Prompt 1: The Big Picture
+### 📌 Prompt 1: The Big Picture
+
 ```
 Give me a summary of our device fleet health and business impact
 ```
 
-**Transition:** *"Good overview. I see we have strong uptime, but let me dig into the financials..."*
+#### 🎯 Why This Matters to the Customer
+- **Executive time is expensive** — They need a single view, not 10 dashboards
+- **Board-ready metrics** — Health score, uptime, revenue impact in one answer
+- **Early warning** — Identify systemic issues before they become crises
+
+#### 📊 Business Outcomes Demonstrated
+| Outcome | What We're Proving |
+|---------|-------------------|
+| **Single Pane of Glass** | Natural language replaces multiple BI tools |
+| **Real-time Awareness** | Data as of current hour, not last week's report |
+| **Risk Visibility** | At-risk devices surfaced proactively |
+
+#### 🗄️ Data Being Used
+| Source Table/View | What It Provides | Row Count |
+|-------------------|------------------|-----------|
+| `V_DEVICE_HEALTH_SUMMARY` | Current health scores, risk levels | 100 devices |
+| `V_EXECUTIVE_DASHBOARD` | Aggregated KPIs | 1 row |
+| `V_REVENUE_IMPACT` | Uptime and revenue metrics | 100 devices |
+| `V_CUSTOMER_SATISFACTION` | NPS and satisfaction scores | 14 facilities |
+
+#### ✅ Auditability — How to Verify
+> *"Everything you see here is queryable. If you want to drill into any number, I can show you the underlying SQL or run it directly in Snowsight."*
+
+```sql
+-- Verify fleet health summary
+SELECT STATUS, COUNT(*) as DEVICE_COUNT, ROUND(AVG(HEALTH_SCORE),1) as AVG_HEALTH
+FROM V_DEVICE_HEALTH_SUMMARY
+GROUP BY STATUS;
+
+-- Verify at-risk count
+SELECT RISK_LEVEL, COUNT(*) FROM V_DEVICE_HEALTH_SUMMARY GROUP BY RISK_LEVEL;
+```
+
+#### 🔄 Transition
+> *"Good overview. I see we have strong uptime, but let me dig into the revenue impact specifically..."*
 
 ---
 
-### Prompt 2: Revenue Protection (addresses Challenge #1)
+### 📌 Prompt 2: Revenue Protection
+
 ```
 How much advertising revenue are we losing from device downtime?
 ```
 
-**Transition:** *"Zero revenue loss this month—that's our revenue protection working. But how are we achieving this? Let's look at cost savings..."*
+#### 🎯 Why This Matters to the Customer
+- **Revenue is the language of the C-suite** — This connects IT metrics to business outcomes
+- **Pharma partners expect uptime** — Contractual SLAs may be at risk
+- **Quantifies the cost of inaction** — Makes the case for predictive maintenance investment
+
+#### 📊 Business Outcomes Demonstrated
+| Outcome | What We're Proving |
+|---------|-------------------|
+| **Revenue Attribution** | Device health → ad impressions → dollars |
+| **Zero Loss Target** | Predictive maintenance prevents revenue leakage |
+| **Partner Confidence** | Reliable screens = reliable ad delivery |
+
+#### 🗄️ Data Being Used
+| Source Table/View | What It Provides | Row Count |
+|-------------------|------------------|-----------|
+| `V_REVENUE_IMPACT` | Revenue loss per device, uptime % | 100 devices |
+| `DEVICE_DOWNTIME` | Historical downtime incidents | 10 incidents |
+| `DEVICE_INVENTORY` | Hourly ad revenue per device ($8-$25/hr) | 100 devices |
+
+#### ✅ Auditability — How to Verify
+```sql
+-- See revenue loss by device
+SELECT DEVICE_ID, FACILITY_NAME, TOTAL_REVENUE_LOSS_USD, UPTIME_PERCENTAGE
+FROM V_REVENUE_IMPACT
+WHERE TOTAL_REVENUE_LOSS_USD > 0
+ORDER BY TOTAL_REVENUE_LOSS_USD DESC;
+
+-- Verify downtime records
+SELECT * FROM DEVICE_DOWNTIME ORDER BY DOWNTIME_START DESC;
+```
+
+#### 🔄 Transition
+> *"Zero revenue loss this month—that's our revenue protection working. But how are we achieving this? Let's look at the cost side of the equation..."*
 
 ---
 
-### Prompt 3: ROI & Cost Baseline (addresses C-Suite #1 question) 🆕
+### 📌 Prompt 3: ROI & Cost Baseline
+
 ```
 What's our annual field service cost and projected savings with predictive maintenance?
 ```
 
-**Talking Point:** *"This is the ROI story: we spend $185M annually on field dispatches at 500K devices. With 60%+ remote resolution, we're projecting $96M in annual savings—that's a 52% cost reduction."*
+#### 🎯 Why This Matters to the Customer
+- **CFO question #1** — "What does this cost and what do we save?"
+- **Investment justification** — Hard numbers for budget approval
+- **Benchmark against industry** — $185/dispatch is industry standard
 
-> 💡 **Value Driver Callout:** *"This aligns with what we've seen at other customers. FIIX achieved 10x improvement in maintenance insights. The ROI typically justifies the investment within the first year."*
+#### 📊 Business Outcomes Demonstrated
+| Outcome | What We're Proving |
+|---------|-------------------|
+| **Cost Baseline Established** | $185M/year at 500K devices |
+| **Savings Projection** | $96M/year (52% reduction) |
+| **Remote Fix Economics** | $185 dispatch vs $25 remote = $160 saved per fix |
 
-**Transition:** *"Let me show you the actual savings we're achieving..."*
+#### 🗄️ Data Being Used
+| Source Table/View | What It Provides | Row Count |
+|-------------------|------------------|-----------|
+| `V_ROI_ANALYSIS` | Annual projections, per-unit costs | 1 row |
+| `MAINTENANCE_HISTORY` | Actual resolution types | 24 tickets |
+| `V_MAINTENANCE_ANALYTICS` | Cost savings achieved | 24 records |
+
+#### ✅ Auditability — How to Verify
+```sql
+-- See the full ROI calculation
+SELECT * FROM V_ROI_ANALYSIS;
+
+-- Verify remote fix rate
+SELECT RESOLUTION_TYPE, COUNT(*) as COUNT, SUM(COST_SAVINGS_USD) as TOTAL_SAVINGS
+FROM V_MAINTENANCE_ANALYTICS
+GROUP BY RESOLUTION_TYPE;
+```
+
+**SAY THIS:**
+> *"This is the ROI story: we spend $185M annually on field dispatches at 500K devices. With 60%+ remote resolution, we're projecting $96M in annual savings—that's a 52% cost reduction. This aligns with what we've seen at customers like FIIX, who achieved 10x improvement in maintenance insights."*
+
+#### 🔄 Transition
+> *"Let me show you the actual savings we're achieving right now..."*
 
 ---
 
-### Prompt 4: Cost Savings (addresses Challenge #2)
+### 📌 Prompt 4: Cost Savings Achieved
+
 ```
 How much money have we saved this month from remote fixes vs field dispatches?
 ```
 
-**Transition:** *"That's real savings happening now—on track for 40-60% reduction in field service costs. But I noticed the NPS score. Let's check customer satisfaction..."*
+#### 🎯 Why This Matters to the Customer
+- **Proof over promise** — Not projections, actual realized savings
+- **Trend visibility** — Is the program working month-over-month?
+- **Operational validation** — Remote fix strategy is paying off
+
+#### 📊 Business Outcomes Demonstrated
+| Outcome | What We're Proving |
+|---------|-------------------|
+| **Realized Savings** | Actual dollars saved (not projected) |
+| **Remote Fix Rate** | 60-70% of issues resolved without dispatch |
+| **Dispatch Avoidance** | Each remote fix = $185 saved |
+
+#### 🗄️ Data Being Used
+| Source Table/View | What It Provides | Row Count |
+|-------------------|------------------|-----------|
+| `V_MAINTENANCE_ANALYTICS` | Ticket-level cost data | 24 tickets |
+| `MAINTENANCE_HISTORY` | Resolution type, technician, timestamp | 24 records |
+
+#### ✅ Auditability — How to Verify
+```sql
+-- See savings by ticket
+SELECT TICKET_ID, DEVICE_ID, FACILITY_NAME, RESOLUTION_TYPE, 
+       COST_USD, COST_SAVINGS_USD, RESOLUTION_TIME_MINS
+FROM V_MAINTENANCE_ANALYTICS
+WHERE DATE_TRUNC('month', CREATED_AT) = DATE_TRUNC('month', CURRENT_DATE())
+ORDER BY CREATED_AT DESC;
+```
+
+#### 🔄 Transition
+> *"That's real savings happening now—on track for 40-60% reduction in field service costs. But I noticed we track NPS. Let's check customer satisfaction..."*
 
 ---
 
-### Prompt 5: Customer Pulse (follows from NPS mention)
+### 📌 Prompt 5: Customer Satisfaction
+
 ```
 What is our customer satisfaction score and which facilities need follow-up?
 ```
 
-**Transition:** *"I see Springfield Urgent Care flagged for follow-up. Let's hand this over to Operations to understand what's happening there..."*
+#### 🎯 Why This Matters to the Customer
+- **Retention driver** — Happy providers renew contracts
+- **Early warning system** — Negative feedback = churn risk
+- **Closed-loop service** — Issues flagged for follow-up
+
+#### 📊 Business Outcomes Demonstrated
+| Outcome | What We're Proving |
+|---------|-------------------|
+| **NPS Tracking** | Net Promoter Score by facility |
+| **Proactive Follow-up** | Negative feedback triggers action |
+| **Service Quality Correlation** | Device uptime → satisfaction |
+
+#### 🗄️ Data Being Used
+| Source Table/View | What It Provides | Row Count |
+|-------------------|------------------|-----------|
+| `V_CUSTOMER_SATISFACTION` | NPS, ratings by facility | 14 facilities |
+| `PROVIDER_FEEDBACK` | Individual feedback records | 14 records |
+
+#### ✅ Auditability — How to Verify
+```sql
+-- See facilities needing follow-up
+SELECT FACILITY_NAME, AVG_NPS_SCORE, FEEDBACK_CATEGORY, FOLLOW_UPS_REQUIRED
+FROM V_CUSTOMER_SATISFACTION
+WHERE FOLLOW_UPS_REQUIRED > 0;
+
+-- See all feedback
+SELECT * FROM PROVIDER_FEEDBACK ORDER BY FEEDBACK_DATE DESC;
+```
+
+#### 🔄 Transition
+> *"I see Springfield Urgent Care flagged for follow-up—they had a negative experience. Let's hand this over to Operations to understand what's happening with their device..."*
 
 ---
 
-### Key Takeaways for Executive (Mapped to FOCUS Results)
-| FOCUS Result | Metric | Demo Value | Scale Impact |
-|--------------|--------|------------|--------------|
+### ✅ Executive Act Summary
+
+| FOCUS Result | Metric Shown | Demo Value | Production Scale |
+|--------------|--------------|------------|------------------|
 | 💵 **Revenue Protection** | Ad revenue loss | $0 | Millions protected |
-| 💰 **40-60% Cost Reduction** | Annual baseline + savings | $2,500+/month | **$50M+/year** |
-| 🎯 **>85% Prediction Accuracy** | Remote resolution | 70%+ | 350K dispatches avoided |
-| ⭐ Customer Satisfaction | NPS Score | 8.6 | Loyalty driver |
+| 💰 **40-60% Cost Reduction** | Annual savings | $2,500+/month | **$50M+/year** |
+| 🎯 **Prediction Accuracy** | Remote fix rate | 60-70% | 350K dispatches avoided |
+| ⭐ **Customer Satisfaction** | NPS Score | 8.6 | Retention driver |
 
 ---
 
@@ -153,121 +283,428 @@ What is our customer satisfaction score and which facilities need follow-up?
 *Persona: IT Manager / Facilities Operations*
 
 ### Scene Setup
-> "Now let's switch to the Operations Center. The executive just flagged Springfield Urgent Care. But as an ops manager, you need to see the full picture of what's at risk today."
+> "Now let's switch to the Operations Center. The executive just flagged Springfield Urgent Care. But as an ops manager, you need to see the full picture of what's at risk today—and make dispatch decisions."
 
 ---
 
-### Prompt 1: Top Facilities Overview 🆕
+### 📌 Prompt 1: Top Facilities by Revenue
+
 ```
 Show me device health across our top 10 facilities by ad revenue
 ```
 
-**Talking Point:** *"Operations teams need to prioritize by business impact. This shows our highest-revenue facilities and their device health."*
+#### 🎯 Why This Matters to the Customer
+- **Prioritize by business impact** — Not all devices are equal
+- **Revenue-weighted decisions** — Fix high-revenue devices first
+- **Resource allocation** — Where should techs focus?
 
-**Transition:** *"Good overview. Now let me drill into what's at risk right now across the entire fleet..."*
+#### 📊 Business Outcomes Demonstrated
+| Outcome | What We're Proving |
+|---------|-------------------|
+| **Revenue-Based Prioritization** | Operations decisions tied to business value |
+| **Risk Concentration** | Are high-revenue facilities also high-risk? |
+| **Portfolio View** | Facility-level health at a glance |
+
+#### 🗄️ Data Being Used
+| Source Table/View | What It Provides | Row Count |
+|-------------------|------------------|-----------|
+| `V_DEVICE_HEALTH_SUMMARY` | Health scores, facility names | 100 devices |
+| `DEVICE_INVENTORY` | Hourly ad revenue per device | 100 devices |
+
+#### ✅ Auditability — How to Verify
+```sql
+-- Top 10 facilities by revenue
+SELECT FACILITY_NAME, SUM(HOURLY_AD_REVENUE_USD * 720) as MONTHLY_REVENUE,
+       AVG(HEALTH_SCORE) as AVG_HEALTH, COUNT(*) as DEVICE_COUNT
+FROM V_DEVICE_HEALTH_SUMMARY
+GROUP BY FACILITY_NAME
+ORDER BY MONTHLY_REVENUE DESC
+LIMIT 10;
+```
+
+#### 🔄 Transition
+> *"Good overview of our highest-value facilities. Now let me see what's actually at risk across the entire fleet right now..."*
 
 ---
 
-### Prompt 2: What's At Risk Right Now?
+### 📌 Prompt 2: Current Risk Assessment
+
 ```
 Which devices have critical or high risk levels right now?
 ```
 
-**Transition:** *"I see 7 devices flagged—including DEV-005 at Springfield Urgent Care that the executive mentioned. Before I dispatch technicians, let me see if any of these can be fixed remotely..."*
+#### 🎯 Why This Matters to the Customer
+- **Actionable intelligence** — Not just data, but prioritized action items
+- **Failure prevention** — Address issues before they cause downtime
+- **Dispatch optimization** — Know which devices need attention TODAY
+
+#### 📊 Business Outcomes Demonstrated
+| Outcome | What We're Proving |
+|---------|-------------------|
+| **Real-time Risk Scoring** | Devices ranked by failure probability |
+| **Root Cause Visibility** | Each risk level shows the primary issue |
+| **Proactive Operations** | See problems before customers report them |
+
+#### 🗄️ Data Being Used
+| Source Table/View | What It Provides | Row Count |
+|-------------------|------------------|-----------|
+| `V_DEVICE_HEALTH_SUMMARY` | Risk level, primary issue | 100 devices |
+| `DEVICE_TELEMETRY` | Real-time CPU, memory, temp, errors | 72,000 readings |
+
+**Risk Classification Logic:**
+```
+CRITICAL: Device offline
+HIGH: Degraded + (CPU temp > 65°C OR CPU usage > 80%)
+MEDIUM: Degraded OR (CPU temp > 75°C OR CPU usage > 95%)
+LOW: All metrics within normal range
+```
+
+#### ✅ Auditability — How to Verify
+```sql
+-- See all at-risk devices with details
+SELECT DEVICE_ID, FACILITY_NAME, LOCATION, HEALTH_SCORE, RISK_LEVEL,
+       PRIMARY_ISSUE, CPU_TEMP_CELSIUS, CPU_USAGE_PCT, MEMORY_USAGE_PCT,
+       DAYS_SINCE_MAINTENANCE
+FROM V_DEVICE_HEALTH_SUMMARY
+WHERE RISK_LEVEL IN ('CRITICAL', 'HIGH')
+ORDER BY CASE RISK_LEVEL WHEN 'CRITICAL' THEN 1 WHEN 'HIGH' THEN 2 END;
+```
+
+#### 🔄 Transition
+> *"I see 7 devices flagged—including DEV-005 at Springfield Urgent Care that the executive mentioned. Before I dispatch technicians, let me see if any of these can be fixed remotely..."*
 
 ---
 
-### Prompt 3: Triage for Remote Fixes (follows naturally)
+### 📌 Prompt 3: Remote Fix Triage
+
 ```
 Can any of these critical or high risk devices be fixed remotely?
 ```
 
-**Transition:** *"Great—the agent identified that HIGH_CPU and MEMORY_LEAK issues can be fixed remotely with 92% success rate. Let me try that first on DEV-005..."*
+#### 🎯 Why This Matters to the Customer
+- **Cost optimization** — Remote fix = $25 vs dispatch = $185
+- **Faster resolution** — Remote in 30 min vs dispatch in 4+ hours
+- **Intelligent triage** — AI recommends most cost-effective action
+
+#### 📊 Business Outcomes Demonstrated
+| Outcome | What We're Proving |
+|---------|-------------------|
+| **Automated Triage** | AI classifies remote vs on-site |
+| **Success Rate Prediction** | Each issue type has known fix rate |
+| **Decision Support** | Ops manager gets recommendation, not just data |
+
+#### 🗄️ Data Being Used
+| Source Table/View | What It Provides | Row Count |
+|-------------------|------------------|-----------|
+| `TROUBLESHOOTING_KB` | Success rates by issue type | 10 categories |
+| `V_DEVICE_HEALTH_SUMMARY` | Current issues per device | 100 devices |
+
+**Remote Fix Success Rates:**
+| Issue Type | Remote Success Rate |
+|------------|---------------------|
+| HIGH_CPU | 92% |
+| MEMORY_LEAK | 94% |
+| DISPLAY_FREEZE | 87.5% |
+| CONNECTIVITY | 70% |
+| OVERHEATING | 15% (usually requires dispatch) |
+
+#### ✅ Auditability — How to Verify
+```sql
+-- See success rates from knowledge base
+SELECT ISSUE_CATEGORY, SUCCESS_RATE_PCT, REQUIRES_DISPATCH,
+       ESTIMATED_REMOTE_FIX_TIME_MINS
+FROM TROUBLESHOOTING_KB
+ORDER BY SUCCESS_RATE_PCT DESC;
+```
+
+#### 🔄 Transition
+> *"Great—the agent identified that HIGH_CPU and MEMORY_LEAK issues can be fixed remotely with 92%+ success rate. Let me dig into Springfield specifically..."*
 
 ---
 
-### Prompt 4: Deep Dive on Problem Device (follows from triage)
+### 📌 Prompt 4: Device Deep Dive
+
 ```
 What's the status of device DEV-005 at Springfield Urgent Care and what's causing the issue?
 ```
 
-**Transition:** *"I see it's a network connectivity issue—that explains the degraded status. This facility has had 3 network issues in 60 days. Let me check if we already have work orders for this..."*
+#### 🎯 Why This Matters to the Customer
+- **Full context for dispatch** — Don't send techs blind
+- **Pattern recognition** — Is this a recurring issue at this location?
+- **Root cause analysis** — Understand why, not just what
+
+#### 📊 Business Outcomes Demonstrated
+| Outcome | What We're Proving |
+|---------|-------------------|
+| **Device-Level Detail** | Complete health profile on demand |
+| **Historical Context** | Past issues at this facility |
+| **Actionable Diagnosis** | Not just symptoms, but recommended actions |
+
+#### 🗄️ Data Being Used
+| Source Table/View | What It Provides | Row Count |
+|-------------------|------------------|-----------|
+| `V_DEVICE_HEALTH_SUMMARY` | Current device status | 1 device |
+| `MAINTENANCE_HISTORY` | Past tickets for this device | Variable |
+| `TROUBLESHOOTING_KB` | Fix procedures | 10 categories |
+
+#### ✅ Auditability — How to Verify
+```sql
+-- Full device profile
+SELECT * FROM V_DEVICE_HEALTH_SUMMARY WHERE DEVICE_ID = 'DEV-005';
+
+-- Historical issues at this location
+SELECT * FROM MAINTENANCE_HISTORY 
+WHERE DEVICE_ID = 'DEV-005' 
+ORDER BY CREATED_AT DESC;
+```
+
+#### 🔄 Transition
+> *"I see it's a network connectivity issue—and this facility has had 3 network issues in 60 days. Let me check if we already have work orders created..."*
 
 ---
 
-### Prompt 5: Work Order Status (follows from device issue)
+### 📌 Prompt 5: Work Order Status
+
 ```
 Show me all active work orders and their priority
 ```
 
-**Transition:** *"I see there's already a CRITICAL work order for DEV-005. Good—let's look at our predictive capabilities..."*
+#### 🎯 Why This Matters to the Customer
+- **Dispatch coordination** — What's already being worked?
+- **Priority management** — Critical vs routine work
+- **AI-generated vs manual** — See predictive maintenance in action
+
+#### 📊 Business Outcomes Demonstrated
+| Outcome | What We're Proving |
+|---------|-------------------|
+| **Work Order Visibility** | All active jobs in one view |
+| **AI-Initiated Work** | Predictive system creates proactive tickets |
+| **Technician Utilization** | Who's assigned to what |
+
+#### 🗄️ Data Being Used
+| Source Table/View | What It Provides | Row Count |
+|-------------------|------------------|-----------|
+| `V_ACTIVE_WORK_ORDERS` | Active work orders with details | 5 active |
+| `WORK_ORDERS` | Full work order records | 8 total |
+| `TECHNICIANS` | Technician assignments | 6 techs |
+
+#### ✅ Auditability — How to Verify
+```sql
+-- See all active work orders
+SELECT WORK_ORDER_ID, DEVICE_ID, FACILITY_NAME, PRIORITY, STATUS,
+       SOURCE, ASSIGNED_TECHNICIAN_ID, AI_DIAGNOSIS
+FROM V_ACTIVE_WORK_ORDERS
+ORDER BY URGENCY_SCORE DESC;
+
+-- See AI-generated vs manual
+SELECT SOURCE, COUNT(*) FROM WORK_ORDERS GROUP BY SOURCE;
+```
+
+#### 🔄 Transition
+> *"I see there's already a CRITICAL work order for DEV-005—created by AI prediction. Now let me show you the predictive intelligence..."*
 
 ---
 
-### Prompt 6: Predictive Intelligence
+### 📌 Prompt 6: Predictive Failure Detection
+
 ```
 Which devices are predicted to fail in the next 48 hours?
 ```
 
-**Transition:** *"This is the power of predictive maintenance—we can see failures before they happen. But how accurate are these predictions? Let me show you..."*
+#### 🎯 Why This Matters to the Customer
+- **24-48 hour advance warning** — Time to prevent failures
+- **Proactive dispatch** — Schedule before emergency
+- **Confidence scoring** — Know how reliable the prediction is
+
+#### 📊 Business Outcomes Demonstrated
+| Outcome | What We're Proving |
+|---------|-------------------|
+| **Predictive Lead Time** | 24-48 hour advance warning |
+| **Failure Probability** | Confidence % for each prediction |
+| **Contributing Factors** | Which metrics drove the prediction |
+
+#### 🗄️ Data Being Used
+| Source Table/View | What It Provides | Row Count |
+|-------------------|------------------|-----------|
+| `V_FAILURE_PREDICTIONS` | Predicted failures with probability | Variable |
+| `V_DEVICE_HEALTH_SUMMARY` | Current risk levels | 100 devices |
+| `DEVICE_TELEMETRY` | 30 days of trend data | 72,000 readings |
+
+**Prediction Model Inputs:**
+- CPU temperature trend (rising = higher risk)
+- Memory usage trend (approaching limit)
+- Error count acceleration
+- Days since last maintenance
+- Historical failure patterns at this location
+
+#### ✅ Auditability — How to Verify
+```sql
+-- See predictions (requires script 05)
+SELECT DEVICE_ID, FACILITY_NAME, RISK_LEVEL, 
+       PREDICTED_HOURS_TO_FAILURE, FAILURE_PROBABILITY_PCT,
+       RISK_FACTORS
+FROM V_FAILURE_PREDICTIONS
+WHERE PREDICTED_HOURS_TO_FAILURE <= 48
+ORDER BY FAILURE_PROBABILITY_PCT DESC;
+```
+
+**SAY THIS:**
+> *"This is the power of predictive maintenance—we can see failures before they happen. The model looks at 30 days of telemetry: temperature trends, memory patterns, error acceleration. This gives us time to schedule proactive maintenance instead of reacting to emergencies."*
+
+#### 🔄 Transition
+> *"But how accurate are these predictions? Let me prove it..."*
 
 ---
 
-### Prompt 7: Prediction Accuracy (proves AI credibility) 🆕
+### 📌 Prompt 7: Prediction Accuracy
+
 ```
 What's our prediction accuracy based on historical failure data?
 ```
 
-**Talking Point:** *"This is the proof point—we're not just making predictions, we're validating them against actual outcomes. >85% accuracy means 8 out of 10 predictions are correct."*
+#### 🎯 Why This Matters to the Customer
+- **Credibility** — Predictions are only useful if accurate
+- **Continuous improvement** — Track accuracy over time
+- **Trust building** — Data scientists can validate the model
 
-> 💡 **Value Driver Callout:** *"Snowflake customers consistently see 90% query accuracy with Cortex AI models—significantly outperforming traditional rule-based approaches."*
+#### 📊 Business Outcomes Demonstrated
+| Outcome | What We're Proving |
+|---------|-------------------|
+| **Validated Accuracy** | >85% predictions match actual failures |
+| **False Positive Rate** | Minimized unnecessary dispatches |
+| **Model Performance** | Precision and recall metrics |
 
-**Transition:** *"Strong accuracy. Now let me show you how fast we're resolving issues..."*
+#### 🗄️ Data Being Used
+| Source Table/View | What It Provides | Row Count |
+|-------------------|------------------|-----------|
+| `V_PREDICTION_ACCURACY_ANALYSIS` | Accuracy metrics | 1 row |
+| `MAINTENANCE_HISTORY` | Actual failures for validation | 24 tickets |
+| `V_FAILURE_PREDICTIONS` | Historical predictions | Variable |
+
+#### ✅ Auditability — How to Verify
+```sql
+-- See accuracy analysis (requires script 05)
+SELECT * FROM V_PREDICTION_ACCURACY_ANALYSIS;
+
+-- Manual validation: compare predictions to actual failures
+SELECT COUNT(*) as PREDICTED_ISSUES,
+       SUM(CASE WHEN EXISTS (
+           SELECT 1 FROM MAINTENANCE_HISTORY m 
+           WHERE m.DEVICE_ID = p.DEVICE_ID 
+           AND m.CREATED_AT > p.PREDICTION_TIMESTAMP
+       ) THEN 1 ELSE 0 END) as ACTUAL_FAILURES
+FROM V_FAILURE_PREDICTIONS p;
+```
+
+**SAY THIS:**
+> *"This is the proof point—we're not just making predictions, we're validating them against actual outcomes. >85% accuracy means 8 out of 10 predictions are correct. Snowflake customers consistently see 90% query accuracy with Cortex AI."*
+
+#### 🔄 Transition
+> *"Strong accuracy. Now let me show you how fast we're resolving issues when they do occur..."*
 
 ---
 
-### Prompt 8: MTTR Performance 🆕
+### 📌 Prompt 8: Resolution Performance
+
 ```
 What's our mean time to resolution and how does it compare by resolution type?
 ```
 
-**Talking Point:** *"Remote fixes average 30 minutes. Field dispatches take 4+ hours. That's 8x faster resolution—which directly impacts uptime and revenue."*
+#### 🎯 Why This Matters to the Customer
+- **MTTR is a key SLA metric** — Contractual obligations
+- **Remote vs dispatch comparison** — Proves the ROI of remote fixes
+- **Continuous improvement** — Track performance over time
 
-> 💡 **Value Driver Callout:** *"This is 10x faster insights than traditional batch reporting. Real-time predictive analytics enable immediate operational decision-making."*
+#### 📊 Business Outcomes Demonstrated
+| Outcome | What We're Proving |
+|---------|-------------------|
+| **8x Faster Resolution** | Remote fixes in 30 min vs 4+ hours |
+| **SLA Compliance** | Meeting contractual response times |
+| **Efficiency Gains** | Doing more with the same team |
 
-**Transition:** *"Now watch this—the agent can also trigger actions automatically..."*
+#### 🗄️ Data Being Used
+| Source Table/View | What It Provides | Row Count |
+|-------------------|------------------|-----------|
+| `V_MAINTENANCE_ANALYTICS` | Resolution times by ticket | 24 tickets |
+| `V_EXECUTIVE_DASHBOARD` | Aggregated MTTR | 1 row |
+
+#### ✅ Auditability — How to Verify
+```sql
+-- MTTR by resolution type
+SELECT RESOLUTION_TYPE,
+       COUNT(*) as TICKET_COUNT,
+       ROUND(AVG(RESOLUTION_TIME_MINS), 1) as AVG_MTTR_MINS,
+       ROUND(AVG(RESOLUTION_TIME_MINS)/60, 1) as AVG_MTTR_HOURS
+FROM V_MAINTENANCE_ANALYTICS
+GROUP BY RESOLUTION_TYPE;
+```
+
+**SAY THIS:**
+> *"Remote fixes average 30 minutes. Field dispatches take 4+ hours. That's 8x faster resolution—which directly impacts uptime and revenue. This is 10x faster insights than traditional batch reporting."*
+
+#### 🔄 Transition
+> *"Now watch this—the agent can also trigger actions automatically. This is the 'act' in observe-orient-decide-ACT..."*
 
 ---
 
-### Prompt 9: Automated Action (Key Demo Moment! 🎯)
+### 📌 Prompt 9: Automated Action ⭐ KEY MOMENT
+
 ```
 Can you attempt a remote restart on device DEV-003 to fix the high CPU issue?
 ```
 
-**Talking Point:** *"Notice what just happened—the agent didn't just recommend an action, it triggered a simulated API call to the device management system. In production, this would actually restart the device."*
+#### 🎯 Why This Matters to the Customer
+- **Close the loop** — AI doesn't just recommend, it acts
+- **Speed** — No human delay between diagnosis and fix
+- **Scalability** — Automated fixes across 500K devices
 
-**Follow-up to show the log:**
+#### 📊 Business Outcomes Demonstrated
+| Outcome | What We're Proving |
+|---------|-------------------|
+| **Automated Remediation** | Agent triggers device commands |
+| **Audit Trail** | Every action is logged |
+| **Integration Capability** | Connects to external systems |
+
+#### 🗄️ Data Being Used
+| Source Table/View | What It Provides | Row Count |
+|-------------------|------------------|-----------|
+| `SEND_DEVICE_COMMAND` procedure | Triggers remote command | N/A |
+| `EXTERNAL_ACTION_LOG` | Audit trail of actions | Growing |
+| `V_RECENT_EXTERNAL_ACTIONS` | Recent action history | 20 max |
+
+#### ✅ Auditability — How to Verify
+
+**Follow-up prompt:**
 ```
 Show me recent external actions that were triggered
 ```
 
-*Show: V_RECENT_EXTERNAL_ACTIONS displays the API call that was logged*
+```sql
+-- See the audit log
+SELECT TIMESTAMP, ACTION_TYPE, TARGET_SYSTEM, DEVICE_ID, 
+       COMMAND, STATUS, INITIATED_BY
+FROM V_RECENT_EXTERNAL_ACTIONS
+ORDER BY TIMESTAMP DESC;
+```
 
-> **💡 Key Message:** "Cortex Agents aren't just chatbots—they can execute actions. With External Functions, this same pattern connects to ServiceNow, Slack, PagerDuty, or your device management API."
+**SAY THIS:**
+> *"Notice what just happened—the agent didn't just recommend an action, it triggered a simulated API call to the device management system. In production, this would actually restart the device via External Functions. Every action is logged for compliance and audit. Cortex Agents aren't just chatbots—they can execute actions."*
 
-**Transition:** *"The agent just demonstrated the full loop: detect → diagnose → act. Now let's see this from the technician's perspective..."*
+#### 🔄 Transition
+> *"The agent just demonstrated the full loop: detect → diagnose → act. Now let's see this from the technician's perspective when a dispatch IS required..."*
 
 ---
 
-### Key Takeaways for Operations
-| Capability | Demo Evidence |
-|------------|---------------|
-| 🏢 Top facility prioritization | Filter by revenue impact |
-| 🎯 Real-time risk detection | 7 devices flagged across fleet |
-| 🔧 Remote fix triage | AI recommends most cost-effective action |
-| 📊 Prediction accuracy | >85% validated against actuals |
-| ⏱️ MTTR tracking | 8x faster with remote fixes |
-| 🔮 48-hour predictions | Lead time to prevent failures |
+### ✅ Operations Act Summary
+
+| Capability | Demo Evidence | Business Value |
+|------------|---------------|----------------|
+| 🏢 Revenue prioritization | Top 10 by ad revenue | Focus on what matters |
+| 🎯 Real-time risk | 7 devices flagged | Prevent failures |
+| 🔧 Remote fix triage | 92% success rate | Avoid $185/dispatch |
+| 📊 Prediction accuracy | >85% validated | Trust the AI |
+| ⏱️ MTTR tracking | 8x faster remote | SLA compliance |
+| 🤖 Automated action | Triggered restart | Closed-loop ops |
 
 ---
 
@@ -276,98 +713,233 @@ Show me recent external actions that were triggered
 *Persona: Field Service Technician*
 
 ### Scene Setup
-> "Now let's see this from the technician's perspective. Marcus Johnson just got assigned the Springfield Urgent Care job. He's in his truck, opening the app. He needs to know: What am I walking into?"
+> "Now let's see this from the technician's perspective. Marcus Johnson just got assigned the Springfield Urgent Care job. He's in his truck, opening the mobile app. He needs to know: What am I walking into?"
 
 ---
 
-### Prompt 1: My Assignments Today
+### 📌 Prompt 1: My Assignments
+
 ```
 What work orders are assigned to Marcus Johnson today?
 ```
 
-**Transition:** *"Marcus sees he has the Springfield job—it's marked CRITICAL. Before he drives out, he wants to know what he's dealing with..."*
+#### 🎯 Why This Matters to the Customer
+- **Technician productivity** — No wasted trips to the office
+- **Priority clarity** — Know which job is most urgent
+- **Mobile-first** — Works from anywhere
+
+#### 📊 Business Outcomes Demonstrated
+| Outcome | What We're Proving |
+|---------|-------------------|
+| **Personalized View** | Each tech sees their assignments |
+| **Priority Ranking** | Critical jobs surfaced first |
+| **Full Context** | Issue summary visible before arrival |
+
+#### 🗄️ Data Being Used
+| Source Table/View | What It Provides | Row Count |
+|-------------------|------------------|-----------|
+| `V_ACTIVE_WORK_ORDERS` | Work orders by technician | 5 active |
+| `TECHNICIANS` | Technician profiles | 6 techs |
+
+#### ✅ Auditability — How to Verify
+```sql
+-- Marcus's assignments
+SELECT wo.WORK_ORDER_ID, wo.DEVICE_ID, d.FACILITY_NAME, 
+       wo.PRIORITY, wo.ISSUE_SUMMARY
+FROM V_ACTIVE_WORK_ORDERS wo
+WHERE wo.TECHNICIAN_NAME = 'Marcus Johnson'
+AND wo.SCHEDULED_DATE = CURRENT_DATE();
+```
+
+#### 🔄 Transition
+> *"Marcus sees the Springfield job—it's marked CRITICAL. Before he drives out, he wants to know exactly what he's dealing with..."*
 
 ---
 
-### Prompt 2: Understanding the Problem (follows from assignment)
+### 📌 Prompt 2: Diagnosis & Fix Instructions
+
 ```
 What's wrong with device DEV-005 and how do I fix it?
 ```
 
-**Transition:** *"The agent pulled the troubleshooting steps from the knowledge base. But this is a recurring network issue at this facility. Let me check what worked last time..."*
+#### 🎯 Why This Matters to the Customer
+- **First-time fix rate** — Come prepared, fix it once
+- **Reduced training burden** — Knowledge base on demand
+- **Consistent quality** — Same procedures regardless of tech experience
+
+#### 📊 Business Outcomes Demonstrated
+| Outcome | What We're Proving |
+|---------|-------------------|
+| **Step-by-Step Guidance** | No guesswork in the field |
+| **Knowledge Base Access** | Institutional knowledge preserved |
+| **Skill Augmentation** | Junior techs perform like seniors |
+
+#### 🗄️ Data Being Used
+| Source Table/View | What It Provides | Row Count |
+|-------------------|------------------|-----------|
+| `V_DEVICE_HEALTH_SUMMARY` | Current device status | 1 device |
+| `TROUBLESHOOTING_KB` | Fix procedures | 10 categories |
+| Cortex Search: `TROUBLESHOOTING_SEARCH_SVC` | Semantic search | 10 docs |
+
+#### ✅ Auditability — How to Verify
+```sql
+-- Device current status
+SELECT * FROM V_DEVICE_HEALTH_SUMMARY WHERE DEVICE_ID = 'DEV-005';
+
+-- Relevant KB article
+SELECT ISSUE_CATEGORY, DIAGNOSTIC_STEPS, REMOTE_FIX_PROCEDURE,
+       REQUIRES_DISPATCH, ESTIMATED_REMOTE_FIX_TIME_MINS
+FROM TROUBLESHOOTING_KB
+WHERE ISSUE_CATEGORY = 'NO_NETWORK';
+```
+
+#### 🔄 Transition
+> *"The agent pulled troubleshooting steps from the knowledge base. But this is a recurring issue at this facility. Let me check what worked last time..."*
 
 ---
 
-### Prompt 3: Learning from History (follows from recurring issue)
+### 📌 Prompt 3: Historical Learning
+
 ```
 Find past incidents at Springfield Urgent Care and how they were resolved
 ```
 
-**Transition:** *"I can see two previous network issues—both required network cable replacement. That's valuable intel. Let me make sure I have the right parts..."*
+#### 🎯 Why This Matters to the Customer
+- **Pattern recognition** — Is there a systemic issue at this location?
+- **Proven solutions** — What actually worked before?
+- **Facility-specific knowledge** — Every location is different
+
+#### 📊 Business Outcomes Demonstrated
+| Outcome | What We're Proving |
+|---------|-------------------|
+| **Institutional Memory** | Learn from past successes |
+| **Root Cause Patterns** | Identify recurring issues |
+| **Facility Intelligence** | Location-specific insights |
+
+#### 🗄️ Data Being Used
+| Source Table/View | What It Provides | Row Count |
+|-------------------|------------------|-----------|
+| `MAINTENANCE_HISTORY` | Past tickets with resolution notes | 24 records |
+| Cortex Search: `MAINTENANCE_HISTORY_SEARCH_SVC` | Semantic search | 24 docs |
+
+#### ✅ Auditability — How to Verify
+```sql
+-- Past incidents at this facility
+SELECT TICKET_ID, DEVICE_ID, ISSUE_TYPE, RESOLUTION_TYPE,
+       RESOLUTION_NOTES, TECHNICIAN_ID, CREATED_AT
+FROM MAINTENANCE_HISTORY m
+JOIN DEVICE_INVENTORY d ON m.DEVICE_ID = d.DEVICE_ID
+WHERE d.FACILITY_NAME = 'Springfield Urgent Care'
+ORDER BY CREATED_AT DESC;
+```
+
+**SAY THIS:**
+> *"I can see two previous network issues—both required network cable replacement. That's valuable intel—there might be a wiring problem in that facility. Now Marcus knows exactly what to bring..."*
+
+#### 🔄 Transition
+> *"Let me make sure I have the right parts..."*
 
 ---
 
-### Prompt 4: Parts Preparation (follows from resolution history)
+### 📌 Prompt 4: Parts Preparation
+
 ```
 What parts might I need for a network connectivity issue?
 ```
 
-**Transition:** *"Perfect—the agent recommends ethernet cable and USB network adapter based on past fixes. Marcus is now fully prepared for the job."*
+#### 🎯 Why This Matters to the Customer
+- **First-time fix rate** — Right parts = one trip
+- **Inventory optimization** — Know what to stock in trucks
+- **Customer experience** — No "I'll come back with the part"
+
+#### 📊 Business Outcomes Demonstrated
+| Outcome | What We're Proving |
+|---------|-------------------|
+| **Parts Prediction** | AI suggests based on past fixes |
+| **Truck Stock Optimization** | Data-driven inventory |
+| **Reduced Return Trips** | Fix it right the first time |
+
+#### 🗄️ Data Being Used
+| Source Table/View | What It Provides | Row Count |
+|-------------------|------------------|-----------|
+| `TROUBLESHOOTING_KB` | Standard parts by issue | 10 categories |
+| `WORK_ORDERS.PARTS_REQUIRED` | Historical parts used | 8 records |
+
+#### ✅ Auditability — How to Verify
+```sql
+-- Parts typically needed for network issues
+SELECT ISSUE_CATEGORY, REMOTE_FIX_PROCEDURE
+FROM TROUBLESHOOTING_KB
+WHERE ISSUE_CATEGORY IN ('NO_NETWORK', 'CONNECTIVITY_INTERMITTENT');
+
+-- Parts from past similar work orders
+SELECT WORK_ORDER_ID, ISSUE_SUMMARY, PARTS_REQUIRED
+FROM WORK_ORDERS
+WHERE ISSUE_SUMMARY LIKE '%network%' OR ISSUE_SUMMARY LIKE '%connectivity%';
+```
+
+**SAY THIS:**
+> *"Perfect—the agent recommends ethernet cable and USB network adapter based on past fixes. Marcus is now fully prepared for the job."*
 
 ---
 
-### Key Takeaways for Field Tech
-| Feature | Benefit |
-|---------|---------|
-| 📋 My work queue | Know what's assigned before leaving |
-| 🔧 Fix instructions | Step-by-step from knowledge base |
-| 📖 Historical learning | What worked at this facility before |
-| 🧰 Parts list | Come prepared, fix first time |
+### ✅ Field Tech Act Summary
+
+| Feature | Benefit | Business Value |
+|---------|---------|----------------|
+| 📋 My work queue | Know assignments from anywhere | Productivity |
+| 🔧 Fix instructions | Step-by-step from KB | First-time fix rate |
+| 📖 Historical learning | What worked at this location | Pattern recognition |
+| 🧰 Parts list | Come prepared | No return trips |
 
 ---
 
-## 🤖 Act 4: AI Agent Capabilities (16:00 - 20:00)
+## 🤖 Act 4: AI Agent Capabilities (16:00 - 18:00)
 
 *Persona: All stakeholders*
 
 ### Scene Setup
-> "We've seen the agent serve three different personas with three different needs. Let's show a few more examples of what's possible with natural language queries."
+> "We've seen the agent serve three different personas with three different needs. Let me show a few more examples of what's possible—these are the kinds of ad-hoc questions that would normally require a data analyst."
 
 ---
 
-### Prompt 1: Analytical Comparison
+### 📌 Prompt 1: Analytical Comparison
+
 ```
 Compare average resolution time for remote fixes vs field dispatches
 ```
 
-**Why it matters:** *"This proves the ROI—remote fixes in minutes vs dispatches in hours."*
+**Why it matters:** *"This proves the ROI—remote fixes in minutes vs dispatches in hours. No SQL required."*
 
 ---
 
-### Prompt 2: Geographic Drill-Down
+### 📌 Prompt 2: Geographic Filtering
+
 ```
 Which facilities in Ohio have devices needing attention?
 ```
 
-**Why it matters:** *"Operations can filter by region, state, or city—no SQL required."*
+**Why it matters:** *"Operations can filter by region, state, or city—natural language, no dashboard switching."*
 
 ---
 
-### Prompt 3: Pattern Recognition
+### 📌 Prompt 3: Trend Analysis
+
 ```
 What's the most common issue type this month and how are we resolving it?
 ```
 
-**Why it matters:** *"The agent identifies trends—maybe we need a firmware update fleet-wide."*
+**Why it matters:** *"The agent identifies trends—maybe we need a fleet-wide firmware update."*
 
 ---
 
-### Prompt 4: ML Readiness (for technical audience)
+### 📌 Prompt 4: ML Readiness (for technical audience)
+
 ```
 What training data do we have available for building ML models?
 ```
 
-**Why it matters:** *"72K telemetry records, 30 days of history—ready for custom ML."*
+**Why it matters:** *"72K telemetry records, 30 days of history—Snowflake is your ML platform, not just storage."*
 
 ---
 
@@ -377,11 +949,11 @@ What training data do we have available for building ML models?
 
 > "In 20 minutes, we followed a single issue from the executive dashboard all the way to the technician's truck:
 > 
-> 1. **Executive** saw fleet health and flagged a customer satisfaction issue at Springfield
-> 2. **Operations** identified the at-risk device, triaged it for remote vs. dispatch, and found a pattern
+> 1. **Executive** saw fleet health, revenue protection, and flagged a satisfaction issue at Springfield
+> 2. **Operations** identified at-risk devices, triaged for remote fix, triggered an automated restart, and validated prediction accuracy
 > 3. **Technician** got the assignment, learned from past incidents, and came prepared with the right parts
 > 
-> All from natural language questions. No SQL. No dashboard switching. No waiting for reports."
+> All from natural language questions. No SQL. No dashboard switching. No waiting for reports. Every answer traceable to source data."
 
 ### Business Impact at Scale (FOCUS Results Delivered)
 
@@ -390,78 +962,21 @@ What training data do we have available for building ML models?
 > **RESULT 1: 40-60% Cost Reduction** ✅
 > - 70%+ issues resolved remotely → 350,000 avoided dispatches annually
 > - $185 saved per remote fix → **$50M+/year in avoided costs**
-> - *Like FIIX: 10x improvement in maintenance insights for 40,000+ customers*
 > 
 > **RESULT 2: Revenue Protection** ✅
 > - Predictive maintenance prevents unplanned downtime
 > - Zero ad revenue loss from device failures
 > - Proactive fixes before screens go dark
-> - *Like Toyota: Minimized production disruptions, extended equipment life*
 > 
 > **RESULT 3: >85% Predictive Accuracy** ✅
 > - 24-48 hour advance warning of failures
 > - Pattern recognition from 72K+ telemetry records
-> - ML-ready data foundation in Snowflake
-> - *Like Telecom operators: Improved SLA compliance, optimized replacement cycles*
+> - Validated against actual outcomes
 > 
-> All running natively in Snowflake—Cortex ML for predictions, Cortex Analyst for natural language, and full governance through your existing security model."
-
-### Financial Impact Summary
-
-| Impact Category | PatientPoint Value |
-|-----------------|-------------------|
-| 📈 **Revenue Growth** | Increased ad impressions through maximized uptime |
-| 💵 **Direct Cost Savings** | $50M+/year from reduced dispatches |
-| 🛡️ **Risk Mitigation** | Prevention of catastrophic failures affecting revenue |
-| 🏭 **Capital Optimization** | Extended device lifespan → deferred replacement costs |
-
-> **ROI Timeline:** The combination of improved uptime, reduced maintenance costs, and extended asset life typically delivers ROI that justifies IoT predictive maintenance investments **within the first year of implementation**.
+> All running natively in Snowflake—Cortex for AI, full governance through your existing security model, complete audit trail."
 
 ### Call to Action
-> "Would you like to see how this could work with your data? We can set up a proof-of-concept in days, not months. Other Snowflake customers like FIIX and Toyota have seen 10x improvements in maintenance operations."
-
----
-
-## 💬 Alternative Prompts by Persona
-
-Use these if the primary flow doesn't work or if you have extra time.
-
-### Executive (C-Suite)
-```
-Give me an executive summary of fleet health
-How much revenue are we losing from device downtime?
-What's our annual field service cost and projected savings?
-What's our uptime percentage this month?
-How many critical issues do we have right now?
-What's the ROI on predictive maintenance?
-```
-
-### Operations Center
-```
-Which devices are predicted to fail in the next 48 hours?
-What's our prediction accuracy based on historical data?
-What's our mean time to resolution by issue type?
-Show me device health across our top 10 facilities
-What's causing the most device failures this month?
-Which technicians are available for dispatch right now?
-Show me devices with the longest time since maintenance
-```
-
-### Field Technician
-```
-How do I fix a frozen display screen?
-What are the troubleshooting steps for high CPU usage?
-Which issues typically require a field visit vs remote fix?
-What's the success rate for fixing memory leaks remotely?
-```
-
-### Analytical Queries
-```
-What's our prediction accuracy based on historical data?
-Compare resolution times by issue type
-What patterns appear before device failures?
-Which facilities have the most recurring issues?
-```
+> "Would you like to see how this could work with your data? We can set up a proof-of-concept with your actual device telemetry in days, not months."
 
 ---
 
@@ -476,17 +991,47 @@ Which facilities have the most recurring issues?
 
 ---
 
-## 📊 Expected Demo Data
+## 📊 Data Inventory (For Auditability Questions)
 
 > **Note:** Demo uses 100 representative devices. Production scales to 500,000.
 
-| Table | Demo Records | Production Scale | Purpose |
-|-------|--------------|------------------|---------|
-| DEVICE_INVENTORY | 100 | 500,000 | Device fleet |
-| DEVICE_TELEMETRY | ~72,000 | ~360M/month | Health metrics |
-| MAINTENANCE_HISTORY | 24 | ~50,000/month | Past tickets |
-| TROUBLESHOOTING_KB | 10 | 100+ | Fix procedures |
-| WORK_ORDERS | 8 | ~10,000/day | Active jobs |
-| TECHNICIANS | 6 | 500+ | Field team |
-| PROVIDER_FEEDBACK | 14 | ~100,000 | Customer satisfaction |
-| DEVICE_DOWNTIME | 10 | ~25,000/month | Revenue impact |
+| Table | Demo Records | Production Scale | Purpose | Key Columns |
+|-------|--------------|------------------|---------|-------------|
+| `DEVICE_INVENTORY` | 100 | 500,000 | Device master data | DEVICE_ID, STATUS, HOURLY_AD_REVENUE_USD |
+| `DEVICE_TELEMETRY` | ~72,000 | ~360M/month | Health metrics (hourly) | CPU_TEMP, CPU_USAGE, MEMORY_USAGE, ERROR_COUNT |
+| `MAINTENANCE_HISTORY` | 24 | ~50,000/month | Past service tickets | ISSUE_TYPE, RESOLUTION_TYPE, COST_USD |
+| `TROUBLESHOOTING_KB` | 10 | 100+ | Fix procedures | ISSUE_CATEGORY, SUCCESS_RATE_PCT |
+| `WORK_ORDERS` | 8 | ~10,000/day | Active jobs | PRIORITY, STATUS, AI_DIAGNOSIS |
+| `TECHNICIANS` | 6 | 500+ | Field team | COVERAGE_STATES, SPECIALIZATION |
+| `PROVIDER_FEEDBACK` | 14 | ~100,000 | Customer satisfaction | NPS_SCORE, SATISFACTION_RATING |
+| `DEVICE_DOWNTIME` | 10 | ~25,000/month | Revenue impact | DOWNTIME_HOURS, REVENUE_LOSS_USD |
+| `EXTERNAL_ACTION_LOG` | Variable | Growing | Action audit trail | ACTION_TYPE, TIMESTAMP, PAYLOAD |
+
+---
+
+## 🔒 Governance & Compliance Talking Points
+
+If asked about security, governance, or compliance:
+
+> "Everything runs inside Snowflake's security perimeter:
+> - **Role-based access control** — Same RBAC you use for all Snowflake data
+> - **Data never leaves Snowflake** — Cortex processes data in-place
+> - **Complete audit trail** — Every query, every action logged
+> - **No data copying** — AI operates on live data, not exports
+> - **SOC 2, HIPAA eligible** — Snowflake's certifications apply"
+
+---
+
+## 💬 Objection Handling
+
+### "How is this different from our current monitoring tool?"
+> "Traditional monitoring tools show you WHAT happened. Cortex Agents tell you WHAT, WHY, and WHAT TO DO—in natural language. Plus, they can take action, not just alert."
+
+### "What if the AI gives a wrong answer?"
+> "Every answer is grounded in your data—you can see the SQL it generated. The semantic model constrains the AI to your business logic. And for actions, everything is logged for audit."
+
+### "How long does implementation take?"
+> "We can have a proof-of-concept running on your data in 1-2 weeks. Production deployment depends on integration complexity—typically 4-8 weeks."
+
+### "What about data we have outside Snowflake?"
+> "Snowflake's data sharing and integration capabilities can bring in data from almost any source. The agent works on whatever data is in Snowflake."
