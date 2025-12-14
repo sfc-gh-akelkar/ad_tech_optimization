@@ -53,6 +53,7 @@ ai_agent_device_maintenance/
 │   ├── 04_create_agent.sql                # Agent configuration
 │   └── 05_predictive_simulation.sql       # Predictive analytics views
 ├── DEMO_SCRIPT.md                         # 20-minute demo walkthrough
+├── ARCHITECTURE.md                        # Implementation architecture & diagrams
 └── README.md                              # This file
 ```
 
