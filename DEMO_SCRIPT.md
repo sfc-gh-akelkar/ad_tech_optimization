@@ -109,8 +109,27 @@ SELECT RISK_LEVEL, COUNT(*) FROM V_DEVICE_HEALTH_SUMMARY GROUP BY RISK_LEVEL;
 **SAY THIS:**
 > *"This demo uses 100 representative devices. In production, this same query scales to your 500,000 devices—Snowflake handles the compute. The health score formula and risk thresholds are fully configurable based on your historical failure patterns."*
 
+#### 📝 Expected Response Highlights
+- **Fleet Health Score**: ~71/100 (Good performance)
+- **Device Status**: 92 online, 5 degraded, 3 offline
+- **Risk Distribution**: 3 CRITICAL, 4 HIGH, 67 MEDIUM, 26 LOW
+- **Uptime**: ~94.5%
+- **Revenue Loss**: $0 historical (resolved incidents)
+- **NPS Score**: +8.6
+
+#### ⚠️ Objection Handling
+
+**IF ASKED: "Why is 67% of the fleet at MEDIUM risk?"**
+> *"MEDIUM risk doesn't mean failure is imminent—it means these devices have one or more metrics slightly elevated that we're monitoring. This is exactly what predictive maintenance does: it identifies potential issues EARLY, before they become CRITICAL. The fact that only 7 devices (7%) are at HIGH or CRITICAL shows the system is working."*
+
+**IF ASKED: "Why is uptime only 94.5%?"**
+> *"The 94.5% includes our 3 offline and 5 degraded devices right now. This is a point-in-time snapshot showing current status. The important metric is that we're seeing these issues BEFORE they cause revenue impact. Let me show you the revenue picture..."*
+
+**IF ASKED: "The health score of 71 seems low"**
+> *"A health score of 71 means the fleet is in 'Good' condition. Perfect would be 100, but that's unrealistic for a 500K device fleet. What matters is identifying the devices that need attention—and the AI just surfaced exactly which 7 devices require action."*
+
 #### 🔄 Transition
-> *"Good overview. I see we have strong uptime, but let me dig into the revenue impact specifically..."*
+> *"Good overview—we see a fleet health score of 71, with 7 devices needing attention. But the key metric here is zero historical revenue loss. Let me show you what's at risk RIGHT NOW from our current device status..."*
 
 ---
 
@@ -167,8 +186,26 @@ SELECT * FROM DEVICE_DOWNTIME ORDER BY DOWNTIME_START DESC;
 **SAY THIS:**
 > *"The revenue numbers here come from your ad platform data. We can connect directly to your ad server to pull actual CPM rates and impression counts per device. This means the AI calculates real revenue impact, not estimates."*
 
+#### 📝 Expected Response Highlights
+- **Revenue at Risk**: ~$51,660 (5% of potential)
+- **Top 3 Offline Devices**: DEV-081 ($15K), DEV-031 ($9K), DEV-025 ($6K)
+- **Devices Affected**: 8 out of 100 (92% healthy)
+- **Geographic Pattern**: Cleveland facilities disproportionately affected
+- **Production Scale**: ~$25.8M annual impact
+
+#### ⚠️ Objection Handling
+
+**IF ASKED: "Q1 said $0 revenue loss, now you're saying $51K?"**
+> *"Great catch—these are different metrics. The $0 in Q1 was HISTORICAL downtime—incidents that have been recorded and resolved. The $51K here is CURRENT revenue at risk from devices that are offline or degraded RIGHT NOW. This is exactly why predictive maintenance matters—we can see the potential revenue impact BEFORE it becomes actual loss."*
+
+**IF ASKED: "How do you calculate revenue per device?"**
+> *"Each device has an hourly ad revenue rate based on its model and location—ranging from $8/hour for Lite 32s to $25/hour for Max 65s in high-traffic facilities. We multiply by hours offline to get revenue impact. In production, this would pull actual CPM rates from your ad platform."*
+
+**IF ASKED: "Why are Cleveland facilities having issues?"**
+> *"The AI identified a geographic pattern—this could indicate a regional network issue, a batch of devices from the same shipment, or even a facility-level infrastructure problem. This is the kind of insight that helps operations prioritize investigations."*
+
 #### 🔄 Transition
-> *"Zero revenue loss this month—that's our revenue protection working. But how are we achieving this? Let's look at the cost side of the equation..."*
+> *"So we have $51K at risk from 8 devices right now. The good news? 92% of the fleet is healthy. This shows exactly why we need predictive maintenance—to catch these issues before they cause actual revenue loss. Let me show you the cost side..."*
 
 ---
 
@@ -228,8 +265,35 @@ GROUP BY RESOLUTION_TYPE;
 **SAY THIS (if asked about the numbers):**
 > *"These cost assumptions are configurable. In a POC, we'd plug in your actual dispatch costs from ServiceNow and your remote support costs from your helpdesk system. The ROI calculation updates automatically."*
 
+#### 📝 Expected Response Highlights
+- **Annual Field Service Cost**: $185M (at 500K devices)
+- **Avg Dispatch Cost**: $185 per incident
+- **Avg Remote Fix Cost**: $25 per incident
+- **Projected Annual Savings**: $96M (52% reduction)
+- **Dispatches Avoided**: 600,000 annually
+- **Remote Fix Rate**: 60-75%
+- **ROI**: ~4:1 return
+
+#### ⚠️ Objection Handling
+
+**IF ASKED: "Where does $185 per dispatch come from?"**
+> *"That's an industry average for field service visits—includes technician labor (2-4 hours), travel costs, vehicle expenses, and parts markup. In a POC, we'd plug in your actual dispatch costs from ServiceNow or your field service system."*
+
+**IF ASKED: "How did you calculate 4:1 ROI?"**
+> *"$96M in annual savings versus an estimated $20-25M for implementation and operations. The exact ROI depends on your infrastructure, but field service companies typically see 3-5x return. Some customers like FIIX have seen 10x improvement in maintenance insights."*
+
+**IF ASKED: "Is 75% remote fix rate realistic?"**
+> *"Based on the demo data, we're seeing 60-70% remote resolution. 75% is achievable as the AI learns your failure patterns and the knowledge base matures. For software issues, some customers see 80%+. Hardware issues like display failures will always require dispatch."*
+
+**IF ASKED: "What's not included in these savings?"**
+> *"This is conservative—it only counts dispatch avoidance. It doesn't include: revenue protection from faster resolution, customer satisfaction gains, extended device lifespan from proactive maintenance, or reduced emergency overtime costs."*
+
+#### 🎤 Executive Talking Point
+**SAY THIS after the response:**
+> *"This is the headline number for your CFO: $96 million in annual savings from a 52% reduction in field dispatches. And this is conservative—it doesn't include revenue protection from faster resolution or the customer satisfaction gains from proactive maintenance."*
+
 #### 🔄 Transition
-> *"Let me show you the actual savings we're achieving right now..."*
+> *"That's the projection at scale. Let me show you the actual savings we're achieving right now in the demo data..."*
 
 ---
 
