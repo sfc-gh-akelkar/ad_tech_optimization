@@ -97,6 +97,18 @@ GROUP BY STATUS;
 SELECT RISK_LEVEL, COUNT(*) FROM V_DEVICE_HEALTH_SUMMARY GROUP BY RISK_LEVEL;
 ```
 
+#### 🔧 Customization for PatientPoint
+
+| What We Used | What PatientPoint Would Use | Integration Effort |
+|--------------|----------------------------|-------------------|
+| **Demo: 100 devices** | **Production: 500,000 devices** from your device management system | Data pipeline from IoT platform |
+| **Health Score formula** (CPU, memory, temp, errors) | Your actual **device health metrics** + custom weights | Configure in `V_DEVICE_HEALTH_SUMMARY` |
+| **Risk thresholds** (CRITICAL >75°C, etc.) | Your **operational thresholds** based on historical failure data | Update risk classification logic |
+| **Hourly telemetry** | Your **actual telemetry frequency** (could be 5-min, 15-min) | Adjust data ingestion pipeline |
+
+**SAY THIS:**
+> *"This demo uses 100 representative devices. In production, this same query scales to your 500,000 devices—Snowflake handles the compute. The health score formula and risk thresholds are fully configurable based on your historical failure patterns."*
+
 #### 🔄 Transition
 > *"Good overview. I see we have strong uptime, but let me dig into the revenue impact specifically..."*
 
@@ -138,6 +150,22 @@ ORDER BY TOTAL_REVENUE_LOSS_USD DESC;
 -- Verify downtime records
 SELECT * FROM DEVICE_DOWNTIME ORDER BY DOWNTIME_START DESC;
 ```
+
+#### 🔧 Customization for PatientPoint
+
+| What We Used | What PatientPoint Would Use | Integration Effort |
+|--------------|----------------------------|-------------------|
+| **$8-$25/hr ad revenue** | Your **actual CPM rates** by device type, location, pharma partner | Import from ad platform (e.g., GAM, direct contracts) |
+| **Monthly impressions** (9K-27K) | Your **actual impression data** from ad server | Real-time or daily sync from ad platform |
+| **Downtime tracking** | Your **actual outage data** from monitoring system | Connect to alerting/monitoring tool |
+
+**Key PatientPoint Data Sources:**
+- **Ad Revenue**: Google Ad Manager, direct pharma contracts, CPM by placement
+- **Impressions**: Real-time ad server logs, viewability metrics
+- **Downtime**: Device management platform alerts, heartbeat failures
+
+**SAY THIS:**
+> *"The revenue numbers here come from your ad platform data. We can connect directly to your ad server to pull actual CPM rates and impression counts per device. This means the AI calculates real revenue impact, not estimates."*
 
 #### 🔄 Transition
 > *"Zero revenue loss this month—that's our revenue protection working. But how are we achieving this? Let's look at the cost side of the equation..."*
@@ -182,6 +210,23 @@ GROUP BY RESOLUTION_TYPE;
 
 **SAY THIS:**
 > *"This is the ROI story: we spend $185M annually on field dispatches at 500K devices. With 60%+ remote resolution, we're projecting $96M in annual savings—that's a 52% cost reduction. This aligns with what we've seen at customers like FIIX, who achieved 10x improvement in maintenance insights."*
+
+#### 🔧 Customization for PatientPoint
+
+| What We Used | What PatientPoint Would Use | Integration Effort |
+|--------------|----------------------------|-------------------|
+| **$185 avg dispatch cost** | Your **actual dispatch costs** (labor, travel, parts) | Import from ServiceNow/field service system |
+| **$25 remote fix cost** | Your **actual remote support costs** (labor time) | Calculate from helpdesk data |
+| **2 issues/device/year assumption** | Your **actual historical issue rate** | Analyze from maintenance history |
+
+**PatientPoint-Specific ROI Inputs:**
+- **Labor costs**: Technician hourly rate × avg time on-site
+- **Travel costs**: Mileage reimbursement, fleet costs
+- **Parts costs**: Average parts per dispatch
+- **Remote costs**: NOC hourly rate × avg resolution time
+
+**SAY THIS (if asked about the numbers):**
+> *"These cost assumptions are configurable. In a POC, we'd plug in your actual dispatch costs from ServiceNow and your remote support costs from your helpdesk system. The ROI calculation updates automatically."*
 
 #### 🔄 Transition
 > *"Let me show you the actual savings we're achieving right now..."*
@@ -261,6 +306,23 @@ WHERE FOLLOW_UPS_REQUIRED > 0;
 -- See all feedback
 SELECT * FROM PROVIDER_FEEDBACK ORDER BY FEEDBACK_DATE DESC;
 ```
+
+#### 🔧 Customization for PatientPoint
+
+| What We Used | What PatientPoint Would Use | Integration Effort |
+|--------------|----------------------------|-------------------|
+| **NPS Score (0-10)** | Your **actual provider NPS surveys** | Import from survey tool (Qualtrics, etc.) |
+| **Satisfaction ratings** | Your **CRM feedback data** | Sync from Salesforce/HubSpot |
+| **Follow-up flags** | Your **customer success workflow** | Connect to CS platform |
+
+**PatientPoint Data Sources:**
+- **Provider Surveys**: Qualtrics, SurveyMonkey, or in-app feedback
+- **CRM Data**: Salesforce, HubSpot provider records
+- **Support Tickets**: Zendesk, ServiceNow customer complaints
+- **Contract Data**: Renewal risk indicators, account health
+
+**SAY THIS:**
+> *"We're correlating device health with provider satisfaction. The insight here is: facilities with more device issues have lower NPS. This helps your customer success team prioritize which accounts need attention—before they churn."*
 
 #### 🔄 Transition
 > *"I see Springfield Urgent Care flagged for follow-up—they had a negative experience. Let's hand this over to Operations to understand what's happening with their device..."*
@@ -369,6 +431,23 @@ FROM V_DEVICE_HEALTH_SUMMARY
 WHERE RISK_LEVEL IN ('CRITICAL', 'HIGH')
 ORDER BY CASE RISK_LEVEL WHEN 'CRITICAL' THEN 1 WHEN 'HIGH' THEN 2 END;
 ```
+
+#### 🔧 Customization for PatientPoint
+
+| What We Used | What PatientPoint Would Use | Integration Effort |
+|--------------|----------------------------|-------------------|
+| **CPU temp thresholds** (65°C, 75°C) | Your **device specs** and historical failure temps | Analyze past failures to set thresholds |
+| **Risk classification rules** | Your **operational SLAs** (e.g., hospital vs clinic) | Business logic in view definition |
+| **Telemetry metrics** | Your **actual IoT data points** (could include ambient temp, display brightness) | Map to existing telemetry schema |
+
+**PatientPoint-Specific Considerations:**
+- **Device Models**: Different thresholds for Pro 55, Lite 32, Max 65?
+- **Facility Types**: Hospitals might have stricter SLAs than clinics
+- **Geographic Factors**: Higher acceptable temps in warm climates?
+- **Age of Device**: Older devices may need different thresholds
+
+**SAY THIS:**
+> *"These risk thresholds are based on industry standards, but you'd tune them using your historical failure data. For example, if your devices typically fail at 80°C, we'd set the CRITICAL threshold there. The AI learns from your patterns."*
 
 #### 🔄 Transition
 > *"I see 7 devices flagged—including DEV-005 at Springfield Urgent Care that the executive mentioned. Before I dispatch technicians, let me see if any of these can be fixed remotely..."*
@@ -551,6 +630,28 @@ ORDER BY FAILURE_PROBABILITY_PCT DESC;
 **SAY THIS:**
 > *"This is the power of predictive maintenance—we can see failures before they happen. The model looks at 30 days of telemetry: temperature trends, memory patterns, error acceleration. This gives us time to schedule proactive maintenance instead of reacting to emergencies."*
 
+#### 🔧 Customization for PatientPoint
+
+| What We Used | What PatientPoint Would Use | Integration Effort |
+|--------------|----------------------------|-------------------|
+| **30-day telemetry window** | Your **optimal prediction window** (could be 7, 14, 60 days) | Tune based on failure patterns |
+| **Rule-based prediction** | Your choice: **Cortex ML models** for higher accuracy | Train on historical failure data |
+| **Failure probability %** | Your **confidence thresholds** for action | Business rule configuration |
+
+**ML Model Options for Production:**
+1. **Rule-Based (Current)**: Simple threshold logic, ~85% accuracy
+2. **Cortex ML Classification**: Train on historical failures, ~90%+ accuracy
+3. **Anomaly Detection**: Identify unusual patterns automatically
+4. **Time-Series Forecasting**: Predict when metrics will cross thresholds
+
+**PatientPoint ML Data Requirements:**
+- **Positive Examples**: Historical failures with telemetry before failure
+- **Negative Examples**: Devices that didn't fail (for contrast)
+- **Minimum Data**: 6-12 months of telemetry + failure records
+
+**SAY THIS:**
+> *"In the demo, we're using rule-based predictions. In production, you could train a Cortex ML model on your historical failure data—devices that actually failed, correlated with their telemetry leading up to failure. This typically pushes accuracy above 90%."*
+
 #### 🔄 Transition
 > *"But how accurate are these predictions? Let me prove it..."*
 
@@ -689,6 +790,41 @@ ORDER BY TIMESTAMP DESC;
 
 **SAY THIS:**
 > *"Notice what just happened—the agent didn't just recommend an action, it triggered a simulated API call to the device management system. In production, this would actually restart the device via External Functions. Every action is logged for compliance and audit. Cortex Agents aren't just chatbots—they can execute actions."*
+
+#### 🔧 Customization for PatientPoint
+
+| What We Used | What PatientPoint Would Use | Integration Effort |
+|--------------|----------------------------|-------------------|
+| **Simulated API calls** | **Real External Functions** to your systems | Snowflake External Functions setup |
+| **Log table for audit** | Your **compliance/audit system** | Could write to Splunk, Datadog |
+| **Device commands** | Your **device management API** commands | Map to your IoT platform SDK |
+
+**PatientPoint Integration Points:**
+
+| System | Integration Method | What It Does |
+|--------|-------------------|--------------|
+| **Device Management Platform** | External Function → REST API | Send reboot, restart, clear cache commands |
+| **ServiceNow** | Native App or External Function | Create incidents, work orders |
+| **Slack/Teams** | External Function → Webhook | Alert operations team |
+| **PagerDuty** | External Function → API | Escalate critical issues |
+| **Your IoT Platform** (AWS IoT, Azure IoT) | External Function | Device twin updates, commands |
+
+**Production Architecture:**
+```
+┌─────────────────┐     ┌──────────────────┐     ┌─────────────────┐
+│  Cortex Agent   │────▶│ External Function │────▶│ Device Mgmt API │
+│  (Snowflake)    │     │  (Snowflake)      │     │ (Your Platform) │
+└─────────────────┘     └──────────────────┘     └─────────────────┘
+         │
+         ▼
+┌─────────────────┐
+│  Audit Log      │
+│  (Snowflake)    │
+└─────────────────┘
+```
+
+**SAY THIS:**
+> *"In production, the stored procedure would be replaced with an External Function that calls your device management API. Snowflake External Functions provide secure, governed API access—same RBAC, same audit trail. We can integrate with ServiceNow, Slack, PagerDuty, or any REST API."*
 
 #### 🔄 Transition
 > *"The agent just demonstrated the full loop: detect → diagnose → act. Now let's see this from the technician's perspective when a dispatch IS required..."*
@@ -892,6 +1028,24 @@ WHERE ISSUE_SUMMARY LIKE '%network%' OR ISSUE_SUMMARY LIKE '%connectivity%';
 | 📖 Historical learning | What worked at this location | Pattern recognition |
 | 🧰 Parts list | Come prepared | No return trips |
 
+#### 🔧 Customization for PatientPoint (Field Tech Section)
+
+| What We Used | What PatientPoint Would Use | Integration Effort |
+|--------------|----------------------------|-------------------|
+| **Work Orders table** | **ServiceNow / Field Service system** | Bi-directional sync |
+| **Technician roster** | **HR/scheduling system** | Import technician data |
+| **Troubleshooting KB** | **Your knowledge base** (Confluence, SharePoint) | Ingest into Cortex Search |
+| **Parts inventory** | **Inventory management system** | Connect to parts database |
+
+**PatientPoint Knowledge Base Sources:**
+- **Existing Documentation**: Device manuals, troubleshooting guides
+- **Tribal Knowledge**: Capture from senior technicians
+- **Vendor Resources**: Manufacturer documentation
+- **Past Tickets**: Resolution notes from ServiceNow
+
+**SAY THIS:**
+> *"The knowledge base is powered by Cortex Search—it does semantic search, not just keyword matching. You'd load your existing troubleshooting docs, and the AI finds the most relevant procedures. Technicians can ask questions in natural language."*
+
 ---
 
 ## 🤖 Act 4: AI Agent Capabilities (16:00 - 18:00)
@@ -1035,3 +1189,85 @@ If asked about security, governance, or compliance:
 
 ### "What about data we have outside Snowflake?"
 > "Snowflake's data sharing and integration capabilities can bring in data from almost any source. The agent works on whatever data is in Snowflake."
+
+---
+
+## 🗺️ PatientPoint Implementation Roadmap
+
+### Phase 1: Data Foundation (Week 1-2)
+
+| Task | Data Source | Snowflake Target | Owner |
+|------|-------------|------------------|-------|
+| Device inventory | IoT Platform | `DEVICE_INVENTORY` | IoT Team |
+| Telemetry stream | IoT Platform | `DEVICE_TELEMETRY` | Data Engineering |
+| Maintenance history | ServiceNow | `MAINTENANCE_HISTORY` | IT Ops |
+| Ad revenue data | Ad Platform (GAM) | `AD_REVENUE` | Ad Ops |
+| Provider feedback | CRM/Surveys | `PROVIDER_FEEDBACK` | Customer Success |
+
+### Phase 2: Analytics Layer (Week 2-3)
+
+| Task | Deliverable | Customization Needed |
+|------|-------------|---------------------|
+| Health score formula | `V_DEVICE_HEALTH_SUMMARY` | Tune weights for your devices |
+| Risk thresholds | Risk classification logic | Analyze historical failures |
+| ROI calculations | `V_ROI_ANALYSIS` | Input actual cost data |
+| Semantic views | Cortex Analyst models | Map to your business terms |
+
+### Phase 3: AI Agent (Week 3-4)
+
+| Task | Deliverable | Effort |
+|------|-------------|--------|
+| Knowledge base ingestion | Cortex Search service | Load troubleshooting docs |
+| Agent configuration | `DEVICE_MAINTENANCE_AGENT` | Customize instructions |
+| Tool setup | Semantic views + Search | Map to your data |
+| Testing | End-to-end validation | Refine responses |
+
+### Phase 4: Integrations (Week 4-6)
+
+| Integration | Method | Priority |
+|-------------|--------|----------|
+| Device Management API | External Function | High |
+| ServiceNow | Native App or External Function | High |
+| Slack/Teams Alerts | External Function (Webhook) | Medium |
+| PagerDuty Escalation | External Function | Medium |
+| ML Model Training | Cortex ML | Phase 2 |
+
+### Quick Win: Proof of Concept Scope
+
+**For a 2-week POC, focus on:**
+1. ✅ 1,000 devices (subset of fleet)
+2. ✅ 30 days of telemetry
+3. ✅ Basic health score formula
+4. ✅ 5-10 executive/ops prompts
+5. ✅ No external integrations (simulated actions)
+
+**This proves:**
+- Natural language querying works
+- Data model scales
+- AI provides accurate, actionable insights
+
+---
+
+## 📊 PatientPoint Data Mapping Quick Reference
+
+| Demo Data | PatientPoint Equivalent | Notes |
+|-----------|------------------------|-------|
+| `DEVICE_ID` (DEV-001) | Your device serial numbers | Primary key for all joins |
+| `FACILITY_NAME` | Provider account name | From CRM/master data |
+| `HOURLY_AD_REVENUE_USD` | CPM × impressions/hour | From ad platform |
+| `CPU_TEMP_CELSIUS` | Your telemetry field name | Map 1:1 or transform |
+| `HEALTH_SCORE` | Calculated field | Formula is customizable |
+| `TICKET_ID` | ServiceNow incident number | For correlation |
+| `TECHNICIAN_ID` | Employee ID | From HR system |
+
+---
+
+## 🎯 Success Metrics for POC
+
+| Metric | Demo Baseline | POC Target | Production Target |
+|--------|---------------|------------|-------------------|
+| Query accuracy | 90% | 85% | 90%+ |
+| Response time | <5 sec | <10 sec | <5 sec |
+| User adoption | N/A | 5 pilot users | 50+ users |
+| Remote fix rate | 60% | Measure baseline | 60%+ |
+| Prediction accuracy | 85% | Measure baseline | 85%+ |
