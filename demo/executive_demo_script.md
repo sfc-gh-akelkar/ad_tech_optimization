@@ -29,6 +29,34 @@
 
 ---
 
+## Data Context (1 minute - optional, for technical audience)
+
+> "Before we dive in, let me quickly explain what data the AI is working with. This represents the kind of integrated view you'd have in production."
+
+### Three Core Datasets
+
+| Dataset | What It Represents | Production Source Systems |
+|---------|-------------------|---------------------------|
+| **Campaign Performance** | 100 pharma campaigns with full KPIs | Salesforce CRM + RTB Platform + Ad Server + Billing |
+| **Inventory Analytics** | 200 ad placements across medical facilities | Device MDM + Location System + GIS Data |
+| **Audience Insights** | 100 privacy-safe patient cohorts | Data Clean Room + Analytics (k-anonymity enforced) |
+
+### Source System Integration (Production)
+
+```
+Salesforce ──┐
+RTB/SSP ─────┼──► Snowflake ──► Gold Layer ──► Cortex Agent
+Ad Server ───┤      (Bronze → Silver → Gold)
+Analytics ───┤
+Clean Room ──┘
+```
+
+**💡 For Jennifer (Data Engineering):** *"In production, this would be Snowpipe for streaming bid data, Fivetran for CRM sync, and Dynamic Tables for the gold layer aggregations."*
+
+**💡 For Sharon (CADO):** *"The Data Clean Room integration is key for the audience data—it enables pharma partners to bring their own data for matching without exposing PII."*
+
+---
+
 ## Question 1: Portfolio Performance & Growth Drivers
 ### 👥 *Resonates with: Mike (COO), JT (VP Ad Tech), Sharon (CADO)*
 

@@ -14,7 +14,6 @@ This demo showcases how PatientPoint can leverage Snowflake's AI/ML capabilities
 | **Semantic Search** | Cortex Search | Discover inventory and audiences using natural language |
 | **Text-to-SQL** | Cortex Analyst + Semantic Views | Query structured data without writing SQL |
 | **Automated Visualization** | Data to Chart | Generate charts from query results |
-| **Interactive Dashboards** | Streamlit in Snowflake | Self-service analytics UI |
 
 ## 📁 Repository Structure
 
@@ -22,125 +21,197 @@ This demo showcases how PatientPoint can leverage Snowflake's AI/ML capabilities
 ad_tech_optimization/
 ├── README.md
 │
-├── setup/                              # All setup scripts in sequential order
-│   ├── 00_run_all.sql                  # Master guide with execution order
-│   ├── 01_database_setup.sql           # Database, schemas, warehouses, roles
-│   ├── 02_dimension_tables.sql         # Dimension table DDL
-│   ├── 03_fact_tables.sql              # Fact table DDL
-│   ├── 04_generate_synthetic_data.sql  # Generate ~1.8M rows of demo data
-│   ├── 05_gold_layer_views.sql         # Aggregated analytics views
-│   ├── 06_cortex_search_services.sql   # 3 Cortex Search services
-│   ├── 07_semantic_views.sql           # 3 Semantic Views for Cortex Analyst
-│   └── 08_cortex_agent.sql             # Campaign Optimizer Agent with 7 tools
+├── setup/                           # 5 scripts, run in ~2 minutes
+│   ├── 01_database_setup.sql        # Database, schemas, roles
+│   ├── 02_demo_data.sql             # Pre-computed flat tables (NO JOINS!)
+│   ├── 03_cortex_search.sql         # 3 Cortex Search services
+│   ├── 04_semantic_views.sql        # 3 Semantic Views for Cortex Analyst
+│   └── 05_cortex_agent.sql          # Campaign Optimizer Agent
 │
-└── streamlit/                          # Streamlit in Snowflake app
+├── demo/                            # Demo resources
+│   └── executive_demo_script.md     # C-suite presentation script
+│
+└── streamlit/                       # Streamlit in Snowflake app
     ├── environment.yml
-    ├── Home.py                         # Main entry point
+    ├── Home.py
     └── pages/
         ├── 1_Campaign_Optimizer.py
         ├── 2_Inventory_Explorer.py
         └── 3_Agent_Chat.py
 ```
 
-## 🚀 Quick Start
+## 🚀 Quick Start (~2 minutes)
 
 ### Prerequisites
 
 - Snowflake account with Cortex features enabled
-- Role: `SF_INTELLIGENCE_DEMO` with appropriate permissions
-- Warehouse: `AD_TECH_WH` (MEDIUM size recommended)
+- ACCOUNTADMIN or appropriate role to create objects
 
 ### Installation Steps
 
-Run scripts in order (see `setup/00_run_all.sql` for detailed instructions):
+Run these 5 scripts in order in Snowsight:
 
 ```sql
--- Step 1: Database & Infrastructure
+-- Step 1: Database & Infrastructure (~10 sec)
 -- Execute: setup/01_database_setup.sql
 
--- Step 2: Dimension Tables
--- Execute: setup/02_dimension_tables.sql
+-- Step 2: Pre-computed Demo Data (~30 sec)
+-- Execute: setup/02_demo_data.sql
 
--- Step 3: Fact Tables
--- Execute: setup/03_fact_tables.sql
+-- Step 3: Cortex Search Services (~30 sec)  
+-- Execute: setup/03_cortex_search.sql
 
--- Step 4: Generate Synthetic Data (~5-10 min)
--- Execute: setup/04_generate_synthetic_data.sql
+-- Step 4: Semantic Views (~10 sec)
+-- Execute: setup/04_semantic_views.sql
 
--- Step 5: Gold Layer Views
--- Execute: setup/05_gold_layer_views.sql
-
--- Step 6: Cortex Search Services
--- Execute: setup/06_cortex_search_services.sql
-
--- Step 7: Semantic Views
--- Execute: setup/07_semantic_views.sql
-
--- Step 8: Cortex Agent
--- Execute: setup/08_cortex_agent.sql
+-- Step 5: Cortex Agent (~10 sec)
+-- Execute: setup/05_cortex_agent.sql
 ```
 
 ### Verify Setup
 
 ```sql
--- Check tables
-SELECT COUNT(*) FROM AD_TECH.ANALYTICS.DIM_CAMPAIGNS;     -- ~100
-SELECT COUNT(*) FROM AD_TECH.ANALYTICS.FACT_IMPRESSIONS;  -- ~1M
+USE ROLE SF_INTELLIGENCE_DEMO;
+USE DATABASE AD_TECH;
 
--- Check Cortex services
-SHOW CORTEX SEARCH SERVICES IN SCHEMA AD_TECH.CORTEX;     -- 3 services
+-- Check tables (should show 100, 200, 100 rows)
+SELECT 'T_CAMPAIGN_PERFORMANCE' AS t, COUNT(*) FROM ANALYTICS.T_CAMPAIGN_PERFORMANCE
+UNION ALL SELECT 'T_INVENTORY_ANALYTICS', COUNT(*) FROM ANALYTICS.T_INVENTORY_ANALYTICS  
+UNION ALL SELECT 'T_AUDIENCE_INSIGHTS', COUNT(*) FROM ANALYTICS.T_AUDIENCE_INSIGHTS;
 
--- Check Semantic views
-SHOW SEMANTIC VIEWS IN SCHEMA AD_TECH.CORTEX;             -- 3 views
+-- Check Cortex services (3 search services)
+SHOW CORTEX SEARCH SERVICES IN SCHEMA CORTEX;
 
--- Check Agent
-SHOW AGENTS IN SCHEMA AD_TECH.CORTEX;                     -- 1 agent
+-- Check Semantic views (3 views)
+SHOW SEMANTIC VIEWS IN SCHEMA CORTEX;
+
+-- Check Agent (1 agent)
+SHOW AGENTS IN SCHEMA CORTEX;
 ```
 
-### Deploy Streamlit App
+## 📊 Data Model
 
-```sql
--- Create a stage for Streamlit files
-CREATE STAGE IF NOT EXISTS AD_TECH.APPS.STREAMLIT_STAGE;
+This demo uses **pre-computed flat tables** - no joins required at runtime!
 
--- Upload Streamlit files to stage (use Snowsight or SnowCLI)
--- PUT file://streamlit/* @AD_TECH.APPS.STREAMLIT_STAGE/ad_tech_demo/;
+| Table | Description | Rows |
+|-------|-------------|------|
+| `T_CAMPAIGN_PERFORMANCE` | Campaign metrics with partner info | 100 |
+| `T_INVENTORY_ANALYTICS` | Inventory slots with performance | 200 |
+| `T_AUDIENCE_INSIGHTS` | Privacy-safe audience cohorts | 100 |
 
--- Create Streamlit app
-CREATE STREAMLIT AD_TECH.APPS.AD_TECH_DEMO
-    ROOT_LOCATION = '@AD_TECH.APPS.STREAMLIT_STAGE/ad_tech_demo'
-    MAIN_FILE = 'Home.py'
-    QUERY_WAREHOUSE = 'AD_TECH_WH';
+**All dates are relative to `CURRENT_DATE`** - the demo always has fresh, relevant data.
+
+---
+
+## 🏗️ Source Systems & Data Lineage
+
+In production, these tables would be populated from multiple source systems across PatientPoint's infrastructure:
+
+### T_CAMPAIGN_PERFORMANCE
+*Campaign performance metrics aggregated from ad serving and analytics systems*
+
+| Data Element | Source System | Description |
+|--------------|---------------|-------------|
+| Campaign metadata | **Salesforce CRM** | Partner info, contract terms, campaign setup |
+| Bid data | **Real-time Bidding (RTB) Platform** | Bid requests, responses, win/loss tracking |
+| Impressions | **Ad Server (GAM/DFP)** | Delivered impressions, viewability, completion |
+| Engagements | **Analytics Platform** | Clicks, interactions, dwell time |
+| Conversions | **Attribution System** | Appointment bookings, Rx lift studies |
+| Revenue | **Billing/Finance System** | Invoiced amounts, CPM rates |
+
+### T_INVENTORY_ANALYTICS
+*Ad placement inventory across PatientPoint's network of medical facilities*
+
+| Data Element | Source System | Description |
+|--------------|---------------|-------------|
+| Facility data | **Location Management System** | Hospitals, clinics, medical centers |
+| Screen inventory | **Device Management (MDM)** | Digital displays, tablets, kiosks |
+| Specialty mapping | **Provider Database** | Medical specialty classifications |
+| Patient volume | **EHR Integration / Foot Traffic** | De-identified visit counts (aggregated) |
+| Performance metrics | **Ad Server + Analytics** | Fill rates, CPMs, viewability |
+| Geographic data | **GIS / DMA Mapping** | Region, market, demographic indices |
+
+### T_AUDIENCE_INSIGHTS
+*Privacy-safe audience cohorts for targeting (HIPAA compliant)*
+
+| Data Element | Source System | Description |
+|--------------|---------------|-------------|
+| Demographic cohorts | **Data Clean Room** | Age, gender, region (aggregated, k=50+) |
+| Health interests | **Anonymized Engagement Data** | Content interaction patterns |
+| Insurance segments | **Claims Data Partner** | Payer mix (aggregated) |
+| Engagement scores | **Analytics Platform** | Historical response rates by cohort |
+| Therapeutic affinity | **Content Analytics** | Health topic engagement |
+
+### Data Flow Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         SOURCE SYSTEMS                                   │
+├─────────────┬─────────────┬─────────────┬─────────────┬─────────────────┤
+│  Salesforce │  RTB/SSP    │  Ad Server  │  Analytics  │  Data Clean     │
+│  CRM        │  Platform   │  (GAM)      │  Platform   │  Room           │
+└──────┬──────┴──────┬──────┴──────┬──────┴──────┬──────┴────────┬────────┘
+       │             │             │             │               │
+       ▼             ▼             ▼             ▼               ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         SNOWFLAKE DATA CLOUD                             │
+│  ┌───────────────────────────────────────────────────────────────────┐  │
+│  │  BRONZE LAYER (Raw)                                                │  │
+│  │  - Raw events, logs, API responses                                 │  │
+│  └───────────────────────────────────────────────────────────────────┘  │
+│                              │                                           │
+│                              ▼                                           │
+│  ┌───────────────────────────────────────────────────────────────────┐  │
+│  │  SILVER LAYER (Cleansed)                                          │  │
+│  │  - Validated, deduplicated, conformed                             │  │
+│  └───────────────────────────────────────────────────────────────────┘  │
+│                              │                                           │
+│                              ▼                                           │
+│  ┌───────────────────────────────────────────────────────────────────┐  │
+│  │  GOLD LAYER (Business-Ready) ← THIS DEMO                          │  │
+│  │  - T_CAMPAIGN_PERFORMANCE                                         │  │
+│  │  - T_INVENTORY_ANALYTICS                                          │  │
+│  │  - T_AUDIENCE_INSIGHTS                                            │  │
+│  └───────────────────────────────────────────────────────────────────┘  │
+│                              │                                           │
+│                              ▼                                           │
+│  ┌───────────────────────────────────────────────────────────────────┐  │
+│  │  AI/ML LAYER (Cortex)                                             │  │
+│  │  - Semantic Views → Cortex Analyst                                │  │
+│  │  - Search Services → Cortex Search                                │  │
+│  │  - Campaign Optimizer Agent                                       │  │
+│  └───────────────────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────────────┘
 ```
 
-## 🎬 Demo Scenarios
+### Key Integration Points
 
-### Scenario 1: Pricing Optimization
+| Integration | Technology | Use Case |
+|-------------|------------|----------|
+| **CRM → Snowflake** | Fivetran / Airbyte | Partner & campaign sync |
+| **RTB Platform → Snowflake** | Kafka / Snowpipe | Real-time bid streaming |
+| **Ad Server → Snowflake** | API / S3 | Impression & event logs |
+| **Data Clean Room** | Snowflake DCR | Privacy-safe audience sharing |
+| **BI/Analytics** | Tableau / Streamlit | Dashboards & self-service |
 
-> "How do we optimize pricing for a diabetes medication campaign launching in cardiology waiting rooms?"
+## 🎬 Demo Questions (C-Suite)
 
-**Flow:**
-1. Use Cortex Search to find available cardiology inventory
-2. Analyze historical bid performance by specialty
-3. Get AI-recommended pricing range from the Agent
+### Question 1: Portfolio Performance
+> "What are our top 5 performing campaigns by ROAS, and what do they have in common?"
 
-### Scenario 2: Audience Targeting
+### Question 2: Revenue Optimization
+> "Which inventory slots are underperforming relative to their potential?"
 
-> "Which patient demographics should we target for maximum engagement?"
+### Question 3: Partner Analysis
+> "Compare our Platinum tier partners' campaign performance"
 
-**Flow:**
-1. Search for high-engagement audience cohorts
-2. Analyze conversion rates by demographic segment
-3. Recommend privacy-safe targeting strategy
+### Question 4: Audience Targeting
+> "For a new diabetes medication targeting adults 45-65, which audience cohorts should we prioritize?"
 
-### Scenario 3: Campaign Attribution
+### Question 5: Operational Efficiency
+> "What patterns do you see in our bidding performance across dayparts and regions?"
 
-> "How do we measure campaign attribution across our entire network?"
-
-**Flow:**
-1. Query cross-channel attribution view
-2. Visualize touchpoint contribution
-3. Calculate ROI by channel
+See `demo/executive_demo_script.md` for the full presentation script.
 
 ## 🤖 Cortex Agent Tools
 
@@ -161,39 +232,16 @@ The Campaign Optimizer Agent includes 7 integrated tools:
 ```
 "What's the optimal bid price for diabetes campaigns in cardiology?"
 "Find premium morning slots in Texas endocrinology clinics"
-"Compare Pfizer vs Eli Lilly Q4 2024 performance"
+"Compare Pfizer vs Eli Lilly campaign performance"
 "Which audiences have highest engagement for heart medications?"
 "Show me ROAS trends by therapeutic area"
 ```
-
-## 📊 Data Model
-
-### Dimension Tables
-
-| Table | Description | Rows |
-|-------|-------------|------|
-| `DIM_DATE` | Date dimension (2 years) | ~730 |
-| `DIM_MEDICAL_SPECIALTIES` | Medical practice types | 25 |
-| `DIM_LOCATIONS` | Healthcare facilities | 500 |
-| `DIM_INVENTORY` | Ad placement slots | 5,000 |
-| `DIM_PHARMA_PARTNERS` | Pharmaceutical advertisers | 20 |
-| `DIM_CAMPAIGNS` | Advertising campaigns | 100 |
-| `DIM_AUDIENCE_COHORTS` | Privacy-safe patient segments | 200 |
-
-### Fact Tables
-
-| Table | Description | Rows |
-|-------|-------------|------|
-| `FACT_BIDS` | Bid request/response events | 500K |
-| `FACT_IMPRESSIONS` | Delivered ad impressions | 1M |
-| `FACT_ENGAGEMENTS` | User interactions | 100K |
-| `FACT_APPOINTMENTS` | Aggregated visit context | 200K |
 
 ## 🔒 Privacy & Compliance
 
 This demo implements healthcare privacy best practices:
 
-- ✅ **Synthetic Data**: All patient data is generated, not real
+- ✅ **Synthetic Data**: All data is generated, not real
 - ✅ **K-Anonymity**: Minimum cohort size of 50 enforced
 - ✅ **No PII**: No individual patient identifiers
 - ✅ **Aggregate Only**: All analytics at cohort level
@@ -203,11 +251,10 @@ This demo implements healthcare privacy best practices:
 
 ### Snowflake Features Required
 
-- Cortex Agents (Preview)
+- Cortex Agents
 - Cortex Search
 - Cortex Analyst + Semantic Views
-- Streamlit in Snowflake
-- Snowpark
+- Streamlit in Snowflake (optional)
 
 ### Recommended Warehouse Size
 
@@ -219,11 +266,6 @@ This demo implements healthcare privacy best practices:
 - [Cortex Agents Documentation](https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-agents-manage)
 - [Cortex Search Documentation](https://docs.snowflake.com/en/user-guide/cortex-search)
 - [Semantic Views Documentation](https://docs.snowflake.com/en/user-guide/views-semantic/overview)
-- [Streamlit in Snowflake](https://docs.snowflake.com/en/developer-guide/streamlit/about-streamlit)
-
-## 📝 License
-
-This demo is for educational and demonstration purposes only.
 
 ---
 
