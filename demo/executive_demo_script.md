@@ -7,6 +7,104 @@
 
 ---
 
+## 🎯 FOCUS FRAMEWORK: Business Impact Summary
+
+> **For Mike, Patrick, and Drew:** This is the executive summary of why this matters to PatientPoint's bottom line.
+
+### The Three Business Outcomes
+
+| | 💰 MAKE MONEY | 💵 SAVE MONEY | 🛡️ REDUCE RISK |
+|---|---------------|---------------|-----------------|
+| **Outcome** | Maximize ROAS & Revenue | Reduce Wasted Ad Spend | Protect Partner Relationships |
+| **Demo Question** | Q1, Q4, Q5 | Q2 | Q3, Q4 |
+
+---
+
+### CHALLENGE → ACTION → RESULT
+
+#### 🔴 CHALLENGE 1: Campaign Insights Are Manual and Slow
+
+| Aspect | Current State |
+|--------|---------------|
+| **Problem** | Ad ops teams spend **hours analyzing campaign performance** across spreadsheets and dashboards. Pattern recognition requires manual cross-referencing of 5+ data sources. |
+| **Business Impact** | **$2-4M annually** in analyst time that could be spent on optimization. Delayed insights mean missed optimization windows. |
+| **Who Feels It** | JT Grant (VP Ad Tech), Liberty Holt (VP Data & Analytics), Campaign Managers |
+
+| Aspect | With Snowflake Intelligence |
+|--------|------------------------------|
+| **Action** | Deploy **Cortex Agent with Semantic Views** that understands PatientPoint's business terminology. Natural language queries replace manual analysis. AI identifies patterns across campaigns, partners, and therapeutic areas automatically. |
+| **Technology** | Cortex Analyst (text-to-SQL), Semantic Views (business definitions), Cortex Agent (orchestration) |
+
+| Aspect | Expected Result |
+|--------|-----------------|
+| **Result** | **80% reduction in time-to-insight** — from hours to seconds. Pattern recognition that would take analysts days (e.g., "GLP-1 campaigns outperform by 50%") surfaced instantly. |
+| **Measurable KPI** | Analyst productivity: 10x more campaigns analyzed per week |
+| **Demo Proof Point** | Q1: Top 5 ROAS analysis with pattern identification in <30 seconds |
+
+---
+
+#### 🔴 CHALLENGE 2: Budget Allocation is Based on Intuition, Not Data
+
+| Aspect | Current State |
+|--------|---------------|
+| **Problem** | **15-25% of ad spend is wasted** on underperforming audience segments. Bid adjustments are reactive (after poor performance) rather than proactive. No unified view connecting audience engagement to campaign outcomes. |
+| **Business Impact** | At $50M annual ad spend, **$7.5-12.5M is suboptimally allocated**. Competitors with better targeting win more bids at lower CPMs. |
+| **Who Feels It** | Mike Walsh (COO), JT Grant (VP Ad Tech), Pharma Partners |
+
+| Aspect | With Snowflake Intelligence |
+|--------|------------------------------|
+| **Action** | Deploy **AI-powered audience optimization** that identifies underperforming segments in real-time. Automated bid adjustment recommendations with specific percentages. Budget reallocation suggestions based on historical ROAS by segment. |
+| **Technology** | Cortex Analyst (audience analytics), Cortex Search (cohort discovery), AI recommendations |
+
+| Aspect | Expected Result |
+|--------|-----------------|
+| **Result** | **15-25% improvement in portfolio ROAS** through intelligent budget reallocation. Real-time bid adjustments reduce waste on low-converting segments by 40-60%. |
+| **Measurable KPI** | ROAS improvement from 3.5x to 4.5x+ on reallocated budget |
+| **Demo Proof Point** | Q2: Specific bid reduction recommendations (40-60%) with reallocation targets |
+
+---
+
+#### 🔴 CHALLENGE 3: Partner Value Demonstration is Fragmented
+
+| Aspect | Current State |
+|--------|---------------|
+| **Problem** | **No unified view of competitive performance** for partner conversations. Campaign planning takes days, not hours. Partner QBRs require manual data compilation from multiple systems. Can't quickly answer "Why PatientPoint?" with data. |
+| **Business Impact** | **Risk of partner churn** due to inability to demonstrate ROI. Slower sales cycles for new partnerships. Premium pricing difficult to justify without performance proof. |
+| **Who Feels It** | Mike Walsh (COO), Sharon Patent (CADO), Partner Success Teams, Sales |
+
+| Aspect | With Snowflake Intelligence |
+|--------|------------------------------|
+| **Action** | Deploy **competitive intelligence AI** that benchmarks PatientPoint performance vs. industry. Instant inventory discovery for campaign planning. Automated partner performance summaries with AI-generated insights. |
+| **Technology** | Cortex Search (inventory discovery), Cortex Analyst (benchmarking), Cortex Agent (synthesis) |
+
+| Aspect | Expected Result |
+|--------|-----------------|
+| **Result** | **Quantified value proposition**: "Your GLP-1 campaigns outperform industry by 49.7% on PatientPoint." Campaign planning reduced from **days to minutes**. Partner QBR prep automated. |
+| **Measurable KPI** | Partner retention improvement, sales cycle reduction, premium pricing justification |
+| **Demo Proof Point** | Q3: Instant inventory discovery; Q4: Competitive benchmarking with specific metrics |
+
+---
+
+### 📊 Combined Business Impact Summary
+
+| Metric | Current State | With Snowflake Intelligence | Impact |
+|--------|---------------|----------------------------|--------|
+| **Time to Campaign Insight** | 4-8 hours | < 1 minute | **80% faster** |
+| **Budget Waste on Poor Segments** | 15-25% of spend | 5-10% of spend | **$5-10M saved annually** |
+| **Partner QBR Prep Time** | 2-3 days | 30 minutes | **90% reduction** |
+| **Campaign Planning Cycle** | 3-5 days | Same day | **75% faster** |
+| **ROAS (Portfolio Average)** | 3.5x | 4.5x+ | **25%+ improvement** |
+
+### 🎯 The Executive Pitch (30 seconds)
+
+> "PatientPoint is sitting on a goldmine of advertising data, but today it takes hours to turn that data into decisions. With Snowflake Intelligence, your team can ask questions in plain English and get AI-powered recommendations in seconds—not hours.
+>
+> We're talking about **$5-10M in recovered ad spend** through better targeting, **25% ROAS improvement** through AI-optimized budget allocation, and a **quantified value story** that helps you win and retain pharma partners.
+>
+> And it all runs inside your existing Snowflake environment—secure, scalable, and governed."
+
+---
+
 ## Attendee Resonance Map
 
 | Name | Title | Primary Interest | Demo Moment |
