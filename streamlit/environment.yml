@@ -1,0 +1,10 @@
+# Streamlit in Snowflake Environment Configuration
+# This file defines the dependencies for the Streamlit application
+
+name: ad_tech_demo
+channels:
+  - snowflake
+dependencies:
+  - streamlit=1.35.0
+  - snowflake-snowpark-python
+

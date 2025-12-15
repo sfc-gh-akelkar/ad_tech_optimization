@@ -1,228 +1,230 @@
-# 🔧 PatientPoint Predictive Device Maintenance
+# 🏥 PatientPoint Ad Tech Optimization Demo
 
-**AI-Powered IoT Device Maintenance for PatientPoint HealthScreens**
-
-A Snowflake Cortex Agent demo for **Snowflake Intelligence** showcasing how AI can predict device failures, diagnose issues, and recommend fixes—reducing manual field dispatches.
-
----
+AI-powered healthcare advertising optimization platform built on **Snowflake Intelligence** and **Cortex Agents**.
 
 ## 🎯 Overview
 
-PatientPoint operates **500,000 HealthScreen devices** across healthcare facilities nationwide. This demo demonstrates how Snowflake Intelligence and Cortex Agents enable:
+This demo showcases how PatientPoint can leverage Snowflake's AI/ML capabilities to optimize pharmaceutical advertising campaigns across medical facilities while maintaining strict HIPAA compliance.
 
-- **Predictive failure detection** - 24-48 hour advance warning
-- **Automated remote remediation** - 60%+ issues fixed without dispatch  
-- **Cost optimization** - $96M annual savings projected
+### Key Capabilities Demonstrated
 
-### The Challenge
+| Capability | Snowflake Feature | Use Case |
+|------------|-------------------|----------|
+| **Natural Language Analytics** | Cortex Agents | Ask questions about campaigns in plain English |
+| **Semantic Search** | Cortex Search | Discover inventory and audiences using natural language |
+| **Text-to-SQL** | Cortex Analyst + Semantic Views | Query structured data without writing SQL |
+| **Automated Visualization** | Data to Chart | Generate charts from query results |
+| **Interactive Dashboards** | Streamlit in Snowflake | Self-service analytics UI |
 
-| Pain Point | Impact |
-|------------|--------|
-| **High Costs** | Field technician dispatches cost $150-300+ per visit |
-| **Lost Revenue** | Device downtime = lost advertising impressions |
-| **Reactive Model** | Issues discovered after failure, not before |
-
-### The Solution
-
-| Capability | Technology |
-|------------|------------|
-| Natural language queries | Cortex Analyst + Semantic Views |
-| Knowledge base search | Cortex Search |
-| Automated actions | Custom stored procedures |
-| Predictive analytics | ML-ready data foundation |
-
-### Business Impact
-
-| Metric | Value |
-|--------|-------|
-| Annual Cost Baseline | $185M (field dispatches) |
-| Projected Savings | $96M (52% reduction) |
-| Remote Fix Rate | 60%+ |
-| Prediction Accuracy | >85% |
-
----
-
-## 📁 Project Structure
+## 📁 Repository Structure
 
 ```
-ai_agent_device_maintenance/
-├── setup/
-│   ├── 01_create_database_and_data.sql    # Database, tables, sample data
-│   ├── 02_create_semantic_views.sql       # Semantic views for Cortex Analyst
-│   ├── 03_create_cortex_search.sql        # Knowledge base search services
-│   ├── 04_create_agent.sql                # Agent configuration
-│   └── 05_predictive_simulation.sql       # Predictive analytics views
-├── DEMO_SCRIPT.md                         # 20-minute demo walkthrough
-├── ARCHITECTURE.md                        # Implementation architecture & diagrams
-└── README.md                              # This file
+ad_tech_optimization/
+├── README.md
+│
+├── setup/                              # All setup scripts in sequential order
+│   ├── 00_run_all.sql                  # Master guide with execution order
+│   ├── 01_database_setup.sql           # Database, schemas, warehouses, roles
+│   ├── 02_dimension_tables.sql         # Dimension table DDL
+│   ├── 03_fact_tables.sql              # Fact table DDL
+│   ├── 04_generate_synthetic_data.sql  # Generate ~1.8M rows of demo data
+│   ├── 05_gold_layer_views.sql         # Aggregated analytics views
+│   ├── 06_cortex_search_services.sql   # 3 Cortex Search services
+│   ├── 07_semantic_views.sql           # 3 Semantic Views for Cortex Analyst
+│   └── 08_cortex_agent.sql             # Campaign Optimizer Agent with 7 tools
+│
+└── streamlit/                          # Streamlit in Snowflake app
+    ├── environment.yml
+    ├── Home.py                         # Main entry point
+    └── pages/
+        ├── 1_Campaign_Optimizer.py
+        ├── 2_Inventory_Explorer.py
+        └── 3_Agent_Chat.py
 ```
-
----
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Snowflake account with **Cortex** access
-- ACCOUNTADMIN role (for initial setup)
-- The demo uses the `SF_INTELLIGENCE_DEMO` role (created automatically)
 
-### Step 1: Run SQL Scripts
+- Snowflake account with Cortex features enabled
+- Role: `SF_INTELLIGENCE_DEMO` with appropriate permissions
+- Warehouse: `AD_TECH_WH` (MEDIUM size recommended)
 
-Execute in order in Snowsight:
+### Installation Steps
+
+Run scripts in order (see `setup/00_run_all.sql` for detailed instructions):
 
 ```sql
--- 1. Create role, database, tables, and sample data
--- Run: setup/01_create_database_and_data.sql
+-- Step 1: Database & Infrastructure
+-- Execute: setup/01_database_setup.sql
 
--- 2. Create Snowflake Semantic Views
--- Run: setup/02_create_semantic_views.sql
+-- Step 2: Dimension Tables
+-- Execute: setup/02_dimension_tables.sql
 
--- 3. Create Cortex Search services
--- Run: setup/03_create_cortex_search.sql
+-- Step 3: Fact Tables
+-- Execute: setup/03_fact_tables.sql
 
--- 4. Create the agent
--- Run: setup/04_create_agent.sql
+-- Step 4: Generate Synthetic Data (~5-10 min)
+-- Execute: setup/04_generate_synthetic_data.sql
 
--- 5. Create predictive failure detection views
--- Run: setup/05_predictive_simulation.sql
+-- Step 5: Gold Layer Views
+-- Execute: setup/05_gold_layer_views.sql
+
+-- Step 6: Cortex Search Services
+-- Execute: setup/06_cortex_search_services.sql
+
+-- Step 7: Semantic Views
+-- Execute: setup/07_semantic_views.sql
+
+-- Step 8: Cortex Agent
+-- Execute: setup/08_cortex_agent.sql
 ```
 
-### Step 2: Access via Snowflake Intelligence
+### Verify Setup
 
-1. Navigate to **AI & ML → Snowflake Intelligence**
-2. Select **Device Maintenance Assistant**
-3. Start asking questions!
+```sql
+-- Check tables
+SELECT COUNT(*) FROM AD_TECH.ANALYTICS.DIM_CAMPAIGNS;     -- ~100
+SELECT COUNT(*) FROM AD_TECH.ANALYTICS.FACT_IMPRESSIONS;  -- ~1M
 
----
+-- Check Cortex services
+SHOW CORTEX SEARCH SERVICES IN SCHEMA AD_TECH.CORTEX;     -- 3 services
 
-## 🎬 Demo Script
+-- Check Semantic views
+SHOW SEMANTIC VIEWS IN SCHEMA AD_TECH.CORTEX;             -- 3 views
 
-For the complete **20-minute demo script** with talking points and prompts, see:
-
-📄 **[DEMO_SCRIPT.md](DEMO_SCRIPT.md)**
-
-### Key Personas
-
-| Persona | Focus |
-|---------|-------|
-| Executive (C-Suite) | ROI, fleet health, revenue protection |
-| Operations Center | Risk triage, predictions, dispatch decisions |
-| Field Technician | Work orders, troubleshooting, repair guidance |
-
-### Sample Prompts
-
-```
-# Executive
-Give me a summary of our device fleet health and business impact
-What's our annual field service cost and projected savings?
-
-# Operations
-Which devices have critical or high risk levels right now?
-Can any of these be fixed remotely?
-
-# Technician
-What work orders are assigned to Marcus Johnson today?
-What's wrong with device DEV-003 and how do I fix it?
+-- Check Agent
+SHOW AGENTS IN SCHEMA AD_TECH.CORTEX;                     -- 1 agent
 ```
 
----
+### Deploy Streamlit App
 
-## 📊 Data Model
+```sql
+-- Create a stage for Streamlit files
+CREATE STAGE IF NOT EXISTS AD_TECH.APPS.STREAMLIT_STAGE;
 
-### Tables
+-- Upload Streamlit files to stage (use Snowsight or SnowCLI)
+-- PUT file://streamlit/* @AD_TECH.APPS.STREAMLIT_STAGE/ad_tech_demo/;
 
-| Table | Records | Description |
-|-------|---------|-------------|
-| DEVICE_INVENTORY | 100 | Device master data |
-| DEVICE_TELEMETRY | ~72,000 | Hourly health metrics |
-| MAINTENANCE_HISTORY | 24 | Service tickets |
-| TROUBLESHOOTING_KB | 10 | Fix procedures |
-| WORK_ORDERS | 8 | Active work orders |
-| TECHNICIANS | 6 | Field team |
+-- Create Streamlit app
+CREATE STREAMLIT AD_TECH.APPS.AD_TECH_DEMO
+    ROOT_LOCATION = '@AD_TECH.APPS.STREAMLIT_STAGE/ad_tech_demo'
+    MAIN_FILE = 'Home.py'
+    QUERY_WAREHOUSE = 'AD_TECH_WH';
+```
 
-### Key Views
+## 🎬 Demo Scenarios
 
-| View | Purpose |
-|------|---------|
-| V_DEVICE_HEALTH_SUMMARY | Current health with risk scores |
-| V_MAINTENANCE_ANALYTICS | Ticket analytics with cost savings |
-| V_FAILURE_PREDICTIONS | AI-predicted failures |
-| V_ROI_ANALYSIS | Cost baseline and savings |
+### Scenario 1: Pricing Optimization
 
-### Agent Tools
+> "How do we optimize pricing for a diabetes medication campaign launching in cardiology waiting rooms?"
+
+**Flow:**
+1. Use Cortex Search to find available cardiology inventory
+2. Analyze historical bid performance by specialty
+3. Get AI-recommended pricing range from the Agent
+
+### Scenario 2: Audience Targeting
+
+> "Which patient demographics should we target for maximum engagement?"
+
+**Flow:**
+1. Search for high-engagement audience cohorts
+2. Analyze conversion rates by demographic segment
+3. Recommend privacy-safe targeting strategy
+
+### Scenario 3: Campaign Attribution
+
+> "How do we measure campaign attribution across our entire network?"
+
+**Flow:**
+1. Query cross-channel attribution view
+2. Visualize touchpoint contribution
+3. Calculate ROI by channel
+
+## 🤖 Cortex Agent Tools
+
+The Campaign Optimizer Agent includes 7 integrated tools:
 
 | Tool | Type | Purpose |
 |------|------|---------|
-| DeviceFleetAnalytics | Cortex Analyst | Device health & telemetry |
-| MaintenanceAnalytics | Cortex Analyst | Ticket history & costs |
-| ROIAnalytics | Cortex Analyst | Annual costs & ROI |
-| TroubleshootingGuide | Cortex Search | Fix procedures |
-| PastIncidents | Cortex Search | Historical resolutions |
-| SendDeviceCommand | Custom Procedure | Remote device commands |
-| SendAlert | Custom Procedure | Slack/PagerDuty alerts |
-| CreateServiceNowIncident | Custom Procedure | Work order creation |
+| `CampaignAnalyst` | Cortex Analyst | Query campaign performance metrics |
+| `InventoryAnalyst` | Cortex Analyst | Analyze ad slot performance |
+| `AudienceAnalyst` | Cortex Analyst | Cohort engagement analytics |
+| `InventorySearch` | Cortex Search | Natural language inventory discovery |
+| `CampaignSearch` | Cortex Search | Search campaign history |
+| `AudienceSearch` | Cortex Search | Find target audience segments |
+| `DataToChart` | Data to Chart | Generate visualizations |
 
----
+### Example Agent Prompts
 
-## 🔮 Predictive Capabilities
-
-### What We Prove
-
-| Capability | How It's Demonstrated |
-|------------|----------------------|
-| Historical Data for ML | 30+ days of telemetry, maintenance history |
-| Feature Engineering | Trend detection, spike flags, derived features |
-| Prediction Accuracy | >85% detection rate on historical data |
-| 24-48 Hour Lead Time | Advance warning before failures |
-
-### Sample Queries
-
-```sql
--- Devices predicted to fail within 48 hours
-SELECT * FROM V_FAILURE_PREDICTIONS 
-WHERE PREDICTED_HOURS_TO_FAILURE <= 48
-ORDER BY FAILURE_PROBABILITY_PCT DESC;
-
--- Prediction accuracy analysis
-SELECT * FROM V_PREDICTION_ACCURACY_ANALYSIS;
+```
+"What's the optimal bid price for diabetes campaigns in cardiology?"
+"Find premium morning slots in Texas endocrinology clinics"
+"Compare Pfizer vs Eli Lilly Q4 2024 performance"
+"Which audiences have highest engagement for heart medications?"
+"Show me ROAS trends by therapeutic area"
 ```
 
+## 📊 Data Model
+
+### Dimension Tables
+
+| Table | Description | Rows |
+|-------|-------------|------|
+| `DIM_DATE` | Date dimension (2 years) | ~730 |
+| `DIM_MEDICAL_SPECIALTIES` | Medical practice types | 25 |
+| `DIM_LOCATIONS` | Healthcare facilities | 500 |
+| `DIM_INVENTORY` | Ad placement slots | 5,000 |
+| `DIM_PHARMA_PARTNERS` | Pharmaceutical advertisers | 20 |
+| `DIM_CAMPAIGNS` | Advertising campaigns | 100 |
+| `DIM_AUDIENCE_COHORTS` | Privacy-safe patient segments | 200 |
+
+### Fact Tables
+
+| Table | Description | Rows |
+|-------|-------------|------|
+| `FACT_BIDS` | Bid request/response events | 500K |
+| `FACT_IMPRESSIONS` | Delivered ad impressions | 1M |
+| `FACT_ENGAGEMENTS` | User interactions | 100K |
+| `FACT_APPOINTMENTS` | Aggregated visit context | 200K |
+
+## 🔒 Privacy & Compliance
+
+This demo implements healthcare privacy best practices:
+
+- ✅ **Synthetic Data**: All patient data is generated, not real
+- ✅ **K-Anonymity**: Minimum cohort size of 50 enforced
+- ✅ **No PII**: No individual patient identifiers
+- ✅ **Aggregate Only**: All analytics at cohort level
+- ✅ **HIPAA-Ready**: Architecture supports compliance requirements
+
+## 🛠️ Technical Requirements
+
+### Snowflake Features Required
+
+- Cortex Agents (Preview)
+- Cortex Search
+- Cortex Analyst + Semantic Views
+- Streamlit in Snowflake
+- Snowpark
+
+### Recommended Warehouse Size
+
+- Demo: MEDIUM (cost-optimized)
+- Production: LARGE or X-LARGE
+
+## 📚 Resources
+
+- [Cortex Agents Documentation](https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-agents-manage)
+- [Cortex Search Documentation](https://docs.snowflake.com/en/user-guide/cortex-search)
+- [Semantic Views Documentation](https://docs.snowflake.com/en/user-guide/views-semantic/overview)
+- [Streamlit in Snowflake](https://docs.snowflake.com/en/developer-guide/streamlit/about-streamlit)
+
+## 📝 License
+
+This demo is for educational and demonstration purposes only.
+
 ---
 
-## 💰 Value Drivers
-
-### Operational Cost Reduction
-
-| Benefit | Impact |
-|---------|--------|
-| Reduced Downtime | Predict issues before they occur |
-| Optimized Scheduling | Eliminate unnecessary maintenance |
-| Lower Field Costs | Remote fixes vs $185/dispatch |
-
-### Performance Improvements
-
-| Metric | Value |
-|--------|-------|
-| Faster Insights | 10x faster than batch reporting |
-| Query Accuracy | 90% with Cortex AI |
-| Extended Asset Life | Proactive maintenance |
-
-### Customer Success Examples
-
-| Customer | Results |
-|----------|---------|
-| FIIX | 10x improvement in maintenance insights |
-| Toyota | Extended equipment life, reduced disruptions |
-| Telecom | Reduced field costs, improved SLA compliance |
-
----
-
-## 📚 References
-
-- [Cortex Agents Documentation](https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-agents)
-- [Snowflake Intelligence](https://docs.snowflake.com/en/user-guide/snowflake-cortex/snowflake-intelligence)
-- [Best Practices for Building Cortex Agents](https://github.com/Snowflake-Labs/sfquickstarts/blob/master/site/sfguides/src/best-practices-to-building-cortex-agents/best-practices-to-building-cortex-agents.md)
-
----
-
-**Built with ❄️ Snowflake Cortex**
+Built with ❄️ **Snowflake Intelligence**
