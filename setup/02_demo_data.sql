@@ -23,9 +23,11 @@ USE WAREHOUSE AD_TECH_WH;
 -- ============================================================================
 -- T_CAMPAIGN_PERFORMANCE - Pre-computed campaign metrics (100 campaigns)
 -- This is what the Semantic View will query directly - NO JOINS
+-- ALL METRICS ARE MATHEMATICALLY CONSISTENT
 -- ============================================================================
 CREATE OR REPLACE TABLE T_CAMPAIGN_PERFORMANCE AS
 WITH partners AS (
+    -- Accurate pharma partner list with correct drug ownership
     SELECT * FROM VALUES
         (1, 'Pfizer Inc.', 'Platinum', 'Big Pharma'),
         (2, 'Johnson & Johnson', 'Platinum', 'Big Pharma'),
@@ -33,26 +35,46 @@ WITH partners AS (
         (4, 'Eli Lilly', 'Platinum', 'Big Pharma'),
         (5, 'AbbVie Inc.', 'Gold', 'Big Pharma'),
         (6, 'Bristol-Myers Squibb', 'Gold', 'Big Pharma'),
-        (7, 'Novartis', 'Gold', 'Big Pharma'),
+        (7, 'Novo Nordisk', 'Platinum', 'Big Pharma'),  -- Ozempic, Wegovy owner
         (8, 'AstraZeneca', 'Gold', 'Big Pharma'),
         (9, 'Sanofi', 'Gold', 'Big Pharma'),
         (10, 'Amgen', 'Silver', 'Biotech'),
-        (11, 'Gilead Sciences', 'Silver', 'Biotech'),
-        (12, 'Moderna', 'Silver', 'Biotech'),
-        (13, 'Regeneron', 'Bronze', 'Biotech'),
-        (14, 'Biogen', 'Bronze', 'Biotech'),
-        (15, 'Medtronic', 'Gold', 'Medical Device')
+        (11, 'Novartis', 'Gold', 'Big Pharma'),
+        (12, 'Regeneron', 'Silver', 'Biotech'),
+        (13, 'Biogen', 'Bronze', 'Biotech'),
+        (14, 'Boehringer Ingelheim', 'Gold', 'Big Pharma'),
+        (15, 'Takeda', 'Silver', 'Big Pharma')
     AS t(partner_id, partner_name, partner_tier, industry_segment)
 ),
 drugs AS (
+    -- Accurate drug-to-partner mappings
     SELECT * FROM VALUES
-        ('Jardiance', 'Diabetes', 1), ('Ozempic', 'Diabetes', 4), ('Trulicity', 'Diabetes', 4),
-        ('Eliquis', 'Cardiology', 6), ('Entresto', 'Cardiology', 7), ('Repatha', 'Cardiology', 10),
-        ('Keytruda', 'Oncology', 3), ('Opdivo', 'Oncology', 6), ('Ibrance', 'Oncology', 1),
-        ('Humira', 'Immunology', 5), ('Dupixent', 'Immunology', 13), ('Skyrizi', 'Immunology', 5),
-        ('Ozempic', 'Weight Loss', 7), ('Wegovy', 'Weight Loss', 7), ('Mounjaro', 'Weight Loss', 4),
-        ('Vyvanse', 'Neurology', 2), ('Spinraza', 'Neurology', 14), ('Tecfidera', 'Neurology', 14),
-        ('Stelara', 'Dermatology', 2), ('Cosentyx', 'Dermatology', 7)
+        -- Diabetes
+        ('Jardiance', 'Diabetes', 14),      -- Boehringer Ingelheim / Eli Lilly
+        ('Ozempic', 'Diabetes', 7),          -- Novo Nordisk
+        ('Trulicity', 'Diabetes', 4),        -- Eli Lilly
+        ('Farxiga', 'Diabetes', 8),          -- AstraZeneca
+        -- Cardiology  
+        ('Eliquis', 'Cardiology', 6),        -- Bristol-Myers Squibb / Pfizer
+        ('Entresto', 'Cardiology', 11),      -- Novartis
+        ('Repatha', 'Cardiology', 10),       -- Amgen
+        -- Oncology
+        ('Keytruda', 'Oncology', 3),         -- Merck
+        ('Opdivo', 'Oncology', 6),           -- Bristol-Myers Squibb
+        ('Ibrance', 'Oncology', 1),          -- Pfizer
+        ('Tagrisso', 'Oncology', 8),         -- AstraZeneca
+        -- Immunology
+        ('Humira', 'Immunology', 5),         -- AbbVie
+        ('Dupixent', 'Immunology', 9),       -- Sanofi / Regeneron
+        ('Skyrizi', 'Immunology', 5),        -- AbbVie
+        ('Rinvoq', 'Immunology', 5),         -- AbbVie
+        -- Weight Loss / GLP-1
+        ('Wegovy', 'Weight Loss', 7),        -- Novo Nordisk
+        ('Mounjaro', 'Weight Loss', 4),      -- Eli Lilly
+        ('Zepbound', 'Weight Loss', 4),      -- Eli Lilly
+        -- Neurology
+        ('Vyvanse', 'Neurology', 15),        -- Takeda
+        ('Spinraza', 'Neurology', 13)        -- Biogen
     AS t(drug_name, therapeutic_area, partner_id)
 ),
 specialties AS (
@@ -64,51 +86,95 @@ specialties AS (
 campaign_types AS (
     SELECT * FROM VALUES ('Awareness'), ('Education'), ('Direct Response') AS t(campaign_type)
 ),
-statuses AS (
-    SELECT * FROM VALUES ('Active', 0.5), ('Completed', 0.3), ('Paused', 0.15), ('Scheduled', 0.05) AS t(status, weight)
+-- Step 1: Generate base campaign data with random seeds
+base_campaigns AS (
+    SELECT
+        d.drug_name,
+        d.therapeutic_area,
+        d.partner_id,
+        p.partner_name,
+        p.partner_tier,
+        ct.campaign_type,
+        sp.specialty AS target_specialty,
+        UNIFORM(30, 400, RANDOM()) AS days_ago,
+        -- Base metrics that drive everything else
+        ROUND(UNIFORM(100000, 2000000, RANDOM()), -4) AS budget,
+        UNIFORM(0.60, 0.95, RANDOM()) AS budget_utilization_rate,  -- 60-95% of budget spent
+        UNIFORM(0.80, 5.50, RANDOM()) AS target_roas,              -- Target ROAS
+        UNIFORM(50000, 500000, RANDOM()) AS total_impressions,
+        UNIFORM(0.005, 0.045, RANDOM()) AS ctr_rate,               -- 0.5-4.5% CTR
+        UNIFORM(0.02, 0.15, RANDOM()) AS conversion_rate,          -- 2-15% conversion rate
+        UNIFORM(5000, 50000, RANDOM()) AS total_bids,
+        UNIFORM(0.35, 0.85, RANDOM()) AS win_rate,                 -- 35-85% win rate
+        UNIFORM(0.65, 0.95, RANDOM()) AS completion_rate,
+        UNIFORM(0.70, 0.98, RANDOM()) AS viewability_rate
+    FROM drugs d
+    JOIN partners p ON d.partner_id = p.partner_id
+    CROSS JOIN specialties sp
+    CROSS JOIN campaign_types ct
+    CROSS JOIN TABLE(GENERATOR(ROWCOUNT => 2))
+),
+-- Step 2: Derive all metrics mathematically
+derived_campaigns AS (
+    SELECT
+        *,
+        -- Derived financial metrics
+        ROUND(budget * budget_utilization_rate, 2) AS spend,
+        ROUND(budget * budget_utilization_rate * target_roas, 2) AS total_revenue,
+        
+        -- Derived engagement metrics (from impressions)
+        ROUND(total_impressions * ctr_rate) AS total_clicks,
+        ROUND(total_impressions * ctr_rate * conversion_rate) AS total_conversions,
+        ROUND(total_impressions * ctr_rate * 0.5) AS total_engagements,  -- Engagements ~ 50% of clicks
+        
+        -- Derived bid metrics
+        ROUND(total_bids * win_rate) AS winning_bids
+    FROM base_campaigns
 )
+-- Step 3: Final SELECT with calculated percentages and IDs
 SELECT
     'CAMP-' || LPAD(ROW_NUMBER() OVER (ORDER BY RANDOM())::VARCHAR, 5, '0') AS campaign_id,
-    d.drug_name || ' ' || ct.campaign_type || ' Q' || QUARTER(DATEADD(day, -days_ago, CURRENT_DATE())) || ' ' || YEAR(DATEADD(day, -days_ago, CURRENT_DATE())) AS campaign_name,
-    d.drug_name,
-    d.therapeutic_area,
-    ct.campaign_type,
-    sp.specialty AS target_specialty,
-    CASE WHEN RANDOM() < 0.5 THEN 'Active' WHEN RANDOM() < 0.8 THEN 'Completed' WHEN RANDOM() < 0.95 THEN 'Paused' ELSE 'Scheduled' END AS status,
-    DATEADD(day, -days_ago, CURRENT_DATE()) AS start_date,
-    DATEADD(day, -days_ago + UNIFORM(30, 90, RANDOM()), CURRENT_DATE()) AS end_date,
-    ROUND(UNIFORM(100000, 2000000, RANDOM()), -4)::NUMBER(18,2) AS budget,
-    p.partner_id,
-    p.partner_name,
-    p.partner_tier,
+    drug_name || ' ' || campaign_type || ' Q' || QUARTER(DATEADD(day, -days_ago, CURRENT_DATE())) || ' ' || YEAR(DATEADD(day, -days_ago, CURRENT_DATE())) AS campaign_name,
+    drug_name,
+    therapeutic_area,
+    campaign_type,
+    target_specialty,
+    CASE 
+        WHEN days_ago < 60 THEN 'Active'
+        WHEN days_ago < 180 THEN CASE WHEN RANDOM() < 0.7 THEN 'Completed' ELSE 'Active' END
+        ELSE 'Completed'
+    END AS status,
+    DATEADD(day, -days_ago::INT, CURRENT_DATE()) AS start_date,
+    DATEADD(day, -days_ago::INT + UNIFORM(30, 90, RANDOM()), CURRENT_DATE()) AS end_date,
+    budget::NUMBER(18,2) AS budget,
+    partner_id,
+    partner_name,
+    partner_tier,
     
-    -- Pre-computed bid metrics
-    UNIFORM(5000, 50000, RANDOM()) AS total_bids,
-    ROUND(UNIFORM(2000, 40000, RANDOM())) AS winning_bids,
-    ROUND(UNIFORM(35, 85, RANDOM()), 2)::NUMBER(8,2) AS win_rate_pct,
-    ROUND(UNIFORM(8, 45, RANDOM()), 2)::NUMBER(12,2) AS avg_bid_cpm,
+    -- Bid metrics
+    total_bids,
+    winning_bids,
+    ROUND(win_rate * 100, 2)::NUMBER(8,2) AS win_rate_pct,
+    ROUND(spend / NULLIF(winning_bids, 0) * 1000 / NULLIF(total_impressions / winning_bids, 0), 2)::NUMBER(12,2) AS avg_bid_cpm,
     
-    -- Pre-computed impression metrics
-    UNIFORM(50000, 500000, RANDOM()) AS total_impressions,
-    ROUND(UNIFORM(65, 95, RANDOM()), 2)::NUMBER(8,2) AS avg_completion_rate_pct,
-    ROUND(UNIFORM(70, 98, RANDOM()), 2)::NUMBER(8,2) AS avg_viewability_pct,
+    -- Impression metrics
+    total_impressions::INT AS total_impressions,
+    ROUND(completion_rate * 100, 2)::NUMBER(8,2) AS avg_completion_rate_pct,
+    ROUND(viewability_rate * 100, 2)::NUMBER(8,2) AS avg_viewability_pct,
     
-    -- Pre-computed engagement metrics
-    UNIFORM(1000, 25000, RANDOM()) AS total_engagements,
-    ROUND(UNIFORM(0.5, 4.5, RANDOM()), 4)::NUMBER(8,4) AS ctr_pct,
-    UNIFORM(50, 2000, RANDOM()) AS total_conversions,
-    ROUND(UNIFORM(2, 15, RANDOM()), 2)::NUMBER(8,2) AS conversion_rate_pct,
+    -- Engagement metrics (DERIVED from impressions × rates)
+    total_engagements::INT AS total_engagements,
+    ROUND(ctr_rate * 100, 4)::NUMBER(8,4) AS ctr_pct,               -- CTR = clicks / impressions
+    total_conversions::INT AS total_conversions,
+    ROUND(conversion_rate * 100, 2)::NUMBER(8,2) AS conversion_rate_pct,  -- Conv rate = conversions / clicks
     
-    -- Pre-computed revenue metrics
-    ROUND(UNIFORM(10000, 500000, RANDOM()), 2)::NUMBER(18,2) AS total_revenue,
-    ROUND(UNIFORM(0.8, 4.5, RANDOM()), 4)::NUMBER(10,4) AS roas,
-    ROUND(UNIFORM(12, 65, RANDOM()), 2)::NUMBER(12,2) AS effective_cpm
+    -- Revenue metrics (DERIVED: revenue = spend × ROAS)
+    total_revenue::NUMBER(18,2) AS total_revenue,
+    spend::NUMBER(18,2) AS total_spend,                             -- NEW: Actual spend
+    ROUND(target_roas, 2)::NUMBER(10,4) AS roas,                    -- ROAS = revenue / spend
+    ROUND(spend / NULLIF(total_impressions, 0) * 1000, 2)::NUMBER(12,2) AS effective_cpm  -- CPM = spend per 1000 impressions
 
-FROM drugs d
-JOIN partners p ON d.partner_id = p.partner_id
-CROSS JOIN specialties sp
-CROSS JOIN campaign_types ct
-CROSS JOIN (SELECT UNIFORM(30, 365, RANDOM()) AS days_ago FROM TABLE(GENERATOR(ROWCOUNT => 2))) date_offsets
+FROM derived_campaigns
 ORDER BY RANDOM()
 LIMIT 100;
 
@@ -117,6 +183,8 @@ SELECT 'T_CAMPAIGN_PERFORMANCE created: ' || COUNT(*) || ' campaigns' AS status 
 
 -- ============================================================================
 -- T_INVENTORY_ANALYTICS - Pre-computed inventory metrics (200 slots)
+-- ALL METRICS ARE MATHEMATICALLY CONSISTENT
+-- Revenue = Impressions × CPM / 1000
 -- ============================================================================
 CREATE OR REPLACE TABLE T_INVENTORY_ANALYTICS AS
 WITH facilities AS (
@@ -162,47 +230,86 @@ placements AS (
 ),
 dayparts AS (
     SELECT * FROM VALUES ('Morning', 1.1), ('Afternoon', 1.0), ('Evening', 0.9), ('All Day', 1.05) AS t(daypart, multiplier)
+),
+-- Step 1: Base slot data with random seeds
+base_slots AS (
+    SELECT
+        f.facility_name, f.facility_type, f.city, f.state, f.region, f.patient_volume, f.affluence_index,
+        sp.specialty_name, sp.specialty_category, sp.cpm_multiplier,
+        st.screen_type, st.screen_size, st.base_impressions,
+        pl.placement_area, pl.base_cpm,
+        dp.daypart, dp.multiplier AS daypart_multiplier,
+        -- Base rates that drive everything
+        UNIFORM(0.40, 0.90, RANDOM()) AS fill_rate,              -- 40-90% fill rate
+        UNIFORM(0.003, 0.035, RANDOM()) AS engagement_rate,      -- 0.3-3.5% engagement
+        UNIFORM(0.70, 0.98, RANDOM()) AS completion_rate,
+        UNIFORM(0.75, 0.99, RANDOM()) AS viewability_rate,
+        UNIFORM(60, 180, RANDOM()) AS days_of_data              -- 60-180 days of historical data
+    FROM facilities f
+    CROSS JOIN specialties sp
+    CROSS JOIN screen_types st
+    CROSS JOIN placements pl
+    CROSS JOIN dayparts dp
+),
+-- Step 2: Derive all metrics mathematically
+derived_slots AS (
+    SELECT
+        *,
+        -- CPM calculation
+        ROUND(base_cpm * cpm_multiplier * daypart_multiplier, 2) AS calc_base_cpm,
+        ROUND(base_cpm * cpm_multiplier * daypart_multiplier * UNIFORM(1.0, 1.4, RANDOM()), 2) AS avg_winning_cpm,
+        
+        -- Daily impressions
+        ROUND(base_impressions * daypart_multiplier * (0.8 + RANDOM() * 0.4)) AS est_daily_impressions,
+        
+        -- Total impressions over time period
+        ROUND(base_impressions * daypart_multiplier * (0.8 + RANDOM() * 0.4) * days_of_data * fill_rate) AS delivered_impressions,
+        
+        -- Total bids (more bids than impressions since fill rate < 100%)
+        ROUND(base_impressions * daypart_multiplier * days_of_data * 1.2) AS total_bids
+    FROM base_slots
 )
+-- Step 3: Final SELECT with calculated revenue and engagement
 SELECT
     'SLOT-' || LPAD(ROW_NUMBER() OVER (ORDER BY RANDOM())::VARCHAR, 5, '0') AS slot_id,
-    f.facility_name || ' - ' || pl.placement_area || ' ' || st.screen_type AS slot_name,
-    st.screen_type,
-    st.screen_size,
-    pl.placement_area,
-    dp.daypart,
-    ROUND(pl.base_cpm * sp.cpm_multiplier * dp.multiplier, 2)::NUMBER(12,2) AS base_cpm,
+    facility_name || ' - ' || placement_area || ' ' || screen_type AS slot_name,
+    screen_type,
+    screen_size,
+    placement_area,
+    daypart,
+    calc_base_cpm::NUMBER(12,2) AS base_cpm,
     CASE WHEN RANDOM() < 0.3 THEN TRUE ELSE FALSE END AS is_premium,
-    ROUND(st.base_impressions * dp.multiplier * (0.8 + RANDOM() * 0.4)) AS estimated_daily_impressions,
+    est_daily_impressions::INT AS estimated_daily_impressions,
     
     -- Location info
-    f.facility_name,
-    f.facility_type,
-    f.city,
-    f.state,
-    f.region,
-    f.patient_volume,
-    ROUND(f.affluence_index, 2)::NUMBER(5,2) AS affluence_index,
+    facility_name,
+    facility_type,
+    city,
+    state,
+    region,
+    patient_volume,
+    ROUND(affluence_index, 2)::NUMBER(5,2) AS affluence_index,
     
     -- Specialty info
-    sp.specialty_name,
-    sp.specialty_category,
+    specialty_name,
+    specialty_category,
     
-    -- Pre-computed performance metrics
-    UNIFORM(1000, 15000, RANDOM()) AS total_bids,
-    ROUND(UNIFORM(40, 90, RANDOM()), 2)::NUMBER(8,2) AS fill_rate_pct,
-    UNIFORM(5000, 80000, RANDOM()) AS delivered_impressions,
-    ROUND(UNIFORM(15, 55, RANDOM()), 2)::NUMBER(12,2) AS avg_winning_cpm,
-    ROUND(UNIFORM(70, 98, RANDOM()), 2)::NUMBER(8,2) AS avg_completion_pct,
-    ROUND(UNIFORM(75, 99, RANDOM()), 2)::NUMBER(8,2) AS avg_viewability_pct,
-    UNIFORM(200, 5000, RANDOM()) AS total_engagements,
-    ROUND(UNIFORM(0.3, 3.5, RANDOM()), 4)::NUMBER(8,4) AS engagement_rate_pct,
-    ROUND(UNIFORM(1000, 50000, RANDOM()), 2)::NUMBER(18,2) AS total_revenue
+    -- Performance metrics (MATHEMATICALLY CONSISTENT)
+    total_bids::INT AS total_bids,
+    ROUND(fill_rate * 100, 2)::NUMBER(8,2) AS fill_rate_pct,
+    delivered_impressions::INT AS delivered_impressions,
+    avg_winning_cpm::NUMBER(12,2) AS avg_winning_cpm,
+    ROUND(completion_rate * 100, 2)::NUMBER(8,2) AS avg_completion_pct,
+    ROUND(viewability_rate * 100, 2)::NUMBER(8,2) AS avg_viewability_pct,
+    
+    -- Engagements DERIVED from impressions × engagement rate
+    ROUND(delivered_impressions * engagement_rate)::INT AS total_engagements,
+    ROUND(engagement_rate * 100, 4)::NUMBER(8,4) AS engagement_rate_pct,
+    
+    -- Revenue DERIVED: impressions × CPM / 1000
+    ROUND(delivered_impressions * avg_winning_cpm / 1000, 2)::NUMBER(18,2) AS total_revenue
 
-FROM facilities f
-CROSS JOIN specialties sp
-CROSS JOIN screen_types st
-CROSS JOIN placements pl
-CROSS JOIN dayparts dp
+FROM derived_slots
 ORDER BY RANDOM()
 LIMIT 200;
 
@@ -211,6 +318,8 @@ SELECT 'T_INVENTORY_ANALYTICS created: ' || COUNT(*) || ' slots' AS status FROM 
 
 -- ============================================================================
 -- T_AUDIENCE_INSIGHTS - Pre-computed audience cohort metrics (100 cohorts)
+-- ALL METRICS ARE MATHEMATICALLY CONSISTENT
+-- Conversions derived from Engagements, Revenue derived from Cohort Size
 -- ============================================================================
 CREATE OR REPLACE TABLE T_AUDIENCE_INSIGHTS AS
 WITH age_buckets AS (
@@ -241,53 +350,97 @@ health_interests AS (
         ('General Wellness', 'Prevention, Checkups, Lifestyle'),
         ('Womens Health', 'Gynecology, Pregnancy, Menopause')
     AS t(health_interest, therapeutic_interests)
+),
+-- Step 1: Base cohort data with random seeds
+base_cohorts AS (
+    SELECT
+        ag.age_bucket, ag.weight AS age_weight,
+        g.gender,
+        r.region,
+        ib.income_bracket,
+        it.insurance_type,
+        hi.health_interest, hi.therapeutic_interests,
+        -- Base metrics that drive everything else
+        UNIFORM(50, 5000, RANDOM()) AS cohort_size,
+        UNIFORM(10, 100, RANDOM()) AS impressions_per_member,    -- Avg impressions per cohort member
+        UNIFORM(0.005, 0.040, RANDOM()) AS engagement_rate,      -- 0.5-4.0% engagement rate
+        UNIFORM(0.05, 0.25, RANDOM()) AS conversion_rate,        -- 5-25% of engagements convert
+        UNIFORM(0.50, 15.00, RANDOM()) AS revenue_per_member,    -- Revenue attribution per member
+        UNIFORM(5, 25, RANDOM()) AS campaigns_exposed,
+        UNIFORM(40, 95, RANDOM()) AS baseline_engagement_score,
+        UNIFORM(1.5, 6.5, RANDOM()) AS avg_visit_frequency,
+        UNIFORM(15, 120, RANDOM()) AS avg_dwell_time_seconds,
+        UNIFORM(0.60, 0.95, RANDOM()) AS ad_completion_rate
+    FROM age_buckets ag
+    CROSS JOIN genders g
+    CROSS JOIN regions r
+    CROSS JOIN income_brackets ib
+    CROSS JOIN insurance_types it
+    CROSS JOIN health_interests hi
+),
+-- Step 2: Derive all metrics mathematically
+derived_cohorts AS (
+    SELECT
+        *,
+        -- Impressions = cohort_size × impressions_per_member
+        ROUND(cohort_size * impressions_per_member) AS total_impressions,
+        
+        -- Engagements = impressions × engagement_rate
+        ROUND(cohort_size * impressions_per_member * engagement_rate) AS total_engagements,
+        
+        -- Conversions = engagements × conversion_rate
+        ROUND(cohort_size * impressions_per_member * engagement_rate * conversion_rate) AS total_conversions,
+        
+        -- Revenue = cohort_size × revenue_per_member
+        ROUND(cohort_size * revenue_per_member, 2) AS cohort_revenue,
+        
+        -- Exposure frequency = impressions / cohort_size
+        ROUND(impressions_per_member / NULLIF(campaigns_exposed, 0), 1) AS avg_exposure_frequency
+    FROM base_cohorts
 )
+-- Step 3: Final SELECT with calculated percentages
 SELECT
     'COH-' || LPAD(ROW_NUMBER() OVER (ORDER BY RANDOM())::VARCHAR, 5, '0') AS cohort_id,
-    ag.age_bucket || ' ' || g.gender || ' - ' || hi.health_interest || ' (' || r.region || ')' AS cohort_name,
-    ag.age_bucket,
-    g.gender,
+    age_bucket || ' ' || gender || ' - ' || health_interest || ' (' || region || ')' AS cohort_name,
+    age_bucket,
+    gender,
     CASE WHEN RANDOM() < 0.6 THEN 'Not Specified' 
          WHEN RANDOM() < 0.75 THEN 'White' 
          WHEN RANDOM() < 0.85 THEN 'Hispanic' 
          WHEN RANDOM() < 0.92 THEN 'Black' 
          ELSE 'Asian' END AS ethnicity,
-    r.region,
-    ib.income_bracket,
-    it.insurance_type,
-    hi.health_interest,
-    hi.therapeutic_interests AS top_therapeutic_interests,
+    region,
+    income_bracket,
+    insurance_type,
+    health_interest,
+    therapeutic_interests AS top_therapeutic_interests,
     
     -- Cohort size (min 50 for k-anonymity)
-    UNIFORM(50, 5000, RANDOM()) AS cohort_size,
-    ROUND(UNIFORM(40, 95, RANDOM()), 1) AS baseline_engagement_score,
-    ROUND(UNIFORM(1.5, 6.5, RANDOM()), 1) AS avg_visit_frequency,
+    cohort_size::INT AS cohort_size,
+    ROUND(baseline_engagement_score, 1)::NUMBER(5,1) AS baseline_engagement_score,
+    ROUND(avg_visit_frequency, 1)::NUMBER(4,1) AS avg_visit_frequency,
     
-    -- Pre-computed campaign exposure
-    UNIFORM(5, 25, RANDOM()) AS campaigns_exposed,
-    UNIFORM(1000, 50000, RANDOM()) AS total_impressions,
-    ROUND(UNIFORM(2, 8, RANDOM()), 1) AS avg_exposure_frequency,
+    -- Campaign exposure
+    campaigns_exposed::INT AS campaigns_exposed,
+    total_impressions::INT AS total_impressions,
+    GREATEST(avg_exposure_frequency, 2.0)::NUMBER(4,1) AS avg_exposure_frequency,  -- Min 2x exposure
     
-    -- Pre-computed engagement metrics
-    UNIFORM(100, 5000, RANDOM()) AS total_engagements,
-    ROUND(UNIFORM(0.5, 4.0, RANDOM()), 3) AS engagement_rate_pct,
-    UNIFORM(10, 500, RANDOM()) AS total_conversions,
-    ROUND(UNIFORM(2, 18, RANDOM()), 2) AS conversion_rate_pct,
+    -- Engagement metrics (MATHEMATICALLY CONSISTENT)
+    total_engagements::INT AS total_engagements,
+    ROUND(engagement_rate * 100, 3)::NUMBER(8,3) AS engagement_rate_pct,           -- Derived from calculation
+    total_conversions::INT AS total_conversions,
+    -- Conversion rate = conversions / engagements × 100
+    ROUND(CASE WHEN total_engagements > 0 THEN total_conversions / total_engagements * 100 ELSE 0 END, 2)::NUMBER(8,2) AS conversion_rate_pct,
     
-    -- Pre-computed behavioral metrics
-    ROUND(UNIFORM(15, 120, RANDOM()), 1) AS avg_dwell_time_seconds,
-    ROUND(UNIFORM(60, 95, RANDOM()), 2) AS avg_ad_completion_pct,
+    -- Behavioral metrics
+    ROUND(avg_dwell_time_seconds, 1)::NUMBER(6,1) AS avg_dwell_time_seconds,
+    ROUND(ad_completion_rate * 100, 2)::NUMBER(5,2) AS avg_ad_completion_pct,
     
-    -- Pre-computed value metrics
-    ROUND(UNIFORM(500, 25000, RANDOM()), 2) AS cohort_revenue,
-    ROUND(UNIFORM(0.50, 15.00, RANDOM()), 4) AS revenue_per_member
+    -- Value metrics (MATHEMATICALLY CONSISTENT)
+    cohort_revenue::NUMBER(18,2) AS cohort_revenue,
+    ROUND(revenue_per_member, 4)::NUMBER(10,4) AS revenue_per_member               -- Revenue per member = cohort_revenue / cohort_size
 
-FROM age_buckets ag
-CROSS JOIN genders g
-CROSS JOIN regions r
-CROSS JOIN income_brackets ib
-CROSS JOIN insurance_types it
-CROSS JOIN health_interests hi
+FROM derived_cohorts
 ORDER BY RANDOM()
 LIMIT 100;
 

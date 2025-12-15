@@ -62,8 +62,12 @@ CREATE OR REPLACE SEMANTIC VIEW AD_TECH.CORTEX.SV_CAMPAIGN_ANALYTICS
 
     METRICS (
         campaigns.budget AS SUM(campaigns.budget)
-            WITH SYNONYMS = ('campaign budget', 'spend limit')
-            COMMENT = 'Total budget',
+            WITH SYNONYMS = ('campaign budget', 'spend limit', 'allocated budget')
+            COMMENT = 'Total allocated budget',
+        
+        campaigns.total_spend AS SUM(campaigns.total_spend)
+            WITH SYNONYMS = ('spend', 'actual spend', 'media spend', 'ad spend')
+            COMMENT = 'Actual spend (budget × utilization)',
         
         campaigns.total_bids AS SUM(campaigns.total_bids)
             WITH SYNONYMS = ('bid count', 'bids')
