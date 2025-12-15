@@ -2,187 +2,354 @@
 ## Executive Demo Script
 
 **Customer:** PatientPoint  
-**Duration:** 15-20 minutes  
-**Goal:** Demonstrate how Snowflake Intelligence transforms ad-tech decision-making with AI-powered insights
+**Duration:** 20-25 minutes  
+**Goal:** Demonstrate how Snowflake Intelligence transforms ad-tech decision-making with AI-powered insights that drive measurable business outcomes
 
 ---
 
-## Attendees
+## Attendee Resonance Map
 
-| Name | Title | Key Interests |
-|------|-------|---------------|
-| **Mike Walsh** | COO | Operational efficiency, revenue optimization, scale |
-| **Patrick Arnold** | CTO | Architecture, technology stack, platform capabilities |
-| **Sharon Patent** | CADO | Data strategy, AI/ML, analytics maturity |
-| **Jonathan Richman** | SVP Software & Engineering | Implementation, integration, developer experience |
-| **Liberty Holt** | VP Data & Analytics | Data models, insight generation, self-service |
-| **Jennifer Kelly** | Sr Director Data Engineering | Data pipelines, quality, architecture patterns |
-| **JT Grant** | VP Ad Tech | Bidding optimization, inventory, campaign performance |
-| **Drew Amwoza** | SVP Technology, Architecture & Strategy | Strategic technology decisions, future roadmap |
-| **Chloé Varennes** | Director of Product Management, AdTech | Product features, user experience, use cases |
+| Name | Title | Primary Interest | Demo Moment |
+|------|-------|------------------|-------------|
+| **Mike Walsh** | COO | Revenue optimization, operational scale | Q1: ROAS patterns, Q5: Budget allocation |
+| **Patrick Arnold** | CTO | Architecture, security, platform capabilities | Closing: "Runs entirely in Snowflake" |
+| **Sharon Patent** | CADO | Data strategy, AI/ML, governance | Q4: GLP-1 analysis, Data Context section |
+| **Jonathan Richman** | SVP Software & Engineering | Implementation, integration | Q3: Inventory search, Technical architecture |
+| **Liberty Holt** | VP Data & Analytics | Self-service analytics, data models | Q2: Audience optimization, Semantic layer |
+| **Jennifer Kelly** | Sr Director Data Engineering | Data pipelines, quality, architecture | Data Context: Source systems integration |
+| **JT Grant** | VP Ad Tech | Bidding optimization, inventory, campaigns | Q2: Bidding adjustments, Q3: Premium inventory |
+| **Drew Amwoza** | SVP Technology, Architecture & Strategy | Strategic technology decisions | Q5: Cross-functional synthesis |
+| **Chloé Varennes** | Director of Product Management, AdTech | Product features, user experience | All: Natural language interface |
 
 ---
 
 ## Opening (2 minutes)
 
-> "Today we're going to show you how Snowflake Intelligence can transform PatientPoint's campaign optimization from reactive reporting to proactive, AI-driven recommendations. Instead of dashboards that tell you what happened, you'll see an AI assistant that tells you what to do next—built entirely on your existing Snowflake data platform."
+> "Today we're going to show you how Snowflake Intelligence can transform PatientPoint's campaign optimization from reactive reporting to proactive, AI-driven recommendations. 
+>
+> Instead of dashboards that tell you what happened yesterday, you'll see an AI assistant that tells you what to do *right now*—and more importantly, *why*—built entirely on your existing Snowflake data platform."
+
+**Key Framing:**
+- This is NOT another BI tool
+- This is a **decision engine** that understands PatientPoint's business
+- Every answer connects to a **business outcome** (revenue, efficiency, growth)
 
 ---
 
-## Data Context (1 minute - optional, for technical audience)
+## Data Context: Source Systems (3 minutes)
 
-> "Before we dive in, let me quickly explain what data the AI is working with. This represents the kind of integrated view you'd have in production."
+> "Before we dive in, let me show you what data the AI is working with. This simulates the integrated view you'd have in production from your actual source systems."
 
-### Three Core Datasets
+### Simulated Source Systems
 
-| Dataset | What It Represents | Production Source Systems |
-|---------|-------------------|---------------------------|
-| **Campaign Performance** | 100 pharma campaigns with full KPIs | Salesforce CRM + RTB Platform + Ad Server + Billing |
-| **Inventory Analytics** | 200 ad placements across medical facilities | Device MDM + Location System + GIS Data |
-| **Audience Insights** | 100 privacy-safe patient cohorts | Data Clean Room + Analytics (k-anonymity enforced) |
+| Source System | Data Type | What It Feeds | Production Reality |
+|---------------|-----------|---------------|-------------------|
+| **Salesforce CRM** | Partner contracts, tier levels, account status | Campaign metadata, partner relationships | Real: Pharma partner master data |
+| **RTB/SSP Platform** | Real-time bids, win rates, pricing | Bidding performance metrics | Real: Bid logs at millions/day |
+| **Ad Server (GAM/Freewheel)** | Impressions, completions, viewability | Delivery metrics | Real: Impression-level event stream |
+| **Analytics Platform** | Engagement, conversions, dwell time | Performance outcomes | Real: Post-impression attribution |
+| **Data Clean Room** | Privacy-safe audience matching | Cohort engagement data | Real: LiveRamp/Snowflake DCR |
+| **Device MDM** | Screen locations, types, specs | Inventory attributes | Real: Device management system |
+| **Facility Database** | Location, specialty, patient volume | Geographic/specialty targeting | Real: Practice management integration |
 
-### Source System Integration (Production)
+### Data Architecture (Show Diagram)
 
 ```
-Salesforce ──┐
-RTB/SSP ─────┼──► Snowflake ──► Gold Layer ──► Cortex Agent
-Ad Server ───┤      (Bronze → Silver → Gold)
-Analytics ───┤
-Clean Room ──┘
+┌─────────────────────────────────────────────────────────────────────────┐
+│                        SOURCE SYSTEMS (Simulated)                        │
+├──────────────┬──────────────┬──────────────┬──────────────┬─────────────┤
+│  Salesforce  │  RTB/SSP     │  Ad Server   │  Analytics   │ Clean Room  │
+│  (CRM)       │  (Bids)      │  (Delivery)  │  (Outcomes)  │ (Audience)  │
+└──────┬───────┴──────┬───────┴──────┬───────┴──────┬───────┴──────┬──────┘
+       │              │              │              │              │
+       ▼              ▼              ▼              ▼              ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         SNOWFLAKE DATA PLATFORM                          │
+├─────────────────────────────────────────────────────────────────────────┤
+│  BRONZE LAYER          SILVER LAYER           GOLD LAYER                │
+│  (Raw Events)    ──►   (Cleansed)      ──►   (Business Ready)           │
+│                                                                          │
+│  • Bid logs             • Validated bids       • T_CAMPAIGN_PERFORMANCE │
+│  • Impression events    • Matched impressions  • T_INVENTORY_ANALYTICS  │
+│  • Device heartbeats    • Enriched inventory   • T_AUDIENCE_INSIGHTS    │
+└─────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         SNOWFLAKE INTELLIGENCE                           │
+├────────────────────────┬────────────────────────┬───────────────────────┤
+│   CORTEX SEARCH        │   SEMANTIC VIEWS       │   CORTEX AGENT        │
+│   (Natural Language)   │   (Business Terms)     │   (AI Orchestration)  │
+├────────────────────────┼────────────────────────┼───────────────────────┤
+│  • Inventory Search    │  • Campaign Analytics  │  • Campaign Optimizer │
+│  • Campaign Search     │  • Inventory Analytics │    Agent              │
+│  • Audience Search     │  • Audience Insights   │                       │
+└────────────────────────┴────────────────────────┴───────────────────────┘
 ```
 
-**💡 For Jennifer (Data Engineering):** *"In production, this would be Snowpipe for streaming bid data, Fivetran for CRM sync, and Dynamic Tables for the gold layer aggregations."*
+### 💡 Role-Specific Callouts
 
-**💡 For Sharon (CADO):** *"The Data Clean Room integration is key for the audience data—it enables pharma partners to bring their own data for matching without exposing PII."*
+**For Jennifer (Data Engineering):**
+> "In production, this would be Snowpipe for streaming bid data at millions of events per day, Fivetran or Airbyte for CRM sync, and Dynamic Tables for real-time gold layer aggregations. The medallion architecture is already a pattern you'd likely adopt."
 
----
+**For Sharon (CADO):**
+> "The Data Clean Room integration is critical for the audience data—it enables pharma partners like Pfizer or Novo Nordisk to bring their own patient data for privacy-safe matching without ever exposing PII. That's the foundation for the cohort-level insights you'll see."
 
-## Question 1: Portfolio Performance & Growth Drivers
-### 👥 *Resonates with: Mike (COO), JT (VP Ad Tech), Sharon (CADO)*
-
-**Ask the Agent:**
-> "What are our top 5 performing campaigns by ROAS, and what do they have in common that we can replicate across our portfolio?"
-
-**Why This Matters:**
-- Shows AI can identify **patterns across campaigns** that humans might miss
-- Demonstrates ability to move from "what happened" to "what should we do"
-- Highlights cross-functional insights (creative, placement, audience, timing)
-
-**Expected Insights:**
-- Top campaigns by ROAS with specific metrics
-- Common success factors (therapeutic area, daypart, audience segments)
-- Actionable recommendations for underperforming campaigns
-
-**Follow-up Chart Request:**
-> "Show me a chart comparing ROAS by therapeutic area"
-
-**💡 Talking Point for JT:** *"This is the kind of analysis that would typically take your ad ops team hours to compile—now it's a conversation."*
+**For Patrick (CTO):**
+> "Key point: everything runs inside your Snowflake account. No data leaves your environment, no external AI APIs, and it scales on your existing compute infrastructure."
 
 ---
 
-## Question 2: Revenue Optimization Opportunity
-### 👥 *Resonates with: Mike (COO), JT (VP Ad Tech), Chloé (Director PM)*
+## Question 1: Portfolio Performance & Pattern Recognition
 
-**Ask the Agent:**
-> "Which inventory slots are underperforming relative to their potential, and how much incremental revenue could we capture with optimized pricing?"
+### 📋 The Question
+> **"What are our top 5 performing campaigns by ROAS, and what do they have in common that we can replicate across our portfolio?"**
 
-**Why This Matters:**
-- Directly ties to **revenue and margin improvement**
-- Shows AI can identify monetization gaps
-- Quantifies the business case for optimization
+### 🎯 Business Outcome
+**Revenue Growth through Pattern Replication**
+- Identify the DNA of successful campaigns
+- Scale what works across the portfolio
+- Stop wasting budget on underperforming patterns
 
-**Expected Insights:**
-- Inventory with low fill rates but high patient volume
-- CPM optimization opportunities by region/specialty
-- Estimated revenue uplift from pricing adjustments
+### 👥 Attendee Resonance
+| Attendee | Why This Matters to Them |
+|----------|--------------------------|
+| **Mike Walsh (COO)** | "This tells me where our revenue engine is strongest and how to scale it." |
+| **JT Grant (VP Ad Tech)** | "This is the analysis my team does manually—now it's instant and consistent." |
+| **Sharon Patent (CADO)** | "The AI is finding patterns across dimensions my team would need weeks to surface." |
 
-**Follow-up:**
-> "What's the optimal CPM range for cardiology waiting room slots based on historical win rates?"
+### ✅ Expected Response Highlights
+- Top 5 campaigns: Wegovy (6.0x), Ozempic (5.1x, 5.03x), Wegovy (5.0x), Mounjaro (5.0x)
+- Pattern: **GLP-1/Weight Loss dominance** (4 of 5 top campaigns)
+- Pattern: **Novo Nordisk + Eli Lilly** (Platinum partners)
+- Pattern: **Direct Response + Education** campaign types outperform Awareness
 
-**💡 Talking Point for Mike:** *"This connects operational data to revenue opportunity—the kind of insight that drives quarterly planning."*
+### 💬 Talking Points
 
----
+**After the response:**
 
-## Question 3: Partner Growth Strategy
-### 👥 *Resonates with: Mike (COO), Sharon (CADO), Liberty (VP Data & Analytics)*
+> **For Mike (COO):** "Mike, notice how the AI doesn't just give you numbers—it gives you the *why*. GLP-1s are dominating because of audience demand in weight management. That's actionable intelligence for your partner development team."
 
-**Ask the Agent:**
-> "Compare our Platinum tier partners' campaign performance. Which partners are growing fastest and which need attention?"
+> **For JT (VP Ad Tech):** "JT, this analysis would typically take your ad ops team hours to compile—pulling data from multiple systems, running pivots, looking for patterns. Now it's a 15-second conversation."
 
-**Why This Matters:**
-- **Partner health visibility** at a glance
-- Identifies upsell opportunities vs. churn risks
-- Shows AI can prioritize sales/account team focus
+> **For Sharon (CADO):** "Sharon, this is connecting campaign data, partner data, and performance data in a single query. The semantic layer we built means the AI understands what 'ROAS' means in PatientPoint's context."
 
-**Expected Insights:**
-- Partner performance comparison (impressions, ROAS, conversion rates)
-- Trend analysis (growing vs. declining partners)
-- Specific recommendations for partner engagement
+### 🏢 Production Considerations
 
-**Follow-up Chart Request:**
-> "Create a chart showing partner performance by total revenue and ROAS"
+**Data Requirements:**
+- Campaign master data with drug/therapeutic area mapping
+- Partner hierarchy with tier classifications
+- Consistent ROAS calculation methodology
 
-**💡 Talking Point for Sharon:** *"The AI is connecting campaign data, financial data, and partner data—exactly the kind of cross-domain analytics that typically requires custom development."*
-
----
-
-## Question 4: Audience Intelligence & Targeting
-### 👥 *Resonates with: Liberty (VP Data & Analytics), Chloé (Director PM), JT (VP Ad Tech)*
-
-**Ask the Agent:**
-> "For a new diabetes medication launch targeting adults 45-65, which audience cohorts should we prioritize and what inventory is best suited for reaching them?"
-
-**Why This Matters:**
-- Shows **end-to-end campaign planning** capability
-- Demonstrates privacy-safe audience insights (HIPAA compliant)
-- Illustrates how AI combines audience + inventory intelligence
-
-**Expected Insights:**
-- Top audience cohorts by engagement and conversion potential
-- Recommended inventory placements (specialty, daypart, screen type)
-- Budget allocation recommendations
-
-**Compliance Callout:**
-> "Notice that all audience data is aggregated at the cohort level with a minimum of 50 members. This ensures HIPAA compliance while still delivering actionable targeting insights."
-
-**💡 Talking Point for Liberty:** *"This is self-service analytics at scale—your pharma partners could eventually ask these questions directly through a branded interface."*
+**Governance:**
+- Business definitions for metrics (ROAS, CTR, Conversion) must be standardized
+- Partner data access controls (can everyone see all partners?)
 
 ---
 
-## Question 5: Operational Efficiency & Scale
-### 👥 *Resonates with: Patrick (CTO), Jonathan (SVP Eng), Jennifer (Sr Dir Data Eng), Drew (SVP Tech Strategy)*
+## Question 2: Audience Optimization & Bidding Strategy
 
-**Ask the Agent:**
-> "What patterns do you see in our bidding performance across dayparts and regions? Where should we focus our real-time optimization efforts?"
+### 📋 The Question
+> **"Which audience segments are underperforming, and what real-time adjustments should we make to our bidding strategy?"**
 
-**Why This Matters:**
-- Shows AI can optimize **operational efficiency**
-- Identifies where automation should be focused
-- Demonstrates real-time decision support capability
+### 🎯 Business Outcome
+**Cost Efficiency through Smart Bidding**
+- Stop overspending on low-converting audiences
+- Reallocate budget to high-performers
+- Improve ROAS through better targeting
 
-**Expected Insights:**
-- Win rate patterns by daypart and region
-- Bid price sensitivity analysis
-- Recommendations for automated bidding rules
+### 👥 Attendee Resonance
+| Attendee | Why This Matters to Them |
+|----------|--------------------------|
+| **JT Grant (VP Ad Tech)** | "This is real-time bid optimization guidance I can action today." |
+| **Liberty Holt (VP Data)** | "The AI is surfacing audience insights that would require custom analytics." |
+| **Chloé Varennes (Dir PM)** | "This could become a self-service tool for campaign managers." |
 
-**Follow-up:**
-> "Which regions have the most competitive bidding and what's our win rate there?"
+### ✅ Expected Response Highlights
+- Underperformers: 18-24 Male General Wellness (1.5% engagement), 35-44 Male Mental Wellness (1.5%)
+- Pattern: **Male segments underperforming** across the board
+- Pattern: **"General Wellness" too broad** → poor engagement
+- Recommendation: **40-60% bid reduction** on worst performers
+- Reallocation target: 45-54 Female Cancer Awareness (4.0% engagement, 20% conversion)
 
-**💡 Talking Point for Patrick & Drew:** *"This runs entirely within Snowflake—no external AI services, no data leaving your environment, and it scales with your existing compute infrastructure."*
+### 💬 Talking Points
 
-**💡 Talking Point for Jennifer:** *"The semantic layer we built means the AI understands your business terminology. 'ROAS', 'fill rate', 'daypart'—these are defined once and work across all queries."*
+**After the response:**
+
+> **For JT (VP Ad Tech):** "JT, the AI isn't just identifying problems—it's giving you specific bid adjustments with percentages. '40-60% reduction on sub-1.8% engagement segments' is something your team can implement in your DSP today."
+
+> **For Liberty (VP Data):** "Liberty, notice the pattern recognition: male segments underperforming across health categories, 'General Wellness' being too broad. These are the kinds of cross-dimensional insights that typically require custom analysis."
+
+> **For Mike (COO):** "Mike, the bottom line here is efficiency. We're not spending more—we're spending smarter. The expected impact is 15-25% ROAS improvement through reallocation."
+
+### 🏢 Production Considerations
+
+**Data Requirements:**
+- Real-time or near-real-time engagement data
+- Cohort-level aggregation with k-anonymity (min 50 members)
+- Historical bid performance by audience segment
+
+**Governance:**
+- HIPAA compliance: All audience data aggregated, no individual-level data
+- Bid adjustment thresholds: Who can approve 40%+ changes?
 
 ---
 
-## Closing (2 minutes)
+## Question 3: Inventory Discovery & Campaign Planning
 
-### Key Takeaways by Role:
+### 📋 The Question
+> **"Show me premium inventory availability in cardiology and endocrinology practices for a new diabetes campaign"**
+
+### 🎯 Business Outcome
+**Faster Campaign Planning & Better Targeting**
+- Reduce time from campaign brief to media plan
+- Identify optimal inventory for therapeutic area
+- Maximize reach in relevant specialties
+
+### 👥 Attendee Resonance
+| Attendee | Why This Matters to Them |
+|----------|--------------------------|
+| **JT Grant (VP Ad Tech)** | "This is the inventory discovery my team does manually—now it's instant." |
+| **Jonathan Richman (SVP Eng)** | "This is natural language search against structured data—powerful UX." |
+| **Chloé Varennes (Dir PM)** | "This could be a product feature for pharma partner self-service." |
+
+### ✅ Expected Response Highlights
+- **Cardiology slots:** Mayo Clinic ($52 CPM, 88% fill), Cleveland Clinic ($48 CPM), Mass General ($60 CPM)
+- **Endocrinology slots:** UCLA Medical ($58 CPM), Stanford Health ($62 CPM, 3.5% engagement)
+- Strategic mix: Volume play (Mayo/Cleveland) + Premium targeting (Stanford/Mass General)
+- Budget estimate: $140K-180K monthly for full premium access
+
+### 💬 Talking Points
+
+**After the response:**
+
+> **For JT (VP Ad Tech):** "JT, in seconds we went from 'I need cardiology inventory' to a specific media plan with CPMs, fill rates, and budget estimates. That's a workflow that usually takes a planner half a day."
+
+> **For Jonathan (SVP Eng):** "Jonathan, this is Cortex Search under the hood—it's semantic search, not keyword matching. The AI understood that 'diabetes campaign' means we want endocrinology *and* cardiology because diabetes patients often have cardiovascular comorbidities."
+
+> **For Chloé (Dir PM):** "Chloé, imagine giving your pharma partners a branded interface where they can ask these questions directly. 'Find inventory for my new drug launch in oncology practices in the Northeast.' That's a product differentiator."
+
+### 🏢 Production Considerations
+
+**Data Requirements:**
+- Real-time inventory availability (or near-real-time)
+- Facility master data with specialty, location, patient volume
+- Historical performance by slot for recommendations
+
+**Data Hygiene:**
+- Consistent facility naming across systems
+- Specialty taxonomy alignment (ICD vs. internal codes)
+- CPM accuracy (are these floor prices or historical averages?)
+
+---
+
+## Question 4: Competitive Intelligence & Market Position
+
+### 📋 The Question
+> **"What's our competitive position with GLP-1 medications compared to industry benchmarks?"**
+
+### 🎯 Business Outcome
+**Strategic Confidence & Partner Value Proposition**
+- Quantify PatientPoint's performance advantage
+- Arm sales team with competitive data
+- Justify premium pricing with partners
+
+### 👥 Attendee Resonance
+| Attendee | Why This Matters to Them |
+|----------|--------------------------|
+| **Mike Walsh (COO)** | "This is the 'why PatientPoint' story for partner negotiations." |
+| **Sharon Patent (CADO)** | "The AI is synthesizing across campaigns to create market intelligence." |
+| **Drew Amwoza (SVP Tech Strategy)** | "This is competitive differentiation through data intelligence." |
+
+### ✅ Expected Response Highlights
+- **ROAS Leadership:** 5.23x vs 3.49x industry average (+49.7% outperformance)
+- **CTR Excellence:** 3.30% vs 2.47% industry (+33.6% higher)
+- **Conversion Strength:** 11.0% vs 9.0% industry (+23.0% better)
+- GLP-1 portfolio: $4.56M invested across Wegovy, Ozempic, Mounjaro
+- All top 5 campaigns are GLP-1 medications
+
+### 💬 Talking Points
+
+**After the response:**
+
+> **For Mike (COO):** "Mike, this is your pitch to Novo Nordisk and Eli Lilly: 'Your GLP-1 campaigns outperform industry benchmarks by 50% on our platform.' That's a revenue conversation, not a cost conversation."
+
+> **For Sharon (CADO):** "Sharon, the AI calculated that 5.23x average ROAS across 5 campaigns vs. our portfolio average of 3.49x. It's not just reporting—it's synthesizing data to answer a strategic question."
+
+> **For Drew (SVP Tech Strategy):** "Drew, this is the kind of intelligence that differentiates PatientPoint. Any ad network can show impressions. We're showing *outcome-driven performance* with AI-generated insights."
+
+### 🏢 Production Considerations
+
+**Data Requirements:**
+- Industry benchmark data (where does this come from?)
+- Competitive intelligence integration (optional)
+- Consistent performance metrics across drug categories
+
+**Governance:**
+- Can we share competitive position data with partners?
+- How do we source/validate "industry average" benchmarks?
+
+---
+
+## Question 5: Strategic Budget Allocation
+
+### 📋 The Question
+> **"If we increase our digital health ad spend by 20%, where should we allocate for maximum ROAS?"**
+
+### 🎯 Business Outcome
+**Data-Driven Investment Decisions**
+- Optimize incremental budget allocation
+- Balance proven winners vs. growth opportunities
+- Quantify expected ROI before spending
+
+### 👥 Attendee Resonance
+| Attendee | Why This Matters to Them |
+|----------|--------------------------|
+| **Mike Walsh (COO)** | "This is how I want to make investment decisions—with AI-backed recommendations." |
+| **Drew Amwoza (SVP Tech Strategy)** | "This is the cross-functional synthesis that shows the platform's full power." |
+| **JT Grant (VP Ad Tech)** | "This is actionable budget guidance with specific percentages." |
+
+### ✅ Expected Response Highlights
+- **35% → Wegovy/Weight Loss** (proven 6.0x ROAS)
+- **25% → Ozempic/Diabetes** (consistent 5.0x+ performance)
+- **15% → Cardiology inventory** (high volume, efficient CPM)
+- **10% → Oncology exam rooms** (premium engagement)
+- **10% → Merck oncology** (scale proven 4.8x performer)
+- **5% → Mounjaro growth** (competitive positioning)
+- Expected impact: 15-25% overall portfolio ROAS improvement
+
+### 💬 Talking Points
+
+**After the response:**
+
+> **For Mike (COO):** "Mike, this is the CFO conversation: 'If we invest 20% more, here's exactly where it goes and why, with projected 15-25% ROAS lift.' That's a business case, not a guess."
+
+> **For Drew (SVP Tech Strategy):** "Drew, notice what just happened: the AI synthesized campaign performance data, inventory analytics, and partner insights into a unified recommendation. That's three data domains in one answer—exactly the kind of cross-functional intelligence that's typically siloed."
+
+> **For JT (VP Ad Tech):** "JT, the specificity here is key: '35% to Wegovy, 15% to cardiology inventory.' Your team can take this recommendation and build a media plan from it today."
+
+### 🏢 Production Considerations
+
+**Data Requirements:**
+- Unified view of campaign + inventory performance
+- Historical ROAS by campaign type, therapeutic area, partner
+- Inventory capacity and availability
+
+**Governance:**
+- Budget allocation authority: Who approves AI recommendations?
+- Investment guardrails: Maximum % to any single campaign/partner?
+
+---
+
+## Closing: Path to Production (3 minutes)
+
+### Key Takeaways by Role
 
 | Attendee | Key Takeaway |
 |----------|--------------|
-| **Mike Walsh** (COO) | Operational insights that directly connect to revenue optimization |
+| **Mike Walsh** (COO) | AI-driven decisions that directly connect to revenue optimization |
 | **Patrick Arnold** (CTO) | Runs entirely in Snowflake—secure, scalable, no external dependencies |
-| **Sharon Patent** (CADO) | AI that understands your data semantics and business context |
+| **Sharon Patent** (CADO) | AI that understands your data semantics and enforces governance |
 | **Jonathan Richman** (SVP Eng) | Declarative configuration—agents defined in SQL, version controlled |
 | **Liberty Holt** (VP Data) | Self-service analytics that scales to partners and internal teams |
 | **Jennifer Kelly** (Sr Dir DE) | Semantic layer governs how AI interprets your data model |
@@ -190,10 +357,53 @@ Clean Room ──┘
 | **Drew Amwoza** (SVP Tech) | Strategic platform capability that differentiates PatientPoint |
 | **Chloé Varennes** (Dir PM) | New product capabilities for pharma partner self-service |
 
-### Summary Points:
+### How PatientPoint Gets Here: Production Roadmap
+
+```
+┌────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 1: DATA FOUNDATION (4-6 weeks)                                       │
+├────────────────────────────────────────────────────────────────────────────┤
+│ • Assess current data landscape (what systems, what quality?)              │
+│ • Design medallion architecture (Bronze → Silver → Gold)                   │
+│ • Build data pipelines (Snowpipe, Fivetran, or existing ETL)               │
+│ • Establish data governance framework (definitions, ownership, access)     │
+├────────────────────────────────────────────────────────────────────────────┤
+│ PHASE 2: INTELLIGENCE LAYER (4-6 weeks)                                    │
+├────────────────────────────────────────────────────────────────────────────┤
+│ • Define semantic model (business terms → technical columns)               │
+│ • Build Cortex Search services (inventory, campaigns, audiences)           │
+│ • Create Cortex Analyst semantic views                                     │
+│ • Configure Cortex Agent with PatientPoint-specific instructions           │
+├────────────────────────────────────────────────────────────────────────────┤
+│ PHASE 3: DEPLOYMENT & ADOPTION (2-4 weeks)                                 │
+├────────────────────────────────────────────────────────────────────────────┤
+│ • Deploy to internal users (ad ops, analytics, sales)                      │
+│ • Build Streamlit interface for specific use cases                         │
+│ • Integrate with existing workflows (Slack, email alerts)                  │
+│ • Training and change management                                           │
+├────────────────────────────────────────────────────────────────────────────┤
+│ PHASE 4: PARTNER EXTENSION (Optional)                                      │
+├────────────────────────────────────────────────────────────────────────────┤
+│ • Partner-specific agents with data access controls                        │
+│ • Branded self-service interface for pharma partners                       │
+│ • Secure data sharing for campaign insights                                │
+└────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Critical Success Factors
+
+| Factor | What PatientPoint Needs |
+|--------|------------------------|
+| **Data Acquisition** | Streaming pipelines for bid/impression data, batch sync for CRM/partner data |
+| **Data Governance** | Business glossary defining ROAS, CTR, conversion; data ownership matrix |
+| **Data Hygiene** | Consistent naming (facilities, campaigns), deduplication, validation rules |
+| **Access Control** | Role-based access to sensitive data (partner performance, audience insights) |
+| **Change Management** | Training for ad ops, analytics, sales on AI-assisted workflows |
+
+### Summary Points
 
 1. **From Dashboards to Decisions**  
-   Instead of building reports, teams can ask questions and get actionable recommendations instantly.
+   Instead of building reports, teams ask questions and get actionable recommendations instantly.
 
 2. **Privacy-First by Design**  
    All audience insights are aggregated and HIPAA compliant—no individual patient data is ever exposed.
@@ -205,26 +415,14 @@ Clean Room ──┘
    Built on Snowflake's data platform, this scales with your data volume and can integrate new data sources seamlessly.
 
 5. **Competitive Advantage**  
-   This capability positions PatientPoint as a technology-forward partner for pharmaceutical advertisers.
-
----
-
-## Backup Questions (If Time Permits)
-
-| Question | Best For |
-|----------|----------|
-| "What's the average time from first impression to conversion for our top campaigns?" | CMO - Attribution |
-| "Which medical specialties are underrepresented in our inventory mix?" | CEO - Growth Strategy |
-| "Show me campaigns where we're overspending relative to conversion rates" | CFO - Cost Optimization |
-| "Find premium inventory opportunities in the Southwest region" | Sales - Territory Planning |
-| "Which screen types deliver the best completion rates for video ads?" | CMO - Creative Strategy |
+   This capability positions PatientPoint as a technology-forward partner for pharmaceutical advertisers—and potentially a product differentiator.
 
 ---
 
 ## Demo Environment Checklist
 
 - [ ] Agent is running and responsive
-- [ ] Sample data is loaded (1.8M+ rows)
+- [ ] Sample data is loaded (25 campaigns, 30 inventory, 20 cohorts)
 - [ ] All three Cortex Search services are active
 - [ ] All three Semantic Views are created
 - [ ] Warehouse is sized appropriately (MEDIUM recommended for demo)
@@ -234,14 +432,28 @@ Clean Room ──┘
 ## Handling Questions
 
 **"How accurate is the AI?"**  
-> The AI uses Cortex Analyst to generate SQL queries against our actual data, so the numbers are 100% accurate. The recommendations are based on patterns in the data, similar to what an experienced analyst would identify.
+> "The AI uses Cortex Analyst to generate SQL queries against your actual data, so the numbers are 100% accurate. The recommendations are based on patterns in the data, similar to what an experienced analyst would identify—but in seconds instead of hours."
 
 **"What about data security?"**  
-> All data stays within Snowflake's secure environment. The AI never sees raw patient data—only aggregated, HIPAA-compliant cohort information.
+> "All data stays within Snowflake's secure environment. The AI never sees raw patient data—only aggregated, HIPAA-compliant cohort information. This runs on your compute, in your account, with your access controls."
 
 **"How long did this take to build?"**  
-> The core infrastructure was built in [X weeks]. The key enabler is Snowflake's unified platform where our data, AI models, and applications all live together.
+> "This demo environment was built in about 2 weeks. In production, the timeline depends on data readiness—if your data is already in Snowflake, the intelligence layer can be built in 4-6 weeks. The key enabler is Snowflake's unified platform where data, AI, and applications all live together."
 
 **"Can we customize this for specific partners?"**  
-> Absolutely. We can create partner-specific views and even deploy dedicated agents for key accounts with tailored instructions and data access.
+> "Absolutely. We can create partner-specific views and even deploy dedicated agents for key accounts with tailored instructions and data access controls. Imagine giving Novo Nordisk their own 'Campaign Optimizer' that only sees their data."
 
+**"What if the AI gives a wrong recommendation?"**  
+> "The AI is a decision *support* tool, not a decision *maker*. All recommendations should be reviewed by your team before implementation. The value is in speed and pattern recognition—the judgment is still human."
+
+---
+
+## Backup Questions (If Time Permits)
+
+| Question | Tests | Best For |
+|----------|-------|----------|
+| "What's the average time from first impression to conversion for our top campaigns?" | Attribution analysis | Sharon (CADO) |
+| "Which medical specialties are underrepresented in our inventory mix?" | Inventory gap analysis | JT (VP Ad Tech) |
+| "Show me campaigns where we're overspending relative to conversion rates" | Efficiency analysis | Mike (COO) |
+| "Find premium inventory opportunities in the Southwest region" | Geographic search | Sales use case |
+| "Which screen types deliver the best completion rates for video ads?" | Creative optimization | Chloé (Dir PM) |
