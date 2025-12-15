@@ -259,11 +259,11 @@ derived_slots AS (
         ROUND(base_cpm * cpm_multiplier * daypart_multiplier, 2) AS calc_base_cpm,
         ROUND(base_cpm * cpm_multiplier * daypart_multiplier * UNIFORM(1.0, 1.4, RANDOM()), 2) AS avg_winning_cpm,
         
-        -- Daily impressions
-        ROUND(base_impressions * daypart_multiplier * (0.8 + RANDOM() * 0.4)) AS est_daily_impressions,
+        -- Daily impressions (use UNIFORM for 0-1 range, not RANDOM())
+        ROUND(base_impressions * daypart_multiplier * UNIFORM(0.8, 1.2, RANDOM())) AS est_daily_impressions,
         
         -- Total impressions over time period
-        ROUND(base_impressions * daypart_multiplier * (0.8 + RANDOM() * 0.4) * days_of_data * fill_rate) AS delivered_impressions,
+        ROUND(base_impressions * daypart_multiplier * UNIFORM(0.8, 1.2, RANDOM()) * days_of_data * fill_rate) AS delivered_impressions,
         
         -- Total bids (more bids than impressions since fill rate < 100%)
         ROUND(base_impressions * daypart_multiplier * days_of_data * 1.2) AS total_bids
