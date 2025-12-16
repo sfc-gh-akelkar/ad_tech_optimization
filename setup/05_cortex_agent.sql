@@ -104,16 +104,16 @@ CREATE OR REPLACE AGENT AD_TECH.CORTEX.CAMPAIGN_OPTIMIZER_AGENT
         - Maintain a professional but approachable tone
 
       sample_questions:
-        - question: "What's the optimal pricing for a diabetes campaign in cardiology waiting rooms?"
-          answer: "I'll analyze historical bid data and inventory performance in cardiology facilities to recommend optimal CPM pricing for diabetes campaigns."
-        - question: "Which audience segments should we target for a new heart medication?"
-          answer: "I'll search our privacy-safe audience cohorts to find high-engagement segments with cardiology/heart health interests and strong conversion potential."
-        - question: "How did our Q4 2024 campaigns perform compared to Q3?"
-          answer: "I'll query our campaign analytics to compare ROAS, impressions, and engagement rates across Q3 and Q4 2024, and visualize the trends."
-        - question: "Find available premium inventory in Texas for a morning campaign"
-          answer: "I'll search for premium ad slots in Texas medical facilities with morning daypart availability and show you options with pricing."
-        - question: "What's driving the ROAS improvement for Pfizer campaigns?"
-          answer: "I'll analyze Pfizer's campaign performance across multiple dimensions to identify the key factors contributing to ROAS improvements."
+        - question: "What are our top 5 performing campaigns by ROAS, and what do they have in common that we can replicate across our portfolio?"
+          answer: "I'll analyze campaign performance to identify top ROAS performers and find common patterns in therapeutic area, partner, campaign type, and timing that drive success."
+        - question: "Which campaigns are underperforming relative to their budget, and what changes would improve partner ROI?"
+          answer: "I'll identify campaigns with below-average ROAS and provide specific recommendations for creative refresh, placement optimization, or budget reallocation to improve partner ROI."
+        - question: "Show me premium inventory availability in cardiology and endocrinology practices for a new diabetes campaign"
+          answer: "I'll search for premium ad placements in cardiology and endocrinology facilities with availability, pricing, and engagement metrics for your diabetes campaign planning."
+        - question: "What's our competitive position with GLP-1 medications compared to industry benchmarks?"
+          answer: "I'll analyze GLP-1 campaign performance metrics and compare against industry benchmarks to quantify PatientPoint's competitive advantage."
+        - question: "If we increase our digital health ad spend by 20%, where should we allocate for maximum ROAS?"
+          answer: "I'll analyze campaign and inventory performance to recommend optimal budget allocation across therapeutic areas, partners, and placement types for maximum ROAS."
 
     tools:
       - tool_spec:

@@ -23,13 +23,13 @@
 
 ---
 
-### 💵 SAVE MONEY: Eliminate Wasted Ad Spend
+### 💵 SAVE MONEY: Proactive Campaign Optimization
 
 | CHALLENGE | ACTION | RESULT |
 |-----------|--------|--------|
-| **15-25% of ad spend wasted** on underperforming audience segments | Deploy **AI-powered audience optimization** with real-time recommendations | **$5-10M annually** in recovered ad spend |
-| Bid adjustments are **reactive** (after poor performance) | Automated bid adjustment recommendations **with specific percentages** | **40-60% bid reduction** on low-converters |
-| No unified view connecting **audience engagement to outcomes** | Cross-dimensional analysis surfacing **actionable reallocation targets** | **15-25% ROAS improvement** (Demo: Q2, Q5) |
+| **Underperforming campaigns** discovered too late (at QBRs) | Deploy **AI-powered campaign monitoring** with proactive alerts | **Early warning system** prevents partner churn |
+| Campaign optimization is **reactive** (after partners complain) | Automated recommendations for **creative, placement, budget** adjustments | **15-25% ROAS improvement** on flagged campaigns |
+| No unified view connecting **spend to partner outcomes** | Cross-dimensional analysis surfacing **actionable optimization targets** | **$5-10M annually** in recovered ad spend (Demo: Q2, Q5) |
 
 ---
 
@@ -48,7 +48,7 @@
 | Demo Question | Business Result | What It Proves |
 |---------------|-----------------|----------------|
 | **Q1:** Top 5 campaigns by ROAS + patterns | 💰 MAKE MONEY | AI finds GLP-1 dominance, partner patterns in **15 seconds** |
-| **Q2:** Underperforming audiences + bid adjustments | 💵 SAVE MONEY | Specific 40-60% bid reductions → **direct ROAS impact** |
+| **Q2:** Underperforming campaigns + partner ROI | 💵 SAVE MONEY | Proactive alerts + optimization → **prevent partner churn** |
 | **Q3:** Premium inventory for diabetes campaign | 🛡️ REDUCE RISK | Mayo Clinic, Stanford slots with CPMs → **campaign planning in minutes** |
 | **Q4:** GLP-1 competitive position vs. benchmarks | 🛡️ REDUCE RISK | "49.7% outperformance" → **the partner pitch** |
 | **Q5:** 20% budget allocation for max ROAS | 💰💵 BOTH | Cross-functional synthesis → **investment decisions, not guesses** |
@@ -61,7 +61,7 @@
 >
 > **MAKE MONEY:** Pattern recognition that shows GLP-1 campaigns outperform by 50%—insights your team can act on today.
 >
-> **SAVE MONEY:** $5-10M in recovered ad spend through AI-powered audience optimization and smarter bid management.
+> **SAVE MONEY:** $5-10M in recovered ad spend through proactive campaign optimization—fix underperformers before partners notice.
 >
 > **REDUCE RISK:** A quantified value story—'Your campaigns outperform industry by 49.7%'—that wins and retains pharma partners.
 >
@@ -77,7 +77,7 @@
 | **Patrick Arnold** | CTO | Architecture, security, platform capabilities | Closing: "Runs entirely in Snowflake" |
 | **Sharon Patent** | CADO | Data strategy, AI/ML, governance | Q4: GLP-1 analysis, Data Context section |
 | **Jonathan Richman** | SVP Software & Engineering | Implementation, integration | Q3: Inventory search, Technical architecture |
-| **Liberty Holt** | VP Data & Analytics | Self-service analytics, data models | Q2: Audience optimization, Semantic layer |
+| **Liberty Holt** | VP Data & Analytics | Self-service analytics, data models | Q2: Campaign efficiency, Semantic layer |
 | **Jennifer Kelly** | Sr Director Data Engineering | Data pipelines, quality, architecture | Data Context: Source systems integration |
 | **JT Grant** | VP Ad Tech | Bidding optimization, inventory, campaigns | Q2: Bidding adjustments, Q3: Premium inventory |
 | **Drew Amwoza** | SVP Technology, Architecture & Strategy | Strategic technology decisions | Q5: Cross-functional synthesis |
@@ -209,51 +209,52 @@
 
 ---
 
-## Question 2: Audience Optimization & Bidding Strategy
+## Question 2: Campaign Efficiency & Partner ROI
 
 ### 📋 The Question
-> **"Which audience segments are underperforming, and what real-time adjustments should we make to our bidding strategy?"**
+> **"Which campaigns are underperforming relative to their budget, and what changes would improve partner ROI?"**
 
 ### 🎯 Business Outcome
-**Cost Efficiency through Smart Bidding**
-- Stop overspending on low-converting audiences
-- Reallocate budget to high-performers
-- Improve ROAS through better targeting
+**Proactive Partner Success & Revenue Protection**
+- Identify underperforming campaigns before partners notice
+- Provide actionable recommendations to improve ROI
+- Protect partner relationships through data-driven optimization
 
 ### 👥 Attendee Resonance
 | Attendee | Why This Matters to Them |
 |----------|--------------------------|
-| **JT Grant (VP Ad Tech)** | "This is real-time bid optimization guidance I can action today." |
-| **Liberty Holt (VP Data)** | "The AI is surfacing audience insights that would require custom analytics." |
-| **Chloé Varennes (Dir PM)** | "This could become a self-service tool for campaign managers." |
+| **Mike Walsh (COO)** | "Partner retention depends on proving and improving ROI proactively." |
+| **JT Grant (VP Ad Tech)** | "This is campaign optimization I can action with my team today." |
+| **Sharon Patent (CADO)** | "Proactive insights prevent partner churn—this is the early warning system." |
 
 ### ✅ Expected Response Highlights
-- Underperformers: 18-24 Male General Wellness (1.5% engagement), 35-44 Male Mental Wellness (1.5%)
-- Pattern: **Male segments underperforming** across the board
-- Pattern: **"General Wellness" too broad** → poor engagement
-- Recommendation: **40-60% bid reduction** on worst performers
-- Reallocation target: 45-54 Female Cancer Awareness (4.0% engagement, 20% conversion)
+- Underperformers: Campaigns with ROAS below 3.5x (portfolio average)
+- Pattern: **Awareness campaigns underperform** Direct Response by 15-20%
+- Pattern: **Certain therapeutic areas** (e.g., General Wellness) show lower engagement
+- Recommendation: **Shift budget** from underperformers to proven formats
+- Specific actions: Creative refresh, placement optimization, therapeutic focus
 
 ### 💬 Talking Points
 
 **After the response:**
 
-> **For JT (VP Ad Tech):** "JT, the AI isn't just identifying problems—it's giving you specific bid adjustments with percentages. '40-60% reduction on sub-1.8% engagement segments' is something your team can implement in your DSP today."
+> **For Mike (COO):** "Mike, this is partner retention in action. Instead of waiting for a QBR where Pfizer asks 'why is our campaign underperforming?', you're proactively calling them with solutions. That's the difference between losing a partner and expanding a relationship."
 
-> **For Liberty (VP Data):** "Liberty, notice the pattern recognition: male segments underperforming across health categories, 'General Wellness' being too broad. These are the kinds of cross-dimensional insights that typically require custom analysis."
+> **For JT (VP Ad Tech):** "JT, the AI identified which campaigns need attention and gave specific recommendations—creative refresh, placement optimization, budget reallocation. Your team can action this today, not wait for month-end reports."
 
-> **For Mike (COO):** "Mike, the bottom line here is efficiency. We're not spending more—we're spending smarter. The expected impact is 15-25% ROAS improvement through reallocation."
+> **For Sharon (CADO):** "Sharon, this is the early warning system. The AI is connecting spend, performance, and partner expectations to flag issues before they become problems. That's proactive data strategy."
 
 ### 🏢 Production Considerations
 
 **Data Requirements:**
-- Real-time or near-real-time engagement data
-- Cohort-level aggregation with k-anonymity (min 50 members)
-- Historical bid performance by audience segment
+- Campaign spend and performance data (daily or weekly refresh)
+- Partner-level ROAS targets and benchmarks
+- Historical performance by campaign type, therapeutic area
 
 **Governance:**
-- HIPAA compliance: All audience data aggregated, no individual-level data
-- Bid adjustment thresholds: Who can approve 40%+ changes?
+- Partner data access controls: Who can see which partner's performance?
+- Escalation thresholds: When does underperformance trigger a review?
+- Action authority: Who approves budget reallocation recommendations?
 
 ---
 
