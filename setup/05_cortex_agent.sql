@@ -146,11 +146,6 @@ CREATE OR REPLACE AGENT AD_TECH.CORTEX.CAMPAIGN_OPTIMIZER_AGENT
           name: "AudienceSearch"
           description: "Discover privacy-safe audience cohorts for targeting. Search by demographics (age, gender), geography (region), health interests, or engagement characteristics. Returns cohort descriptions with engagement metrics."
       
-      - tool_spec:
-          type: "data_to_chart"
-          name: "DataToChart"
-          description: "Generates visualizations from query results. Creates bar charts, line charts, pie charts, and other visualizations to illustrate trends, comparisons, and distributions. Use after querying data with Analyst tools."
-
     tool_resources:
       CampaignAnalyst:
         semantic_view: "AD_TECH.CORTEX.SV_CAMPAIGN_ANALYTICS"
