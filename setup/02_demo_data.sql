@@ -123,13 +123,13 @@ INSERT INTO T_CAMPAIGN_PERFORMANCE VALUES
 
 -- Rinvoq: Newer, building awareness
 ('CAMP-00017', 'Rinvoq Awareness Q2 2025', 'Rinvoq', 'Immunology', 'Awareness', 'Immunology', 'Completed', DATEADD(day, -175, CURRENT_DATE), DATEADD(day, -85, CURRENT_DATE), 550000.00, 5, 'AbbVie Inc.', 'Gold', 17000, 10200, 60.00, 28.00, 170000, 80.00, 84.00, 2550, 1.50, 153, 6.00, 476000.00, 330000.00, 1.44, 19.41),
-
+    
 -- Vyvanse: Neurology, competitive market  
 ('CAMP-00018', 'Vyvanse Education Q3 2025', 'Vyvanse', 'Neurology', 'Education', 'Neurology', 'Completed', DATEADD(day, -85, CURRENT_DATE), DATEADD(day, -15, CURRENT_DATE), 350000.00, 15, 'Takeda', 'Silver', 12000, 7200, 60.00, 20.00, 120000, 79.00, 83.00, 1800, 1.50, 108, 6.00, 280000.00, 210000.00, 1.33, 17.50),
 
 -- Spinraza: Very niche, expensive
 ('CAMP-00019', 'Spinraza Direct Response Q2 2025', 'Spinraza', 'Neurology', 'Direct Response', 'Neurology', 'Completed', DATEADD(day, -165, CURRENT_DATE), DATEADD(day, -75, CURRENT_DATE), 300000.00, 13, 'Biogen', 'Bronze', 10000, 6000, 60.00, 25.00, 100000, 77.00, 81.00, 1500, 1.50, 90, 6.00, 225000.00, 180000.00, 1.25, 18.00),
-
+    
 -- Zepbound: New to market, ramping up
 ('CAMP-00020', 'Zepbound Awareness Q4 2025', 'Zepbound', 'Weight Loss', 'Awareness', 'Primary Care', 'Scheduled', DATEADD(day, 10, CURRENT_DATE), DATEADD(day, 100, CURRENT_DATE), 800000.00, 4, 'Eli Lilly', 'Platinum', 5000, 2500, 50.00, 30.00, 50000, 75.00, 80.00, 500, 1.00, 25, 5.00, 80000.00, 75000.00, 1.07, 15.00),
 

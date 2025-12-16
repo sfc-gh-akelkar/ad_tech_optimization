@@ -112,8 +112,8 @@ CREATE OR REPLACE AGENT AD_TECH.CORTEX.CAMPAIGN_OPTIMIZER_AGENT
           answer: "I'll search for premium ad placements in cardiology and endocrinology facilities with availability, pricing, and engagement metrics for your diabetes campaign planning."
         - question: "What's our competitive position with GLP-1 medications compared to industry benchmarks?"
           answer: "I'll analyze GLP-1 campaign performance metrics and compare against industry benchmarks to quantify PatientPoint's competitive advantage."
-        - question: "If we increase our digital health ad spend by 20%, where should we allocate for maximum ROAS?"
-          answer: "I'll analyze campaign and inventory performance to recommend optimal budget allocation across therapeutic areas, partners, and placement types for maximum ROAS."
+        - question: "Novo Nordisk wants to increase their PatientPoint investment by 20%. Where should we recommend they allocate for maximum ROAS?"
+          answer: "I'll analyze Novo Nordisk's historical campaign performance, current inventory availability, and therapeutic area patterns to recommend optimal allocation across their GLP-1 portfolio for maximum ROAS."
 
     tools:
       - tool_spec:

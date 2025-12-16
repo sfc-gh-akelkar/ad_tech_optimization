@@ -51,7 +51,7 @@
 | **Q2:** Underperforming campaigns + partner ROI | 💵 SAVE MONEY | Proactive alerts + optimization → **prevent partner churn** |
 | **Q3:** Premium inventory for diabetes campaign | 🛡️ REDUCE RISK | Mayo Clinic, Stanford slots with CPMs → **campaign planning in minutes** |
 | **Q4:** GLP-1 competitive position vs. benchmarks | 🛡️ REDUCE RISK | "49.7% outperformance" → **the partner pitch** |
-| **Q5:** 20% budget allocation for max ROAS | 💰💵 BOTH | Cross-functional synthesis → **investment decisions, not guesses** |
+| **Q5:** Novo Nordisk 20% investment allocation | 💰💵 BOTH | Partner advisory → **strategic relationship, not just vendor** |
 
 ---
 
@@ -354,42 +354,42 @@
 
 ---
 
-## Question 5: Strategic Budget Allocation
+## Question 5: Partner Investment Advisory
 
 ### 📋 The Question
-> **"If we increase our digital health ad spend by 20%, where should we allocate for maximum ROAS?"**
+> **"Novo Nordisk wants to increase their PatientPoint investment by 20%. Where should we recommend they allocate for maximum ROAS?"**
 
 ### 🎯 Business Outcome
-**Data-Driven Investment Decisions**
-- Optimize incremental budget allocation
-- Balance proven winners vs. growth opportunities
-- Quantify expected ROI before spending
+**Strategic Partner Advisory**
+- Position PatientPoint as a strategic partner, not just a media seller
+- Provide data-driven allocation recommendations
+- Demonstrate platform intelligence that justifies premium pricing
 
 ### 👥 Attendee Resonance
 | Attendee | Why This Matters to Them |
 |----------|--------------------------|
-| **Mike Walsh (COO)** | "This is how I want to make investment decisions—with AI-backed recommendations." |
+| **Mike Walsh (COO)** | "This positions us as strategic advisors to pharma partners—that's relationship stickiness." |
 | **Drew Amwoza (SVP Tech Strategy)** | "This is the cross-functional synthesis that shows the platform's full power." |
-| **JT Grant (VP Ad Tech)** | "This is actionable budget guidance with specific percentages." |
+| **JT Grant (VP Ad Tech)** | "This is the recommendation engine my team needs for partner conversations." |
+| **Chloé Varennes (Dir PM)** | "This could be a self-service product feature for partners." |
 
 ### ✅ Expected Response Highlights
-- **35% → Wegovy/Weight Loss** (proven 6.0x ROAS)
-- **25% → Ozempic/Diabetes** (consistent 5.0x+ performance)
-- **15% → Cardiology inventory** (high volume, efficient CPM)
-- **10% → Oncology exam rooms** (premium engagement)
-- **10% → Merck oncology** (scale proven 4.8x performer)
-- **5% → Mounjaro growth** (competitive positioning)
-- Expected impact: 15-25% overall portfolio ROAS improvement
+- **40% → Wegovy campaigns** (proven 5.5x ROAS, highest performer)
+- **35% → Ozempic portfolio** (consistent 5.0x+ across Direct Response + Education)
+- **15% → Premium endocrinology inventory** (Stanford, UCLA—highest engagement)
+- **10% → Cardiology waiting rooms** (diabetes comorbidity reach)
+- Rationale tied to Novo Nordisk's specific performance history
+- Expected impact: Maintain/improve 5.0x+ portfolio ROAS
 
 ### 💬 Talking Points
 
 **After the response:**
 
-> **For Mike (COO):** "Mike, this is the CFO conversation: 'If we invest 20% more, here's exactly where it goes and why, with projected 15-25% ROAS lift.' That's a business case, not a guess."
+> **For Mike (COO):** "Mike, this is how you become a strategic partner, not just a vendor. When Novo Nordisk asks 'where should we spend more?', you have an AI-backed answer in 15 seconds. That's the kind of intelligence that justifies premium pricing and deepens the relationship."
 
-> **For Drew (SVP Tech Strategy):** "Drew, notice what just happened: the AI synthesized campaign performance data, inventory analytics, and partner insights into a unified recommendation. That's three data domains in one answer—exactly the kind of cross-functional intelligence that's typically siloed."
+> **For Drew (SVP Tech Strategy):** "Drew, notice what just happened: the AI synthesized Novo Nordisk's historical performance, current inventory availability, and therapeutic area patterns into a unified recommendation. That's partner-specific intelligence that would normally take a team days to compile."
 
-> **For JT (VP Ad Tech):** "JT, the specificity here is key: '35% to Wegovy, 15% to cardiology inventory.' Your team can take this recommendation and build a media plan from it today."
+> **For Chloé (Dir PM):** "Chloé, imagine giving Novo Nordisk a branded portal where they can ask this question themselves: 'Where should I allocate my next $500K?' That's a product differentiator—self-service investment optimization."
 
 ### 🏢 Production Considerations
 
